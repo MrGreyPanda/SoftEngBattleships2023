@@ -34,7 +34,7 @@ if(WIN32)
     target_link_libraries(Battleships sockpp-static)
     target_link_libraries(Battleships wsock32 ws2_32)
     
-    add_dependencies(BattleshipsServer sockpp_static)
+    add_dependencies(BattleshipsServer sockpp-static)
     target_link_libraries(BattleshipsServer sockpp-static)
     target_link_libraries(BattleshipsServer wsock32 ws2_32)
 else()
