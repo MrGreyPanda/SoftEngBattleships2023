@@ -12,9 +12,16 @@ endif()
 
 add_subdirectory("dependencies/sockpp")
 
+# build client
 add_executable(Battleships
-    src/main.cpp
+    src/client/main.cpp
 )
+
+# build server
+add_executable(BattleshipsServer
+    src/server/main.cpp
+)
+
 
 #Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})

@@ -2,7 +2,15 @@
 
 The implementation of the game Battleships for the course Software Engineering during FS2023.
 
-## Installation
+## Installing Development Dependencies
+
+After cloning this repo, load the submodules with
+
+```
+git submodule update --init --recursive
+```
+
+## Building executables
 
 The project is built using CMake.
 
@@ -22,4 +30,4 @@ cmake -DCMAKE_BUILD_TYPE=Release ../..
 make
 ```
 
-The executable file are built in the *build/debug* and *build/release* folder respectively
+The executable file are built in the _build/debug_ and _build/release_ folder respectively
