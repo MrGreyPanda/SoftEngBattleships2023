@@ -12,6 +12,7 @@ endif()
 
 add_subdirectory("dependencies/sockpp")
 add_subdirectory("dependencies/json")
+# don't include google tests as it is not needed to build
 
 # build client
 add_executable(Battleships
