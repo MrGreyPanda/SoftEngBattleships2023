@@ -10,6 +10,10 @@ After cloning this repo, load the submodules with
 git submodule update --init --recursive
 ```
 
+## Testing
+
+// TODO
+
 ## Building executables
 
 The project is built using CMake.
