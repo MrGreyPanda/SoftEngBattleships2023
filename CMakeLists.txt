@@ -11,6 +11,7 @@ if(WIN32)
 endif()
 
 add_subdirectory("dependencies/sockpp")
+add_subdirectory("dependencies/json")
 
 # build client
 add_executable(Battleships
@@ -23,15 +24,19 @@ add_executable(BattleshipsServer
 )
 
 
-#Build sockpp
+# Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
+target_include_directories(BattleshipsServer PUBLIC ${SOCKPP_INCLUDE_DIR})
 if(WIN32)
     message("Building for Win32")
 
     add_dependencies(Battleships sockpp-static)
-
     target_link_libraries(Battleships sockpp-static)
     target_link_libraries(Battleships wsock32 ws2_32)
+    
+    add_dependencies(BattleshipsServer sockpp_static)
+    target_link_libraries(BattleshipsServer sockpp-static)
+    target_link_libraries(BattleshipsServer wsock32 ws2_32)
 else()
     message("Building for Unix")
 
@@ -39,4 +44,15 @@ else()
     find_package(Threads REQUIRED)
 
     target_link_libraries(Battleships sockpp Threads::Threads)
+    target_link_libraries(BattleshipsServer sockpp Threads::Threads)
 endif()
+
+# Build json
+add_dependencies(Battleships nlohmann_json)
+add_dependencies(BattleshipsServer nlohmann_json)
+
+target_include_directories(Battleships PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
+target_link_libraries(Battleships nlohmann_json)
+
+target_include_directories(BattleshipsServer PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
+target_link_libraries(BattleshipsServer nlohmann_json)

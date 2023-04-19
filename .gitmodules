@@ -1,3 +1,6 @@
 [submodule "dependencies/sockpp"]
 	path = dependencies/sockpp
 	url = https://github.com/fpagliughi/sockpp.git
+[submodule "dependencies/json"]
+	path = dependencies/json
+	url = https://github.com/nlohmann/json.git
