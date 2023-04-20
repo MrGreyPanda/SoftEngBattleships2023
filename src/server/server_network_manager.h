@@ -32,7 +32,13 @@ class ServerNetworkManager {
      */
     static void start();
 
-    static void handle_thread(
+    /**
+     * @brief Handle the messages of a new thread
+     *
+     * @param socket The socket to handle
+     * @param message_handler The message handler function to use
+     */
+    static void handle_socket(
         sockpp::tcp_socket socket,
         const std::function<void(const std::string&,
                                  const sockpp::tcp_socket::addr_t&)>&
