@@ -12,11 +12,11 @@ shot_at, void, updates remaining_length and checks is_sunk, then sets the value 
 */
 // Enumerators to categorize the different ship types
 enum ShipCategory{
-    Carrier = 4,        // size = 5
-    Battleship = 3,     // size = 4
-    Cruiser = 2,        // size = 3
-    Submarine = 1,      // size = 3
-    Destroyer = 0       // size = 2
+    Carrier = 5,        // size = 5
+    Battleship = 4,     // size = 4
+    Cruiser = 3,        // size = 3
+    Submarine = 2,      // size = 3
+    Destroyer = 1       // size = 2
 }; 
 
 unsigned short category_to_size(ShipCategory type){

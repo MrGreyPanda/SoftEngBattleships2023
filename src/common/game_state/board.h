@@ -14,6 +14,7 @@ ships: vector, the agreed upon list of ships in the game somewhere on this board
 class Board {
 public:
 
+Board();
 Board(unsigned short size_);
 
 // Implement later for customization of the game
@@ -21,7 +22,7 @@ Board(unsigned short size_);
 
 private:
     unsigned short size = 10;
-    ShipCategory grid[size][size];
+    int grid[size][size];
     bool shots[size][size];
     std::vector<Ship> ships;
 };
@@ -35,9 +36,9 @@ rotate_ship: bool, updates entries to represent a ship rotated by 90 degrees, re
 
 class OwnBoard : public Board {
 public:
-bool is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[]);
-bool place_ship(const std::pair<unsigned short, unsigned short> &coords[][]);
-bool rotate_ship(std::pair<unsigned short, unsigned short> &coords[][]);
+bool is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype);
+bool place_ship(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype);
+bool rotate_ship(std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype);
 
 private:
 
