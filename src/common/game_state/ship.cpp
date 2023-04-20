@@ -1,7 +1,7 @@
 #include "ship.h"
 /*
 The class attributes are:
-length: short, defines the length of the ship, for example 5, 4, 3, 2 or 1
+length: short, defines the length of the ship, for example 5, 4, 3, 2 
 is_sunk: bool, defines if the ship has sunk (TRUE) or not (FALSE), this is the case when ship_coord is empty
 remaining_length: short, holds remaining length of the ship, gets updated by shot_at
 
@@ -10,7 +10,13 @@ shot_at, void, updates remaining_length and checks is_sunk, then sets the value 
 */
 
 
-Ship(unsigned int length_) : length(length_) {
+Ship::Ship(unsigned int length_, ShipCategory name_) : length(length_), name(name_), is_sunk(false) {
+    remaining_length = length;
+}
+
+Ship::Ship(ShipCategory name_) : name(name_), is_sunk(false){
+    length = category_to_size(name_);
+    remaining_length = length;
 }
 
 void Ship::shot_at(){
@@ -20,6 +26,7 @@ void Ship::shot_at(){
     --this.remaining_length;
     if(remaining_length == 0){
         this.is_sunk = true;
+        std::cout << "Your " << name << " has been sunk!\n";
     }
 }
 
