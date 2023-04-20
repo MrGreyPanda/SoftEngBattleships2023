@@ -9,19 +9,22 @@ The class operations are:
 shot_at, void, updates remaining_length and checks is_sunk, then sets the value accordingly.
 */
 
+// // Constructor
+// Ship::Ship(unsigned int length_, ShipCategory name_) : length(length_), name(name_), is_sunk(false) {
+//     remaining_length = length;
+// }
 
-Ship::Ship(unsigned int length_, ShipCategory name_) : length(length_), name(name_), is_sunk(false) {
-    remaining_length = length;
-}
-
+// Constructor
 Ship::Ship(ShipCategory name_) : name(name_), is_sunk(false){
     length = category_to_size(name_);
+    if(length == 0) throw std::exception("Not a valid ShipCategory");
     remaining_length = length;
 }
+
 
 void Ship::shot_at(){
     if(this.remaining_length <= 0 || this.is_sunk){
-        throw std::error("This ship is already sunk and therefore can't be shot at. Invalid shot.");
+        throw std::exception("This ship is already sunk and therefore can't be shot at. Invalid shot.");
     }
     --this.remaining_length;
     if(remaining_length == 0){

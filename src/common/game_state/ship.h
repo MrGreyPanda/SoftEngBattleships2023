@@ -1,4 +1,5 @@
 #pragma once
+#include <exception>
 /*
 The class attributes are:
 length: short, defines the length of the ship, for example 5, 4, 3, 2 or 1
@@ -18,7 +19,6 @@ enum ShipCategory{
     Destroyer = 0       // size = 2
 }; 
 
-// Given a Category returns the corresponding ship size
 unsigned short category_to_size(ShipCategory type){
     switch(type){
         case Carrier    : return 5; 
@@ -32,7 +32,7 @@ unsigned short category_to_size(ShipCategory type){
 
 class Ship {
 public:
-    Ship(unsigned int length_, ShipCategory name_);
+    // Ship(unsigned int length_, ShipCategory name_);
     Ship(ShipCategory name_);
     ~Ship();
     void shot_at();
