@@ -17,9 +17,9 @@ shoot: bool, player selects a cell on the opponent’s grid, returns FALSE if it
 
 class Player {
 public:
-    Player();
     Player(unsigned short board_size);
     Player(unsigned short board_size, unsigned short n_ships);
+    Player(std::string id);
 
     bool place_ship(const std::pair<unsigned short, unsigned short> &coords[]);
     bool shoot(const std::pair<unsigned short, unsigned short> &coord);
@@ -30,5 +30,4 @@ private:
     bool is_prepared;
     OwnBoard own_board;
     EnemyBoard enemy_board;
-    std::vector<std::pair<Ship, bool>> placed_ships;
 };
