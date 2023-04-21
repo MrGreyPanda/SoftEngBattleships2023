@@ -53,6 +53,7 @@
         "memory_resource": "cpp",
         "utility": "cpp",
         "cinttypes": "cpp",
-        "__verbose_abort": "cpp"
+        "__verbose_abort": "cpp",
+        "shared_mutex": "cpp"
     }
 }
