@@ -2,6 +2,8 @@
 
 The implementation of the game Battleships for the course Software Engineering during FS2023.
 
+Filenames, variables, member functions and object names are written in snake_case, Class names are written in CamelCase.
+
 ## Installing Development Dependencies
 
 After cloning this repo, load the submodules with
