@@ -10,7 +10,7 @@ Board::Board() : size(10) {
     for(int i = 0; i < size; i++){
         for(int j = 0; j < size; j++){
             grid[i][j] = 0;
-            shots[i][j] = false;
+            is_shot[i][j] = false;
         }
     }
 }
@@ -25,7 +25,7 @@ Board::Board(unsigned short size_) : size(size_) {
     for(int i = 0; i < size; i++){
         for(int j = 0; j < size; j++){
             grid[i][j] = 0;
-            shots[i][j] = false;
+            is_shot[i][j] = false;
         }
     }
 }
@@ -73,4 +73,13 @@ bool OwnBoard::rotate_ship(std::pair<unsigned short, unsigned short> &coords[], 
             new_coords[i] = std
         }
     }
+}
+
+bool EnemyBoard::is_valid_shot(const std::pair<unsigned short, unsigned short> &coord){
+    unsigned short x = coord.first;
+    unsigned short y = coord.second;
+    if(x < 0 || x > size) return false;
+    if(y < 0 || y > size) return false;
+    if(is_shot[x][y]) return false;
+    return true;
 }
