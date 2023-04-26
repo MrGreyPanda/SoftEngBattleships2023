@@ -18,3 +18,8 @@ bool Player::shoot(const std::pair<unsigned short, unsigned short> &coord){
         // return false if miss
     }
 }
+
+Player::~Player(){
+    delete own_board;
+    delete enemy_board;
+}

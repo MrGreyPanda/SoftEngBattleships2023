@@ -21,6 +21,10 @@ Ship::Ship(ShipCategory name_) : name(name_), is_sunk(false){
     damage = length;
 }
 
+Ship::~Ship(){
+    // Nothing to do here
+}
+
 
 void Ship::shot_at(){
     if(this.damage <= 0 || this.is_sunk){

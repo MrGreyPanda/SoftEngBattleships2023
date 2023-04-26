@@ -19,6 +19,10 @@ Board(unsigned short size_);
 
 // Implement later for customization of the game
 // Board(unsigned short size_, unsigned short n_ships);
+Board();
+Board(unsigned short size_);
+~Board();
+
 
 private:
     unsigned short size = 10;

@@ -30,6 +30,14 @@ Board::Board(unsigned short size_) : size(size_) {
     }
 }
 
+Board::~Board(){
+    for(int i = 0; i < size; i++){
+        delete grid[i];
+        delete is_shot[i];
+    }
+    delete grid;
+    delete is_shot;
+}
 
 
 bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){

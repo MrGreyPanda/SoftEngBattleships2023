@@ -23,6 +23,8 @@ public:
     Player(unsigned short board_size, unsigned short n_ships);
     Player(std::string id);
 
+    ~Player();
+
     bool place_ship(const std::pair<unsigned short, unsigned short> &coords[]);
     bool shoot(const std::pair<unsigned short, unsigned short> &coord);
 

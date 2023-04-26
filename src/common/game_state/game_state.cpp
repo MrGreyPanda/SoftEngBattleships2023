@@ -20,3 +20,9 @@ GameState::GameState(std::string id, std::vector<Player*> players) : id(id), pha
     ships.push_back(Ship("Battleship", 4));
     ships.push_back(Ship("Carrier", 5));
 }
+
+GameState::~GameState(){
+    for(auto player : players){
+        delete player;
+    }
+}

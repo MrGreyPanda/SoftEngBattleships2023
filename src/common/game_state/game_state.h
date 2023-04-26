@@ -21,6 +21,7 @@ enum Phase{
 class GameState {
 public:
     GameState(std::string id, std::vector<Player*> players);
+    ~GameState();
     
 
 private:
