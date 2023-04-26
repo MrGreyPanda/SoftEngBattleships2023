@@ -11,6 +11,8 @@ phase: int, number representing which phase the game is in (0) lobby (not starte
 ships: vector, the ships agreed upon for this game
 turn_player_index: unsigned short, the index of the player in the players array whose turn it is.
 */
+
+// Enum describing the different phases of the game
 enum Phase{
     Lobby = 0,
     Preparation = 1,
@@ -20,7 +22,17 @@ enum Phase{
 
 class GameState {
 public:
+
+    /**
+     * @brief Construct a new Game State object
+     * @param id The id of the game
+     * @param players The players in the game
+    */
     GameState(std::string id, std::vector<Player*> players);
+
+    /**
+     * @brief Destroy the Game State object
+    */
     ~GameState();
     
 
