@@ -94,6 +94,7 @@ public:
     /**
      * @brief Try to shoot at a given coordinate
      * @param coord The coordinates of the shot to be placed
+     * TODO: Send shooting Request to Server and wait for response
     */
     bool shoot(const std::pair<unsigned short, unsigned short> &coord);
 

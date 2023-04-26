@@ -4,6 +4,8 @@ The implementation of the game Battleships for the course Software Engineering d
 
 Filenames, variables, member functions and object names are written in snake_case, Class names are written in CamelCase.
 
+[Software Design Specification](https://docs.google.com/document/d/1EQSFysfbPWMtOsfs9r5SwyRhid3R1U1N3jasiMDwmeI/edit#)
+
 ## Installing Development Dependencies
 
 After cloning this repo, load the submodules with
