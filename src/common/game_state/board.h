@@ -15,12 +15,22 @@ ships: vector, the agreed upon list of ships in the game somewhere on this board
 class Board {
 public:
 
-Board(unsigned short size_);
-
 // Implement later for customization of the game
 // Board(unsigned short size_, unsigned short n_ships);
+
+/**
+ * @brief Construct a new Board object
+*/
 Board();
+
+/**
+ * @brief Construct a new Board object
+ * @param size_ The size of the board
+*/
 Board(unsigned short size_);
+/**
+ * @brief Destroy the Board object
+*/
 ~Board();
 
 
@@ -40,8 +50,23 @@ rotate_ship: bool, updates entries to represent a ship rotated by 90 degrees, re
 
 class OwnBoard : public Board {
 public:
+
+/**
+ * @brief Checks if a given placement is valid
+ * @param coords The coordinates of the ship to be placed
+*/
 bool is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[]);
+
+/**
+ * @brief Places a ship on the board
+ * @param coords The coordinates of the ship to be placed
+*/
 bool place_ship(const std::pair<unsigned short, unsigned short> &coords[][]);
+
+/**
+ * @brief Rotates a ship on the board
+ * @param coords The coordinates of the ship to be rotated
+*/
 bool rotate_ship(std::pair<unsigned short, unsigned short> &coords[][]);
 
 private:
@@ -56,6 +81,11 @@ is_valid_shot: bool, checks if a given shot is valid. Returns !is_shot.
 
 class EnemyBoard : public Board {
 public:
+
+/**
+ * @brief Checks if a given shot is valid
+ * @param coords The coordinates of the shot to be placed
+*/
 bool is_valid_shot(const std::pair<unsigned short, unsigned short> &coords[][]);
 
 private:

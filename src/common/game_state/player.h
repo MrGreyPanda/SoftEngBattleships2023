@@ -19,13 +19,40 @@ shoot: bool, player selects a cell on the opponent’s grid, returns FALSE if it
 
 class Player {
 public:
-    Player(unsigned short board_size);
-    Player(unsigned short board_size, unsigned short n_ships);
+
+    /**
+     * @brief Creates a player with a given board size and defautl ships
+     * @param board_size The size of the board
+     * @param id The id of the player
+    */
+    Player(unsigned short board_size, std::string id);
+
+    /**
+     * @brief Creates a player with a given board size and number of ships
+     * @param board_size The size of the board
+     * @param n_ships The number of ships
+     * @param id The id of the player
+    */
+    Player(unsigned short board_size, unsigned short n_ships, std::string id);
+
+    /**
+     * @brief Creates a player with a default board size and number of ships
+     * @param id The id of the player
+    */
     Player(std::string id);
 
     ~Player();
 
+    /**
+     * @brief Checks if a given placement is valid, if it is, places the ship
+     * @param coords The coordinates of the ship to be placed
+    */
     bool place_ship(const std::pair<unsigned short, unsigned short> &coords[]);
+
+    /**
+     * @brief Try to shoot at a given coordinate
+     * @param coord The coordinates of the shot to be placed
+    */
     bool shoot(const std::pair<unsigned short, unsigned short> &coord);
 
 private:
