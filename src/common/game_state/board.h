@@ -33,6 +33,17 @@ Board(unsigned short size_);
 */
 ~Board();
 
+/**
+ * @brief Get the size of the board
+ * @return The size of the board
+*/
+unsigned short get_size();
+
+/**
+ * @brief Get the ships that are not sunk on the board
+ * @return The ships on the board
+*/
+unsigned short get_num_active_ships();
 
 private:
     unsigned short size = 10;

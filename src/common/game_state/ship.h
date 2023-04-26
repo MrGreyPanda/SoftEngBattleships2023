@@ -55,6 +55,30 @@ public:
     */
     void shot_at();
 
+    /**
+     * @brief Get the length of the ship
+     * @return The length of the ship
+    */
+    unsigned short get_length() const { return length; }
+
+    /**
+     * @brief Get the damage of the ship
+     * @return The damage of the ship
+    */
+    unsigned short get_damage() const { return damage; }
+
+    /**
+     * @brief Get the name of the ship
+     * @return The name of the ship
+    */
+    ShipCategory get_name() const { return name; }
+
+    /**
+     * @brief Get the is_sunk of the ship
+     * @return The is_sunk of the ship
+    */
+    bool get_is_sunk() const { return is_sunk; }
+
 private:
 
     unsigned short length;

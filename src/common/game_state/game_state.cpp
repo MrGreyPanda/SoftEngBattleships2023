@@ -26,3 +26,23 @@ GameState::~GameState(){
         delete player;
     }
 }
+
+std::string GameState::get_id(){
+    return id;
+}
+
+void GameState::set_phase(Phase phase){
+    this->phase = phase;
+}
+
+Phase GameState::get_phase(){
+    return phase;
+}
+
+unsigned short GameState::get_turn_player_index(){
+    return turn_player_index;
+}
+
+void GameState::change_turn_player_index(){
+    turn_player_index = (turn_player_index + 1) % players.size();
+}

@@ -35,6 +35,32 @@ public:
     */
     ~GameState();
     
+    /**
+     * @brief Get the id of the game
+     * @return The id of the game
+    */
+    std::string get_id();
+
+    /**
+     * @brief set the phase of the game
+    */
+    void set_phase(Phase phase);
+
+    /**
+     * @brief Get the phase of the game
+     * @return The phase of the game
+    */
+    Phase get_phase();
+
+    /**
+     * @brief get turn player index
+    */
+    unsigned short get_turn_player_index();
+
+    /**
+     * @brief change turn player index
+    */
+    void change_turn_player_index();
 
 private:
     std::string id;

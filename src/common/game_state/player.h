@@ -44,6 +44,48 @@ public:
     ~Player();
 
     /**
+     * @brief Returns the id of the player
+    */
+    std::string get_id();
+    
+    /**
+     * @brief Sets the players id
+    */
+    void set_id(std::string id);
+
+    /**
+     * @brief sets the player as ready
+    */
+    void set_ready();
+
+    /**
+     * @brief sets the player as not ready
+    */
+    void unset_ready();
+
+    /**
+     * @brief sets the player as prepared
+    */
+    void set_prepared();
+
+    /**
+     * @brief sets the player as not prepared
+    */
+    void unset_prepared();
+
+    /**
+     * @brief Returns the player' state of readiness
+     * @return True if the player is ready, false otherwise
+    */
+    bool is_player_ready();
+
+    /**
+     * @brief Returns the player' state of preparedness
+     * @return True if the player is prepared, false otherwise
+    */
+    bool is_player_prepared();
+
+    /**
      * @brief Checks if a given placement is valid, if it is, places the ship
      * @param coords The coordinates of the ship to be placed
     */

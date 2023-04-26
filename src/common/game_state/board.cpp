@@ -39,6 +39,18 @@ Board::~Board(){
     delete is_shot;
 }
 
+unsigned short Board::get_size(){
+    return size;
+}
+
+unsigned short Board::get_num_active_ships(){
+    unsigned short num_active_ships = 0;
+    for(int i = 0; i < ships.size(); i++){
+        if(!ships[i].is_sunk) num_active_ships++;
+    }
+    return num_active_ships;
+}
+
 
 bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
     if(coords.size() != category_to_size(shiptype)) return false;
