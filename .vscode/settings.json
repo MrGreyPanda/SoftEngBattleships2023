@@ -69,5 +69,7 @@
         "streambuf": "cpp",
         "system_error": "cpp",
         "thread": "cpp"
-    }
+    },
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 79, IndentPPDirectives: BeforeHash, AlignAfterOpenBracket: true, AlignConsecutiveAssignments: true, AlignConsecutiveMacros : true}",
+
 }
