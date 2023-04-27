@@ -1,9 +1,7 @@
 #pragma once
 
 #include <functional>
-
 #include <unordered_map>
-
 
 #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_socket.h"

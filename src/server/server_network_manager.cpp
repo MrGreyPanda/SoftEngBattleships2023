@@ -100,19 +100,25 @@ void ServerNetworkManager::_handle_incoming_message(
     const sockpp::tcp_socket::addr_t peer_address) {
     // try to parse the message as JSON and create a client request object
     json data;
-    ClientRequest* client_request = nullptr;
     try {
-        data           = json::parse(message);
-        client_request = new ClientRequest(data);
+        data = json::parse(message);
     } catch (json::parse_error& e) {
         std::cout << "[ServerNetworkManager] JSON parse error: " << e.what()
                   << std::endl;
     }
 
+    ClientRequest* client_request;
+    try {
+        client_request = new ClientRequest(data);
+    } catch (std::exception& e) {
+        std::cout
+            << "[ServerNetworkManager] message is not a valid ClientRequest: "
+            << e.what() << std::endl;
+    }
+
     // check if this is a message from a player
-    if (client_request->has_player_id() &&
-        _player_addresses.find(client_request->get_player_id()) !=
-            _player_addresses.end()) {
+    if (_player_addresses.find(client_request->get_player_id()) !=
+        _player_addresses.end()) {
         // this is a message from a known player
 
         // TODO
