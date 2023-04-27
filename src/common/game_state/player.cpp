@@ -1,4 +1,4 @@
-#include "player.h"
+#include "include/player.h"
 
 Player::Player(unsigned short board_size, std::string id) : id(id) own_board(OwnBoard(board_size, 5)), enemy_board(EnemyBoard(board_size, 5)), is_prepared(false), is_ready(false){}
 

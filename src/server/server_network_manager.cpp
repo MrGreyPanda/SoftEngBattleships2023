@@ -9,7 +9,7 @@
 // Declare the static acceptor variable to allocate it as a static variable
 sockpp::tcp_acceptor ServerNetworkManager::_acceptor;
 
-ServerNetworkManager::ServerNetworkManager(unsigned port = 1337) {
+ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
     _acceptor = sockpp::tcp_acceptor(port);
 

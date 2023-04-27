@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include <unordered_map>
+
 
 #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_socket.h"
@@ -13,7 +15,7 @@ class ServerNetworkManager {
      *
      * @param port The port to listen on
      */
-    ServerNetworkManager(unsigned port);
+    ServerNetworkManager(unsigned port = 1337);
     // TODO check if we need a destructor
 
     /**

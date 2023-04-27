@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "../src/common/ship.h"
+#include "../../dependencies/googletest/googletest/include/gtest/gtest.h"
+#include "include/ship.h"
 
 
 TEST(ShipTest, CreateShipDestroyer){

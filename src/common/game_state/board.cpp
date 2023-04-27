@@ -1,4 +1,4 @@
-#include "board.h"
+#include "include/board.h"
 
 Board::Board() : size(10) {
     ships.resize(5);
