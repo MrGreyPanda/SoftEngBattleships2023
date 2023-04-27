@@ -14,6 +14,8 @@ The implementation and unit tests of the game Battleships for the course Softwar
 
 - [Example Lama Project](https://gitlab.ethz.ch/hraymond/cse-lama-example-project/-/tree/master/)
 
+- [Zoom Meeting Link](https://ethz.zoom.us/j/66328319238)
+
 ## Development
 
 ### Formatting rules

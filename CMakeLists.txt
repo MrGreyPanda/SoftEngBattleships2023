@@ -14,6 +14,11 @@ add_subdirectory("dependencies/sockpp")
 add_subdirectory("dependencies/json")
 # don't include google tests as it is not needed to build
 
+# build common
+add_executable(BattleshipsCommon
+    src/common/main.cpp
+)
+
 # build client
 add_executable(Battleships
     src/client/main.cpp

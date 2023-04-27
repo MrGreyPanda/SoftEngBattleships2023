@@ -1,6 +1,6 @@
-#include "../src/common/game_state/board.h"
+#include "game_state/include/board.h"
 
-#include "../dependencies/googletest/googletest/include/gtest/gtest.h"
+#include "../../dependencies/googletest/googletest/include/gtest/gtest.h"
 
 TEST(BoardTest, CreateBoard) {
     Board board;

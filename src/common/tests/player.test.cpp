@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "../src/common/game_state/player.h"
+#include "../../dependencies/googletest/googletest/include/gtest/gtest.h"
+#include "game_state/include/player.h"
 
 TEST(PlayerTest, CreatePlayer){
     Player player;

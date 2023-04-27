@@ -13,7 +13,7 @@ sockpp::tcp_acceptor ServerNetworkManager::_acceptor;
 std::unordered_map<std::string, std::string>
     ServerNetworkManager::_player_addresses;
 
-ServerNetworkManager::ServerNetworkManager(unsigned port = 1337) {
+ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
     _acceptor = sockpp::tcp_acceptor(port);
 
