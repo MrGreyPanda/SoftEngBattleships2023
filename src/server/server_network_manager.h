@@ -46,7 +46,9 @@ class ServerNetworkManager {
      *
      * @param message The message to handle
      */
-    static void _handle_incoming_message(const std::string& message);
+    static void _handle_incoming_message(
+        const std::string& message,
+        const sockpp::tcp_acceptor::addr_t peer_address);
 
     static void _send_message_to_player(const std::string& message,
                                         const std::string& player_id);
