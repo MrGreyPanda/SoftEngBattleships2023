@@ -22,12 +22,16 @@ add_executable(Battleships
 # build server
 add_executable(BattleshipsServer
     src/server/main.cpp
+    src/server/server_network_manager.cpp
 )
 
 
 # Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
-target_include_directories(BattleshipsServer PUBLIC ${SOCKPP_INCLUDE_DIR})
+target_include_directories(BattleshipsServer 
+    PUBLIC ${SOCKPP_INCLUDE_DIR}
+    src/server/include
+)
 if(WIN32)
     message("Building for Win32")
 

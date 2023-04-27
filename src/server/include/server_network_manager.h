@@ -9,8 +9,10 @@ class ServerNetworkManager {
    public:
     /**
      * @brief Constructs a new ServerNetworkManager
+     *
+     * @param port The port to listen on
      */
-    ServerNetworkManager();
+    ServerNetworkManager(unsigned port);
     // TODO check if we need a destructor
 
     /**
@@ -37,11 +39,7 @@ class ServerNetworkManager {
      * @param socket The socket to handle
      * @param message_handler The message handler function to use
      */
-    static void _handle_socket(
-        sockpp::tcp_socket socket,
-        const std::function<void(const std::string&,
-                                 const sockpp::tcp_socket::addr_t&)>&
-            message_handler);
+    static void _handle_socket(sockpp::tcp_socket socket);
 
     /**
      * @brief Handles an incoming message from a client
@@ -58,7 +56,7 @@ class ServerNetworkManager {
     /**
      * @brief A map of player ids to their addresses
      */
-    static std::unordered_map<std::tring, std::string> _player_addresses;
+    static std::unordered_map<std::string, std::string> _player_addresses;
 
     /**
      * @brief A map of player ids to their sockets
