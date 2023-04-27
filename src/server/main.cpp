@@ -1,7 +1,7 @@
-#include <cstdint>
-#include <cstdio>
+
+#include "server_network_manager.h"
 
 int main(int argc, const char** argv) {
-    printf("Hello World from Server!\n");
+    ServerNetworkManager server;
     return 0;
 }
