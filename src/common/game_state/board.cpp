@@ -10,7 +10,7 @@ Board::Board() : size(10) {
     for(int i = 0; i < size; i++){
         for(int j = 0; j < size; j++){
             grid[i][j] = 0;
-            shots[i][j] = false;
+            is_shot[i][j] = false;
         }
     }
 }
@@ -25,14 +25,34 @@ Board::Board(unsigned short size_) : size(size_) {
     for(int i = 0; i < size; i++){
         for(int j = 0; j < size; j++){
             grid[i][j] = 0;
-            shots[i][j] = false;
+            is_shot[i][j] = false;
         }
     }
 }
 
+Board::~Board(){
+    for(int i = 0; i < size; i++){
+        delete grid[i];
+        delete is_shot[i];
+    }
+    delete grid;
+    delete is_shot;
+}
+
+unsigned short Board::get_size(){
+    return size;
+}
+
+unsigned short Board::get_num_active_ships(){
+    unsigned short num_active_ships = 0;
+    for(int i = 0; i < ships.size(); i++){
+        if(!ships[i].is_sunk) num_active_ships++;
+    }
+    return num_active_ships;
+}
 
 
-bool OwnShip::is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
     if(coords.size() != category_to_size(shiptype)) return false;
     for(int i = 0; i < coords.size(); i++){
         unsigned short x = coords[i].first;
@@ -44,7 +64,7 @@ bool OwnShip::is_valid_placement(const std::pair<unsigned short, unsigned short>
     return true;
 }
 
-bool OwnShip::place_ship(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::place_ship(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
 
     if(!this.is_valid_placement(coords)) return false;
     
@@ -59,7 +79,27 @@ bool OwnShip::place_ship(const std::pair<unsigned short, unsigned short> &coords
 
 }
 
-bool OwnShip::rotate_ship(std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::rotate_ship(std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+    if(coords.size() != category_to_size(shiptype)) throw std::exception("Coordinate size doesn't match shiptype!");
+    bool is_rotated = false;
     std::pair<unsigned short, unsigned short> new_coords[coords.size()];
-    
+    int x = coords[0].first;
+    int y = coords[0].second;
+    new_coords[0] = std::make_pair<unsigned short, unsigned short>(x, y);
+    is_rotated = coords[1].first != x;
+
+    if(is_rotated){
+        for(int i = 1; i < coords.size(); i++){
+            new_coords[i] = std
+        }
+    }
+}
+
+bool EnemyBoard::is_valid_shot(const std::pair<unsigned short, unsigned short> &coord){
+    unsigned short x = coord.first;
+    unsigned short y = coord.second;
+    if(x < 0 || x > size) return false;
+    if(y < 0 || y > size) return false;
+    if(is_shot[x][y]) return false;
+    return true;
 }
