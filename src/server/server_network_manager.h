@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <shared_mutex>
 #include <unordered_map>
 
 #include "sockpp/tcp_acceptor.h"
@@ -51,9 +52,20 @@ class ServerNetworkManager {
         const std::string& message,
         const sockpp::tcp_acceptor::addr_t peer_address);
 
+    /**
+     * @brief Sends a message to a player
+     *
+     * @param message
+     * @param player_id
+     */
     static void _send_message_to_player(const std::string& message,
                                         const std::string& player_id);
 
+    static std::shared_mutex _mutex;
+
+    /**
+     * @brief The acceptor to listen for new connections
+     */
     static sockpp::tcp_acceptor _acceptor;
 
     /**

@@ -4,11 +4,15 @@
 #include <nlohmann/json.hpp>
 #include <thread>
 
+#include "../common/game_state/include/player.h"
 #include "../common/network/requests/client_request.h"
+#include "game_instance_manager.h"
+#include "player_manager.h"
 
 using json = nlohmann::json;
 
 // Declare the static variables to allocate them
+std::shared_mutex ServerNetworkManager::_mutex;
 sockpp::tcp_acceptor ServerNetworkManager::_acceptor;
 std::unordered_map<std::string, std::string>
     ServerNetworkManager::_player_addresses;
@@ -58,13 +62,6 @@ void ServerNetworkManager::_start() {
             // the received conncection is valid
             // try and listen to messages from this connection
 
-            // create a player id string by hasing the player address
-            std::string new_player_id = std::to_string(
-                std::hash<std::string>{}(peer_address.to_string()));
-
-            _player_addresses.emplace(new_player_id,
-                                      socket.peer_address().to_string());
-
             // thread to handle incoming messages
             std::thread listener(_handle_socket, std::move(socket));
 
@@ -105,6 +102,7 @@ void ServerNetworkManager::_handle_incoming_message(
     } catch (json::parse_error& e) {
         std::cout << "[ServerNetworkManager] JSON parse error: " << e.what()
                   << std::endl;
+        return;
     }
 
     ClientRequest* client_request;
@@ -112,16 +110,54 @@ void ServerNetworkManager::_handle_incoming_message(
         client_request = new ClientRequest(data);
     } catch (std::exception& e) {
         std::cout
-            << "[ServerNetworkManager] message is not a valid ClientRequest: "
-            << e.what() << std::endl;
+            << "[ServerNetworkManager] Message is not a valid ClientRequest.\n"
+               " Error from ClientRequest constructor: "
+            << e.what()
+            << "\nClientRequest was not created and reading the message "
+               "aborted!"
+            << std::endl;
+        return;
+    }
+
+    // Create a player id for this connection if it is a join request
+    // Also add the player to a game
+    if (client_request->get_type() == ClientJoinRequest) {
+        std::cout << "[ServerNetworkManager] Received join request from "
+                  << peer_address.to_string() << std::endl;
+
+        // create a player id string by creating a random hash string
+        std::string new_player_id =
+            std::to_string(std::hash<std::string>{}(std::to_string(rand())));
+
+        _mutex.lock();
+        _player_addresses.emplace(new_player_id, peer_address.to_string());
+        _mutex.unlock();
+
+        std::cout << "[ServerNetworkManager] Created player with ID '"
+                  << new_player_id << "' for '" << peer_address << "'"
+                  << std::endl;
+
+        // create new player object
+        // Player* new_player = new Player(new_player_id);
+
+        // add new player to player manager
+        // PlayerManager::add_or_get_player(new_player_id, new_player);
+
+        // add the player to a game
+        // GameInstanceManager::add_player_to_any_game(new_player);
+
+        return;
     }
 
     // check if this is a message from a player
-    if (_player_addresses.find(client_request->get_player_id()) !=
-        _player_addresses.end()) {
-        // this is a message from a known player
+    std::string player_id = client_request->get_player_id();
 
-        // TODO
+    if (_player_addresses.find(player_id) == _player_addresses.end()) {
+        // This is not a message from a known player
+        std::cout << "[ServerNetworkManager] Error: Player with ID '"
+                  << player_id << "' is not a known player of this game."
+                  << std::endl;
+        return;
     }
 
     // execute client request

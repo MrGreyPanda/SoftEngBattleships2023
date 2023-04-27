@@ -27,6 +27,11 @@ ClientRequest::ClientRequest(const json& data) {
         _type =
             _get_client_request_type_from_message_type_string(message_type);
 
+        // a player join request doesn't need a player_id or game_id
+        if (_type == ClientJoinRequest) {
+            return;
+        }
+
         if (data.contains("game_id") && data["game_id"].is_string()) {
             _game_id = data["game_id"];
 
@@ -42,6 +47,8 @@ ClientRequest::ClientRequest(const json& data) {
         throw std::runtime_error("Invalid message_type");
     }
 }
+
+ClientRequestType ClientRequest::get_type() const { return _type; }
 
 std::string ClientRequest::get_player_id() const { return _player_id; }
 

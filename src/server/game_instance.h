@@ -2,21 +2,20 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
 #include <mutex>
+#include <string>
+#include <vector>
 
-#include "../common/player.h"
-#include "../common/gamestate.h"
+#include "../common/game_state/include/game_state.h"
+#include "../common/game_state/include/player.h"
 
 class GameInstance {
-
-private:
+   private:
     GameState* _game_state;
     bool is_player_allowed_to_play(Player* player);
     inline static std::mutex modification_lock;
 
-public:
+   public:
     GameInstance();
     ~GameInstance() {
         if (_game_state != nullptr) {
@@ -38,4 +37,3 @@ public:
     bool shoot();
     bool player_prepared();
 };
-

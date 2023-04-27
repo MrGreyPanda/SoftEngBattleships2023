@@ -16,6 +16,13 @@ class ClientRequest {
     ClientRequest(const json& data);
 
     /**
+     * @brief Get the type of this ClientRequest
+     *
+     * @return ClientRequestType
+     */
+    ClientRequestType get_type() const;
+
+    /**
      * @brief Get the player_id string from this ClientRequest
      *
      * @return std::string

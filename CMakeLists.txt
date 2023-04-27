@@ -28,6 +28,7 @@ add_executable(Battleships
 add_executable(BattleshipsServer
     # Header files common
     src/common/network/requests/client_request.h
+    src/common/game_state/include/player.h
 
     # Header files from server
     src/server/server_network_manager.h
