@@ -38,7 +38,7 @@ bool Player::is_player_prepared(){
     return is_prepared;
 }
 
-bool Player::place_ship(const std::pair<unsigned short, unsigned short> &coords[][], ShipCategory shiptype){
+bool Player::place_ship(const std::pair<unsigned short, unsigned short> coords[], ShipCategory shiptype){
     
     return own_board.place_ship(coords, shiptype);
 }

@@ -2,6 +2,7 @@
 
 #include <functional>
 
+
 #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_socket.h"
 
@@ -58,7 +59,7 @@ class ServerNetworkManager {
     /**
      * @brief A map of player ids to their addresses
      */
-    static std::unordered_map<std::tring, std::string> _player_addresses;
+    static std::unordered_map<std::string, std::string> _player_addresses;
 
     /**
      * @brief A map of player ids to their sockets

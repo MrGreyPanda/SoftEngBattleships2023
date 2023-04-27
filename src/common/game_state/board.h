@@ -47,8 +47,8 @@ unsigned short get_num_active_ships();
 
 private:
     unsigned short size = 10;
-    ShipCategory grid[size][size];
-    bool is_shot[size][size];
+    ShipCategory grid[10 * 10];
+    bool is_shot[10 * 10];
     std::vector<Ship> ships;
 };
 
@@ -66,23 +66,23 @@ public:
  * @brief Checks if a given placement is valid
  * @param coords The coordinates of the ship to be placed
 */
-bool is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[]);
+bool is_valid_placement(const std::pair<unsigned short, unsigned short> coords[]);
 
 /**
  * @brief Places a ship on the board
  * @param coords The coordinates of the ship to be placed
 */
-bool place_ship(const std::pair<unsigned short, unsigned short> &coords[][]);
+bool place_ship(const std::pair<unsigned short, unsigned short> coords[]);
 
 /**
  * @brief Rotates a ship on the board
  * @param coords The coordinates of the ship to be rotated
 */
-bool rotate_ship(std::pair<unsigned short, unsigned short> &coords[][]);
+bool rotate_ship(std::pair<unsigned short, unsigned short> coords[]);
 
 private:
 
-}
+};
 
 
 /*
@@ -97,9 +97,9 @@ public:
  * @brief Checks if a given shot is valid
  * @param coords The coordinates of the shot to be placed
 */
-bool is_valid_shot(const std::pair<unsigned short, unsigned short> &coords[][]);
+bool is_valid_shot(const std::pair<unsigned short, unsigned short> &coord);
 
 private:
 
 
-}
+};

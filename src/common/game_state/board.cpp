@@ -52,7 +52,7 @@ unsigned short Board::get_num_active_ships(){
 }
 
 
-bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short> coords[], ShipCategory shiptype){
     if(coords.size() != category_to_size(shiptype)) return false;
     for(int i = 0; i < coords.size(); i++){
         unsigned short x = coords[i].first;
@@ -64,7 +64,7 @@ bool OwnBoard::is_valid_placement(const std::pair<unsigned short, unsigned short
     return true;
 }
 
-bool OwnBoard::place_ship(const std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::place_ship(const std::pair<unsigned short, unsigned short> coords[], ShipCategory shiptype){
 
     if(!this.is_valid_placement(coords)) return false;
     
@@ -79,7 +79,7 @@ bool OwnBoard::place_ship(const std::pair<unsigned short, unsigned short> &coord
 
 }
 
-bool OwnBoard::rotate_ship(std::pair<unsigned short, unsigned short> &coords[], ShipCategory shiptype){
+bool OwnBoard::rotate_ship(std::pair<unsigned short, unsigned short> coords[], ShipCategory shiptype){
     if(coords.size() != category_to_size(shiptype)) throw std::exception("Coordinate size doesn't match shiptype!");
     bool is_rotated = false;
     std::pair<unsigned short, unsigned short> new_coords[coords.size()];
