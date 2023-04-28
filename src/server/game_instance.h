@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
 #include <mutex>
+#include <string>
+#include <vector>
 
 #include "../common/game_state/include/player.h"
 #include "../common/game_state/include/game_state.h"
@@ -105,4 +105,3 @@ public:
      */
     bool player_prepared();
 };
-

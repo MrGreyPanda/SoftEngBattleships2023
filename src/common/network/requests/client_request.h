@@ -3,9 +3,24 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+enum ClientRequestType {
+    ClientJoinRequest,
+    ClientReadyRequest,
+    ClientPreparedRequest,
+    ClientShootRequest,
+    ClientGiveUpRequest
+};
+
 class ClientRequest {
    public:
     ClientRequest(const json& data);
+
+    /**
+     * @brief Get the type of this ClientRequest
+     *
+     * @return ClientRequestType
+     */
+    ClientRequestType get_type() const;
 
     /**
      * @brief Get the player_id string from this ClientRequest
@@ -15,12 +30,14 @@ class ClientRequest {
     std::string get_player_id() const;
 
     /**
-     * @brief Check if this ClientRequest has a player_id
+     * @brief Get the game id from this ClientRequest
      *
-     * @return true if this ClientRequest has a player_id, false
-     * otherwise
+     * @return std::string
      */
-    bool has_player_id() const;
+    std::string get_game_id() const;
 
    private:
+    ClientRequestType _type;
+    std::string _game_id;
+    std::string _player_id;
 };
