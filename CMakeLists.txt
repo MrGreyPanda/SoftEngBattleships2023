@@ -40,16 +40,17 @@ add_executable(Battleships
 
 # build server
 add_executable(BattleshipsServer
-    # Header files common
+    # Header files from common
     src/common/network/requests/client_request.h
     src/common/network/responses/server_response.h
     src/common/game_state/include/player.h
+    src/common/helpers/random_id.h
 
     # Header files from server
     src/server/server_network_manager.h
     src/server/game_instance_manager.h
 
-    # Source files common
+    # Source files from common
     src/common/network/requests/client_request.cpp
     src/common/network/responses/server_response.cpp
     src/common/game_state/player.cpp

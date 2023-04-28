@@ -31,19 +31,19 @@ bool GameInstanceManager::get_game_instance(const std::string &game_id,
 bool GameInstanceManager::add_player_to_any_game(
     Player *player, GameInstance *&game_instance_ptr) {
     // check that player is not already subscribed to another game
-    if (player->get_game_id() != "") {
-        if (game_instance_ptr != nullptr &&
-            player->get_game_id() != game_instance_ptr->get_id()) {
-            throw std::runtime_error(
-                "Could not join game with id " + game_instance_ptr->get_id() +
-                ". Player is already active in a different game with id " +
-                player->get_game_id())
-        } else {
-            throw std::runtime_error(
-                "Could not join game. Player is already active in a game");
-        }
-        return false;
+    std::string player_game_id =
+        _find_game_by_player_id(player->get_id()).get_id();
+    if (game_instance_ptr != nullptr &&
+        player_game_id != game_instance_ptr->get_id()) {
+        throw std::runtime_error(
+            "Could not join game with id " + game_instance_ptr->get_id() +
+            ". Player is already active in a different game with id " +
+            player_game_id)
+    } else {
+        throw std::runtime_error(
+            "Could not join game. Player is already active in a game");
     }
+    return false;
 
     if (game_instance_ptr == nullptr) {
         // Join any non-full, non-started game
@@ -103,4 +103,18 @@ bool GameInstanceManager::try_remove_player(player *player,
                                             GameInstance *&game_instance_ptr,
                                             std::string &err) {
     return game_instance_ptr->try_remove_player(player, err);
+}
+
+GameInstance *GameInstanceManager::_find_game_by_player_id(
+    const std::string &player_id) {
+    GameInstance *game_instance_ptr = nullptr;
+    games_lut_lock.lock_shared();
+    for (auto it = games_lut.begin(); it != games_lut.end(); ++it) {
+        if (it->second->has_player(player_id)) {
+            game_instance_ptr = it->second;
+            break;
+        }
+    }
+    games_lut_lock.unlock_shared();
+    return game_instance_ptr;
 }

@@ -5,8 +5,7 @@
 #include <thread>
 
 #include "../common/game_state/include/player.h"
-#include "../common/network/requests/client_request.h"
-#include "../common/network/responses/server_response.h"
+#include "../common/helpers/random_id.h"
 #include "game_instance_manager.h"
 #include "player_manager.h"
 
@@ -63,8 +62,8 @@ void ServerNetworkManager::_start() {
             // the received conncection is valid
             // try and listen to messages from this connection
 
-            // thread to handle incoming messages
-            std::thread listener(_handle_socket, std::move(socket));
+            // create thread to handle incoming messages
+            std::thread listener(_handle_socket, std::ref(socket));
 
             // Detach the thread so it can run in the background
             listener.detach();
@@ -168,8 +167,7 @@ void ServerNetworkManager::_handle_join_request(
               << socket.peer_address().to_string() << std::endl;
 
     // create a player id string by creating a random hash string
-    std::string new_player_id =
-        std::to_string(std::hash<std::string>{}(std::to_string(rand())));
+    std::string new_player_id = create_random_id();
 
     _mutex.lock();
     _player_addresses.emplace(new_player_id,

@@ -9,12 +9,6 @@
 #include "game_instance.h"
 
 class GameInstanceManager {
-   private:
-    inline static std::shared_mutex games_lut_lock;
-    static std::unordered_map<std::string, GameInstance*> games_lut;
-
-    static GameInstance* create_new_game();
-
    public:
     // returns true if the desired GameInstance 'game_id' was found or false
     // otherwise. The found game instance is written into game_instance_ptr.
@@ -37,4 +31,13 @@ class GameInstanceManager {
     static bool try_remove_player(Player* player,
                                   GameInstance*& game_instance_ptr,
                                   std::string& err);
+
+   private:
+    static GameInstance* create_new_game();
+
+    static GameInstance* _find_game_by_player_id(Player* player);
+
+    inline static std::shared_mutex games_lut_lock;
+    static std::unordered_map<std::string, GameInstance*> games_lut;
+
 };
