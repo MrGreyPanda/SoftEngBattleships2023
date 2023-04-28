@@ -73,7 +73,7 @@ class GameInstance {
     /**
      * @brief Removes player from game if possible
      *
-     * @param player Player to be added
+     * @param player Player to be removed
      * @return true if succesful
      * @return false else
      */
@@ -102,7 +102,22 @@ class GameInstance {
      */
     bool player_prepared();
 
+    /**
+     * @brief Checks for a player with the given id
+     * 
+     * @param player_id 
+     * @return true if found    
+     * @return false else
+     */
     bool has_player(std::string player_id);
+
+    /**
+     * @brief Checks if game is ful;
+     * 
+     * @return true 
+     * @return false 
+     */
+    bool is_full();
 
    private:
     GameState* _game_state;

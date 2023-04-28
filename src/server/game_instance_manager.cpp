@@ -103,3 +103,16 @@ GameInstance *GameInstanceManager::_find_game_by_player_id(
     games_lut_lock.unlock_shared();
     return game_instance_ptr;
 }
+
+GameInstance *GameInstanceManager::_find_joinable_game_instance() {
+    GameInstance *game_instance_ptr = nullptr;
+    games_lut_lock.lock_shared();
+    for (auto it = games_lut.begin(); it != games_lut.end(); ++it) {
+        if (!it->second->is_full()) {
+            game_instance_ptr = it->second;
+            break;
+        }
+    }
+    games_lut_lock.unlock_shared();
+    return game_instance_ptr;
+}

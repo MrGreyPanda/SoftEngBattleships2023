@@ -2,7 +2,7 @@
 
 #include "game_instance.h"
 
-GameInstance::GameInstance() : _game_state(new GameState()) {}
+GameInstance::GameInstance() : _game_state(new GameState()), _players() {}
 
 GameState *GameInstance::get_game_state() { return _game_state; }
 
@@ -24,13 +24,35 @@ bool GameInstance::start_game() {
 }
 
 bool GameInstance::remove_player(Player *player) {
-    // TODO
-    throw std::runtime_error("Not implemented");
+    _lock.lock();
+    if(_players[0] == player){
+        _players[0] = nullptr;
+        delete player;
+        _lock.unlock();
+        return true;
+    } else if(_players[1] == player){
+        _players[1] = nullptr;
+        delete player;
+        _lock.unlock();
+        return true;
+    } 
+    _lock.unlock();
+    return false;
 }
 
 bool GameInstance::add_player(Player *new_player) {
-    // TODO
-    throw std::runtime_error("Not implemented");
+    _lock.lock();
+    if(_players[0] == nullptr){
+        _players[0] = new_player;
+        _lock.unlock();
+        return true;
+    } else if(_players[1] == nullptr){
+        _players[1] = new_player;
+        _lock.unlock();
+        return true;
+    } 
+    _lock.unlock();
+    return false;
 }
 
 bool GameInstance::shoot() {
@@ -44,3 +66,13 @@ bool GameInstance::player_prepared() {
 }
 
 bool GameInstance::has_player(std::string player_id) {}
+
+bool GameInstance::is_full() { 
+    _lock.lock();
+    if(_players[0] == nullptr || _players[1] == nullptr){
+        _lock.unlock();
+        return false;
+    }
+    _lock.unlock();
+    return true;
+}
