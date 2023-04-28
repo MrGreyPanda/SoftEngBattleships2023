@@ -39,28 +39,51 @@ class ServerNetworkManager {
      * @brief Handle the messages of a new thread
      *
      * @param socket The socket to handle
-     * @param message_handler The message handler function to use
      */
-    static void _handle_socket(sockpp::tcp_socket socket);
+    static void _handle_socket(sockpp::tcp_socket& socket);
 
     /**
      * @brief Handles an incoming message from a client
      *
      * @param message The message to handle
+     * @param socket The socket the message came from
      */
-    static void _handle_incoming_message(
-        const std::string& message,
-        const sockpp::tcp_acceptor::addr_t peer_address);
+    static void _handle_incoming_message(const std::string& message,
+                                         sockpp::tcp_socket& socket);
 
     /**
-     * @brief Sends a message to a player
+     * @brief Sends a response to a client socket
      *
-     * @param message
-     * @param player_id
+     * @param response The response to send
+     * @param socket The socket to send the response to
      */
-    static void _send_message_to_player(const std::string& message,
-                                        const std::string& player_id);
+    static void _send_response(const ServerResponse& response,
+                               sockpp::tcp_socket& socket);
 
+    /**
+     * @brief Handle a join request
+     *
+     * @param request The client request object pointer
+     * @param socket The socket the request came from
+     */
+    static void _handle_join_request(const ClientRequest* request,
+                                     sockpp::tcp_socket& socket);
+
+    static void _handle_ready_request(const ClientRequest* request,
+                                      sockpp::tcp_socket& socket);
+
+    static void _handle_prepared_request(const ClientRequest* request,
+                                         sockpp::tcp_socket& socket);
+
+    static void _handle_shoot_request(const ClientRequest* request,
+                                      sockpp::tcp_socket& socket);
+
+    static void _handle_give_up_request(const ClientRequest* request,
+                                        sockpp::tcp_socket& socket);
+
+    /**
+     * @brief The mutex to lock when accessing the acceptor
+     */
     static std::shared_mutex _mutex;
 
     /**

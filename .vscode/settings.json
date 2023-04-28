@@ -68,8 +68,20 @@
         "stop_token": "cpp",
         "streambuf": "cpp",
         "system_error": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "bit": "cpp",
+        "optional": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "variant": "cpp",
+        "__bit_reference": "cpp",
+        "__node_handle": "cpp",
+        "__threading_support": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "regex": "cpp"
     },
     "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 79, IndentPPDirectives: BeforeHash, AlignAfterOpenBracket: true, AlignConsecutiveAssignments: true, AlignConsecutiveMacros : true}",
+    "vue.features.codeActions.enable": false,
 
 }

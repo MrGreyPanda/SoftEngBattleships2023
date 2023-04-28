@@ -28,17 +28,22 @@ add_executable(Battleships
 add_executable(BattleshipsServer
     # Header files common
     src/common/network/requests/client_request.h
+    src/common/network/responses/server_response.h
     src/common/game_state/include/player.h
 
     # Header files from server
     src/server/server_network_manager.h
+    src/server/game_instance_manager.h
 
     # Source files common
     src/common/network/requests/client_request.cpp
+    src/common/network/responses/server_response.cpp
+    src/common/game_state/player.cpp
 
     # Source files from server
     src/server/main.cpp
     src/server/server_network_manager.cpp
+    src/server/game_instance_manager.cpp
 )
 
 

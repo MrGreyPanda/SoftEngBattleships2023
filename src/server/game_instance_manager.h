@@ -19,12 +19,11 @@ class GameInstanceManager {
     // returns true if the desired GameInstance 'game_id' was found or false
     // otherwise. The found game instance is written into game_instance_ptr.
     static bool get_game_instance(const std::string& game_id,
-                                  GameInstance* game_instance_ptr = nullptr);
+                                  GameInstance*& game_instance_ptr);
 
     // Try to add 'player' to any game. Returns true if 'player' is
     // successfully added to a GameInstance. The joined GameInstance will be
     // written into 'game_instance_ptr'.
-    static bool add_player_to_any_game(Player* player);
     static bool add_player_to_any_game(Player* player,
                                        GameInstance*& game_instance_ptr);
 

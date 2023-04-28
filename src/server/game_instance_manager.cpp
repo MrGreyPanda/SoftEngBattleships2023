@@ -6,7 +6,7 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-unordered_map<std::string, GameInstance *> GameInstanceManager::games_lut = {};
+std::unordered_map<std::string, GameInstance *> GameInstanceManager::games_lut;
 
 GameInstance *GameInstanceManager::create_new_game() {
     GameInstance *new_game = new GameInstance();
@@ -28,11 +28,8 @@ bool GameInstanceManager::get_game_instance(const std::string &game_id,
     return game_instance_ptr != nullptr;
 }
 
-bool GameInstanceManager::add_player_to_any_game(Player *player) {
-    return add_player_to_any_game(player, (GameInstance *)nullptr);
-}
 bool GameInstanceManager::add_player_to_any_game(
-    Player *player, GameInstance *game_instance_ptr) {
+    Player *player, GameInstance *&game_instance_ptr) {
     // check that player is not already subscribed to another game
     if (player->get_game_id() != "") {
         if (game_instance_ptr != nullptr &&
