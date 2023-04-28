@@ -23,21 +23,20 @@ class GameInstanceManager {
 
     // Try to add 'player' to the provided 'game_instance_ptr'. Returns true if
     // success and false otherwise.
-    static bool add_player(Player* player, GameInstance*& game_instance_ptr,
-                           std::string& err);
+    static bool try_add_player(Player* player,
+                               GameInstance*& game_instance_ptr);
 
-    static bool try_remove_player(Player* player, const std::string& game_id,
-                                  std::string& err);
+    static bool try_remove_player(Player* player, const std::string& game_id);
     static bool try_remove_player(Player* player,
-                                  GameInstance*& game_instance_ptr,
-                                  std::string& err);
+                                  GameInstance*& game_instance_ptr);
 
    private:
     static GameInstance* create_new_game();
 
-    static GameInstance* _find_game_by_player_id(Player* player);
+    static GameInstance* _find_game_by_player_id(const std::string& player_id);
+
+    static GameInstance* _find_joinable_game_instance();
 
     inline static std::shared_mutex games_lut_lock;
     static std::unordered_map<std::string, GameInstance*> games_lut;
-
 };

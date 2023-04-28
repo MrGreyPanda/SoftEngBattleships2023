@@ -15,24 +15,6 @@ add_subdirectory("dependencies/sockpp")
 add_subdirectory("dependencies/json")
 # don't include google tests as it is not needed to build
 
-# build common
-add_executable(BattleshipsCommon
-    src/common/main.cpp
-
-    #Header files
-    src/common/game_state/include/ship.h
-    src/common/game_state/include/board.h
-    src/common/game_state/include/player.h
-    src/common/game_state/include/game_state.h
-
-    #Source files
-    src/common/game_state/ship.cpp
-    src/common/game_state/board.cpp
-    src/common/game_state/player.cpp
-    src/common/game_state/game_state.cpp
-
-)
-
 # build client
 add_executable(Battleships
     src/client/main.cpp
@@ -43,22 +25,33 @@ add_executable(BattleshipsServer
     # Header files from common
     src/common/network/requests/client_request.h
     src/common/network/responses/server_response.h
+    src/common/helpers/helper_functions.h
+    src/common/game_state/include/ship.h
+    src/common/game_state/include/board.h
     src/common/game_state/include/player.h
-    src/common/helpers/random_id.h
+    src/common/game_state/include/game_state.h
 
     # Header files from server
     src/server/server_network_manager.h
     src/server/game_instance_manager.h
+    src/server/game_instance.h
+    src/server/player_manager.h
 
     # Source files from common
     src/common/network/requests/client_request.cpp
     src/common/network/responses/server_response.cpp
+    src/common/helpers/helper_functions.cpp
+    src/common/game_state/ship.cpp
+    src/common/game_state/board.cpp
     src/common/game_state/player.cpp
+    src/common/game_state/game_state.cpp
 
     # Source files from server
     src/server/main.cpp
     src/server/server_network_manager.cpp
     src/server/game_instance_manager.cpp
+    src/server/game_instance.cpp
+    src/server/player_manager.cpp
 )
 
 

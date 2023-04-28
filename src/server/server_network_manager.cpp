@@ -5,7 +5,7 @@
 #include <thread>
 
 #include "../common/game_state/include/player.h"
-#include "../common/helpers/random_id.h"
+#include "../common/helpers/helper_functions.h"
 #include "game_instance_manager.h"
 #include "player_manager.h"
 
@@ -167,7 +167,7 @@ void ServerNetworkManager::_handle_join_request(
               << socket.peer_address().to_string() << std::endl;
 
     // create a player id string by creating a random hash string
-    std::string new_player_id = create_random_id();
+    std::string new_player_id = HelperFunctions::create_random_id();
 
     _mutex.lock();
     _player_addresses.emplace(new_player_id,
@@ -201,6 +201,15 @@ void ServerNetworkManager::_handle_join_request(
     _send_response(response, socket);
 }
 
+void ServerNetworkManager::_handle_ready_request(
+    const ClientRequest* client_request, sockpp::tcp_socket& socket) {
+    assert(client_request->get_type() ==
+           ClientRequestType::ClientReadyRequest);
+
+    std::cout << "[ServerNetworkManager] (Debug) Received ready request from "
+              << socket.peer_address().to_string() << std::endl;
+}
+
 void ServerNetworkManager::_handle_prepared_request(
     const ClientRequest* client_request, sockpp::tcp_socket& socket) {
     assert(client_request->get_type() ==
@@ -209,4 +218,14 @@ void ServerNetworkManager::_handle_prepared_request(
     std::cout
         << "[ServerNetworkManager] (Debug) Received perpared request from "
         << socket.peer_address().to_string() << std::endl;
+}
+
+void ServerNetworkManager::_handle_shoot_request(
+    const ClientRequest* client_request, sockpp::tcp_socket& socket) {
+    throw std::runtime_error("Not implemented yet");
+}
+
+void ServerNetworkManager::_handle_give_up_request(
+    const ClientRequest* client_request, sockpp::tcp_socket& socket) {
+    throw std::runtime_error("Not implemented yet");
 }

@@ -1,6 +1,6 @@
 #include "include/game_state.h"
 
-#include "../helpers/random_id.h"
+#include "../helpers/helper_functions.h"
 
 // class GameState {
 // public:
@@ -15,10 +15,10 @@
 // };
 
 GameState::GameState()
-    : id(create_random_id()),
+    : id(HelperFunctions::create_random_id()),
       phase(Lobby),
       turn_player_index(0),
-      players(std::vector<Player>(0)) {}
+      players({}) {}
 
 GameState::GameState(std::string id, std::vector<Player> players)
     : id(id), phase(Lobby), turn_player_index(0), players(players) {
