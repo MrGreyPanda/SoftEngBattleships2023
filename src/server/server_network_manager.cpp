@@ -1,13 +1,17 @@
 
-#include "include/server_network_manager.h"
+#include "server_network_manager.h"
 
+#include <nlohmann/json.hpp>
 #include <thread>
 
-// #include "../common/network/default.conf"
-// #include "request_handler.h"
+#include "../common/network/requests/client_request.h"
 
-// Declare the static acceptor variable to allocate it as a static variable
+using json = nlohmann::json;
+
+// Declare the static variables to allocate them
 sockpp::tcp_acceptor ServerNetworkManager::_acceptor;
+std::unordered_map<std::string, std::string>
+    ServerNetworkManager::_player_addresses;
 
 ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
@@ -27,10 +31,14 @@ ServerNetworkManager::ServerNetworkManager(unsigned port) {
 
 void ServerNetworkManager::broadcast(const std::string& message) {
     // TODO
+
+    throw std::runtime_error("Not implemented");
 }
 
 void ServerNetworkManager::player_left(const std::string& player_id) {
     // TODO
+
+    throw std::runtime_error("Not implemented");
 }
 
 void ServerNetworkManager::_start() {
@@ -50,7 +58,12 @@ void ServerNetworkManager::_start() {
             // the received conncection is valid
             // try and listen to messages from this connection
 
-            // TODO maybe add to addres to socket map like lama does
+            // create a player id string by hasing the player address
+            std::string new_player_id = std::to_string(
+                std::hash<std::string>{}(peer_address.to_string()));
+
+            _player_addresses.emplace(new_player_id,
+                                      socket.peer_address().to_string());
 
             // thread to handle incoming messages
             std::thread listener(_handle_socket, std::move(socket));
@@ -63,14 +76,60 @@ void ServerNetworkManager::_start() {
 
 void ServerNetworkManager::_handle_socket(sockpp::tcp_socket socket) {
     //  handle incoming messages
+    ssize_t msg_length;
+    char msg_buffer[512];
+
+    while ((msg_length = socket.read(msg_buffer, sizeof(msg_buffer))) > 0) {
+        try {
+            std::string message(msg_buffer, msg_length);
+            _handle_incoming_message(message, socket.peer_address());
+        } catch (std::exception& err) {
+            std::cerr
+                << "[ServerNetworkManager] Error handling socket message: "
+                << err.what() << std::endl;
+        }
+    }
+
+    std::cout << "[ServerNetworkManager] Closing connection to "
+              << socket.peer_address() << std::endl;
+    socket.shutdown();
 }
 
 void ServerNetworkManager::_handle_incoming_message(
-    const std::string& message) {
-    // TODO
+    const std::string& message,
+    const sockpp::tcp_socket::addr_t peer_address) {
+    // try to parse the message as JSON and create a client request object
+    json data;
+    ClientRequest* client_request = nullptr;
+    try {
+        data           = json::parse(message);
+        client_request = new ClientRequest(data);
+    } catch (json::parse_error& e) {
+        std::cout << "[ServerNetworkManager] JSON parse error: " << e.what()
+                  << std::endl;
+    }
+
+    // check if this is a message from a player
+    if (client_request->has_player_id() &&
+        _player_addresses.find(client_request->get_player_id()) !=
+            _player_addresses.end()) {
+        // this is a message from a known player
+
+        // TODO
+    }
+
+    // execute client request
+
+    // formulate a JSON response
+
+    // serialize the JSON response to a string
+
+    // send the response to the client
 }
 
 void ServerNetworkManager::_send_message_to_player(
     const std::string& message, const std::string& player_id) {
     // TODO
+
+    throw std::runtime_error("Not implemented");
 }

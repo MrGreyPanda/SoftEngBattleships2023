@@ -40,6 +40,16 @@ add_executable(Battleships
 
 # build server
 add_executable(BattleshipsServer
+    # Header files common
+    src/common/network/requests/client_request.h
+
+    # Header files from server
+    src/server/server_network_manager.h
+
+    # Source files common
+    src/common/network/requests/client_request.cpp
+
+    # Source files from server
     src/server/main.cpp
     src/server/server_network_manager.cpp
 )
@@ -49,7 +59,6 @@ add_executable(BattleshipsServer
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
 target_include_directories(BattleshipsServer 
     PUBLIC ${SOCKPP_INCLUDE_DIR}
-    src/server/include
 )
 if(WIN32)
     message("Building for Win32")

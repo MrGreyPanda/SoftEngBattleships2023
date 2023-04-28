@@ -30,6 +30,12 @@ After cloning this repo, load the submodules with
 git submodule update --init --recursive
 ```
 
+### Resources
+
+- sockpp TCP example
+  - [TCP Server Example](https://github.com/fpagliughi/sockpp/blob/master/examples/tcp/tcpechosvr.cpp)
+  - [TCP Client Example](https://github.com/fpagliughi/sockpp/blob/master/examples/tcp/tcpecho.cpp)
+
 ## Testing
 
 // TODO
