@@ -7,31 +7,30 @@
 
 
 GameInstance::GameInstance() {
-    _game_state = new GameState();
+    game_state = new GameState();
 }
 
 GameState *GameInstance::get_game_state() {
-    return _game_state;
+    return game_state;
 }
 
 std::string GameInstance::get_id() {
-    return _game_state->get_id();
-}
-
-bool GameInstance::is_player_allowed_to_play(Player *player) {
-    return _game_state->is_allowed_to_play_now(player);
+    return game_state->get_id();
 }
 
 bool GameInstance::has_started() {
-    return _game_state->has_started();
+    Phase phase = game_state->get_phase();
+    return phase == Preparation;
 }
 
 bool GameInstance::has_finished() {
-    return _game_state->has_finished();
+    Phase phase = game_state->get_phase();
+    return phase == End;
 }
 
 bool GameInstance::start_game() {
-
+    Phase phase = Preparation;
+    game_state->set_phase(phase);
 }
 
 bool GameInstance::remove_player(Player *player) {
