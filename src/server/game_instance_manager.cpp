@@ -31,37 +31,36 @@ bool GameInstanceManager::get_game_instance(const std::string &game_id,
 bool GameInstanceManager::add_player_to_any_game(
     Player *player, GameInstance *&game_instance_ptr) {
     // check that player is not already subscribed to another game
-    std::string player_game_id =
-        _find_game_by_player_id(player->get_id())->get_id();
+    if (game_instance_ptr != nullptr) {
+        GameInstance *player_game_ptr =
+            _find_game_by_player_id(player->get_id());
+        std::string player_game_id = player_game_ptr->get_id();
 
-    if (game_instance_ptr != nullptr &&
-        player_game_id != game_instance_ptr->get_id()) {
-        throw std::runtime_error(
-            "Could not join game with id " + game_instance_ptr->get_id() +
-            ". Player is already active in a different game with id " +
-            player_game_id);
+        if (player_game_ptr != nullptr &&
+            player_game_id != game_instance_ptr->get_id()) {
+            throw std::runtime_error(
+                "Could not join game with id " + game_instance_ptr->get_id() +
+                ". Player is already active in a different game with id " +
+                player_game_id);
+        } else {
+            throw std::runtime_error(
+                "Could not join game. Player is already active in a game");
+        }
+        // TODO add a possibility to not throw an error if the player
+        // has already joined the same game maybe?
+        // otherwise this check can be greatly simplified
     } else {
-        throw std::runtime_error(
-            "Could not join game. Player is already active in a game");
+        // Join any non-full, non-started game
+        // make at most 10 attempts of joining a src (due to concurrency,
+        // the game could already be full or started by the time
+        // try_add_player_to_any_game() is invoked) But with only few
+        // concurrent requests it should succeed in the first iteration.
+        game_instance_ptr = _find_joinable_game_instance();
+        if (try_add_player(player, game_instance_ptr)) {
+            return true;
+        }
     }
     return false;
-
-    if (game_instance_ptr == nullptr) {
-        // Join any non-full, non-started game
-        for (int i = 0; i < 10; i++) {
-            // make at most 10 attempts of joining a src (due to concurrency,
-            // the game could already be full or started by the time
-            // try_add_player_to_any_game() is invoked) But with only few
-            // concurrent requests it should succeed in the first iteration.
-            game_instance_ptr = _find_joinable_game_instance();
-            if (try_add_player(player, game_instance_ptr)) {
-                return true;
-            }
-        }
-        return false;
-    } else {
-        return try_add_player(player, game_instance_ptr);
-    }
 }
 
 bool GameInstanceManager::try_add_player(Player *player,
