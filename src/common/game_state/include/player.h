@@ -80,7 +80,7 @@ public:
      * @brief Checks if a given placement is valid, if it is, places the ship
      * @param coords The coordinates of the ship to be placed
     */
-    bool place_ship(const std::pair<unsigned short, unsigned short> coords[]);
+    bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> coords, ShipCategory shiptype);
 
     /**
      * @brief Try to shoot at a given coordinate

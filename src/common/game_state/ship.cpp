@@ -14,12 +14,25 @@ shot_at, void, updates damage and checks is_sunk, then sets the value accordingl
 //     damage = length;
 // }
 
+unsigned short category_to_size(ShipCategory type){
+        switch(type){
+        case Carrier    : return 5; 
+        case Battleship : return 4; 
+        case Cruiser    : return 3; 
+        case Submarine  : return 3; 
+        case Destroyer  : return 2; 
+        default         : return 0;
+    }
+}
+
 // Constructor
 Ship::Ship(ShipCategory name_) : name(name_), is_sunk(false){
     length = category_to_size(name_);
     // if(length == 0) throw std::runtime_error(std::string("Not a valid ShipCategory"));
     damage = length;
 }
+
+Ship::Ship() : name(Destroyer), is_sunk(false), length(2), damage(0){}
 
 Ship::~Ship(){
     // Nothing to do here
