@@ -17,7 +17,7 @@ shot_at, void, updates damage and checks is_sunk, then sets the value accordingl
 // Constructor
 Ship::Ship(ShipCategory name_) : name(name_), is_sunk(false){
     length = category_to_size(name_);
-    if(length == 0) throw std::exception("Not a valid ShipCategory");
+    // if(length == 0) throw std::runtime_error(std::string("Not a valid ShipCategory"));
     damage = length;
 }
 
@@ -27,13 +27,13 @@ Ship::~Ship(){
 
 
 void Ship::shot_at(){
-    if(this.damage <= 0 || this.is_sunk){
-        throw std::exception("This ship is already sunk and therefore can't be shot at. Invalid shot.");
+    if(damage <= 0 || is_sunk){
+        // throw std::exception("This ship is already sunk and therefore can't be shot at. Invalid shot.");
     }
-    --this.damage;
+    --damage;
     if(damage == 0){
-        this.is_sunk = true;
-        std::cout << "Your " << name << " has been sunk!\n";
+        is_sunk = true;
+        // std::cout << "Your " << name << " has been sunk!\n";
     }
 }
 

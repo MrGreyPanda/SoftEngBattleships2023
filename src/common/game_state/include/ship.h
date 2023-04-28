@@ -1,5 +1,5 @@
 #pragma once
-#include <exception>
+#include <stdexcept>
 #include <utility>
 /*
 The class attributes are:
@@ -42,6 +42,7 @@ public:
     /**
      * @brief Construct a new Ship object
      * @param name_ The name of the ship
+     * TODO: Add except/assertion to make it safer
     */
     Ship(ShipCategory name_);
 
@@ -76,6 +77,8 @@ public:
     /**
      * @brief Get the is_sunk of the ship
      * @return The is_sunk of the ship
+     * TODO: Add except/assertion to make it safer
+     * TODO: Add a player message or something like that
     */
     bool get_is_sunk() const { return is_sunk; }
 

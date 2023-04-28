@@ -1,3 +1,6 @@
+#include "include/ship.h"
+#include "include/board.h"
+#include "incluse/player.h"
 #include "include/game_state.h"
 
 // class GameState {
@@ -14,6 +17,17 @@
 // };
 
 GameState::GameState(std::string id, std::vector<Player*> players) : id(id), phase(Lobby), turn_player_index(0), players(players) {
+    ships.push_back(Ship("Destroyer", 2));
+    ships.push_back(Ship("Submarine", 3));
+    ships.push_back(Ship("Cruiser", 3));
+    ships.push_back(Ship("Battleship", 4));
+    ships.push_back(Ship("Carrier", 5));
+}
+
+GameState::GameState(std::string id, std::vector<std::string> player_ids) : id(id), phase(Lobby), turn_player_index(0) {
+    for(auto player_id : player_ids){
+        players.push_back(new Player(player_id));
+    }
     ships.push_back(Ship("Destroyer", 2));
     ships.push_back(Ship("Submarine", 3));
     ships.push_back(Ship("Cruiser", 3));

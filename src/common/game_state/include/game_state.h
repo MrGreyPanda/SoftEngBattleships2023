@@ -31,6 +31,13 @@ public:
     GameState(std::string id, std::vector<Player*> players);
 
     /**
+     * @brief Construct a new Game State object
+     * @param id The id of the game
+     * @param player_ids The ids of the players in the game
+    */
+    GameState(std::string id, std::vector<std::string> player_ids);
+
+    /**
      * @brief Destroy the Game State object
     */
     ~GameState();

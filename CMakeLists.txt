@@ -18,6 +18,19 @@ add_subdirectory("dependencies/json")
 # build common
 add_executable(BattleshipsCommon
     src/common/main.cpp
+
+    #Header files
+    src/common/game_state/include/ship.h
+    src/common/game_state/include/board.h
+    src/common/game_state/include/player.h
+    src/common/game_state/include/game_state.h
+
+    #Source files
+    src/common/game_state/ship.cpp
+    src/common/game_state/board.cpp
+    src/common/game_state/player.cpp
+    src/common/game_state/game_state.cpp
+
 )
 
 # build client
