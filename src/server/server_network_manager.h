@@ -42,7 +42,7 @@ class ServerNetworkManager {
      *
      * @param socket The socket to handle
      */
-    static void _handle_socket(sockpp::tcp_socket& socket);
+    static void _handle_socket(sockpp::tcp_socket socket);
 
     /**
      * @brief Handles an incoming message from a client
@@ -51,7 +51,7 @@ class ServerNetworkManager {
      * @param socket The socket the message came from
      */
     static void _handle_incoming_message(const std::string& message,
-                                         sockpp::tcp_socket& socket);
+                                         sockpp::tcp_socket socket);
 
     /**
      * @brief Sends a response to a client socket
@@ -60,7 +60,7 @@ class ServerNetworkManager {
      * @param socket The socket to send the response to
      */
     static void _send_response(const ServerResponse& response,
-                               sockpp::tcp_socket& socket);
+                               sockpp::tcp_socket socket);
 
     /**
      * @brief Handle a join request
@@ -69,19 +69,19 @@ class ServerNetworkManager {
      * @param socket The socket the request came from
      */
     static void _handle_join_request(const ClientRequest* request,
-                                     sockpp::tcp_socket& socket);
+                                     sockpp::tcp_socket socket);
 
     static void _handle_ready_request(const ClientRequest* request,
-                                      sockpp::tcp_socket& socket);
+                                      sockpp::tcp_socket socket);
 
     static void _handle_prepared_request(const ClientRequest* request,
-                                         sockpp::tcp_socket& socket);
+                                         sockpp::tcp_socket socket);
 
     static void _handle_shoot_request(const ClientRequest* request,
-                                      sockpp::tcp_socket& socket);
+                                      sockpp::tcp_socket socket);
 
     static void _handle_give_up_request(const ClientRequest* request,
-                                        sockpp::tcp_socket& socket);
+                                        sockpp::tcp_socket socket);
 
     /**
      * @brief The mutex to lock when accessing the acceptor
