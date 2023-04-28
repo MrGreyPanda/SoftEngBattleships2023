@@ -6,7 +6,7 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-#include "../common/game_state/player.h""
+#include "../common/game_state/include/player.h"
 
 /**
  * @brief Handles player management during a game instance.
