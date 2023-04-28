@@ -1,5 +1,5 @@
 #pragma once
-#include <exception>
+#include <stdexcept>
 #include <utility>
 /*
 The class attributes are:
@@ -25,23 +25,21 @@ enum ShipCategory{
  * @brief Converts a ShipCategory to the size of the ship
  * @param type The ShipCategory to be converted
 */
-unsigned short category_to_size(ShipCategory type){
-    switch(type){
-        case Carrier    : return 5; 
-        case Battleship : return 4; 
-        case Cruiser    : return 3; 
-        case Submarine  : return 3; 
-        case Destroyer  : return 2; 
-        default         : return 0;
-    }
-}
+unsigned short category_to_size(ShipCategory type);
 
 class Ship {
 public:
+
+    /**
+     * @brief Default constructor
+    */
+   Ship();
+
     // Ship(unsigned int length_, ShipCategory name_);
     /**
      * @brief Construct a new Ship object
      * @param name_ The name of the ship
+     * TODO: Add except/assertion to make it safer
     */
     Ship(ShipCategory name_);
 
@@ -76,6 +74,8 @@ public:
     /**
      * @brief Get the is_sunk of the ship
      * @return The is_sunk of the ship
+     * TODO: Add except/assertion to make it safer
+     * TODO: Add a player message or something like that
     */
     bool get_is_sunk() const { return is_sunk; }
 

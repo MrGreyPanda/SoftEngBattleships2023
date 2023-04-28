@@ -10,6 +10,7 @@ if(WIN32)
     option(SOCKPP_BUILD_STATIC "" ON)
 endif()
 
+
 add_subdirectory("dependencies/sockpp")
 add_subdirectory("dependencies/json")
 # don't include google tests as it is not needed to build
@@ -17,6 +18,19 @@ add_subdirectory("dependencies/json")
 # build common
 add_executable(BattleshipsCommon
     src/common/main.cpp
+
+    #Header files
+    src/common/game_state/include/ship.h
+    src/common/game_state/include/board.h
+    src/common/game_state/include/player.h
+    src/common/game_state/include/game_state.h
+
+    #Source files
+    src/common/game_state/ship.cpp
+    src/common/game_state/board.cpp
+    src/common/game_state/player.cpp
+    src/common/game_state/game_state.cpp
+
 )
 
 # build client
@@ -81,3 +95,5 @@ target_link_libraries(Battleships nlohmann_json)
 
 target_include_directories(BattleshipsServer PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(BattleshipsServer nlohmann_json)
+
+include(CTest)
