@@ -26,15 +26,20 @@ ServerResponse::ServerResponse(const json& data) {
             _request_type                      = ClientRequest::
                 get_client_request_type_from_message_type_string(
                     request_type_str);
+
+            if (data.contains("game_id") && data["game_id"].is_string()) {
+                _game_id = data["game_id"];
+            }
+            if (data.contains("player_id") && data["player_id"].is_string()) {
+                _player_id = data["player_id"];
+            }
+            if (data.contains("error") && data["error"].is_string()) {
+                _error_message = data["error"];
+            }
         } else {
             throw std::runtime_error("Invalid request_type");
         }
 
-        if (data.contains("game_id") && data["game_id"].is_string()) {
-            _game_id = data["game_id"];
-        } else {
-            throw std::runtime_error("Invalid game_id");
-        }
     } else {
         throw std::runtime_error("Invalid message_type");
     }
