@@ -13,6 +13,8 @@ GameInstance *GameInstanceManager::create_new_game() {
     games_lut_lock.lock();  // exclusive
     GameInstanceManager::games_lut.insert({new_game->get_id(), new_game});
     games_lut_lock.unlock();
+    std::cout << "[GameInstanceManager] (Debug) Created new game with ID: "
+              << new_game->get_id() << std::endl;
     return new_game;
 }
 
@@ -56,11 +58,28 @@ bool GameInstanceManager::add_player_to_any_game(
         // try_add_player_to_any_game() is invoked) But with only few
         // concurrent requests it should succeed in the first iteration.
         game_instance_ptr = _find_joinable_game_instance();
+
+        if (game_instance_ptr == nullptr) {
+            // No joinable game found, create a new one
+            std::cout
+                << "[GameInstanceManager] (Debug) No joinable game found, "
+                   "creating a new one"
+                << std::endl;
+            game_instance_ptr = create_new_game();
+        }
+
         if (try_add_player(player, game_instance_ptr)) {
+            std::cout << "[GameInstanceManager] Added player '"
+                      << player->get_id() << "' to game '"
+                      << game_instance_ptr->get_id() << "'" << std::endl;
             return true;
+        } else {
+            std::cout << "[GameInstanceManager] Could not add player '"
+                      << player->get_id() << "' to game '"
+                      << game_instance_ptr->get_id() << "'" << std::endl;
+            return false;
         }
     }
-    return false;
 }
 
 bool GameInstanceManager::try_add_player(Player *player,

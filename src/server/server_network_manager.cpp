@@ -180,14 +180,14 @@ void ServerNetworkManager::_handle_join_request(
 
     // create new player object
     Player* new_player = new Player(new_player_id);
-    // std::cout << "[ServerNetworkManager] (Debug) Created new Player object"
-    //           << std::endl;
+    std::cout << "[ServerNetworkManager] (Debug) Created new Player object"
+              << std::endl;
 
     // add new player to player manager
     PlayerManager::add_or_get_player(new_player_id, new_player);
-    // std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
-    //              "PlayerManager"
-    //           << std::endl;
+    std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
+                 "PlayerManager"
+              << std::endl;
 
     // add the player to a game
     GameInstance* game = nullptr;
