@@ -36,12 +36,19 @@ ServerResponse::ServerResponse(const ServerResponseType type,
                                const std::string& game_id)
     : _type(type), _game_id(game_id) {}
 
+ServerResponse::ServerResponse(const ServerResponseType type,
+                               const std::string& game_id,
+                               const std::string& error_message)
+    : _type(type), _game_id(game_id), _error_message(error_message) {}
+
 std::string ServerResponse::get_game_id() const { return _game_id; }
 
 json ServerResponse::to_json() const {
     json data;
     data["message_type"] = "response";
     data["game_id"]      = _game_id;
+
+    if (!_error_message.empty()) data["error"] = _error_message;
 
     return data;
 }

@@ -163,7 +163,7 @@ void ServerNetworkManager::_handle_join_request(
     const ClientRequest* client_request, sockpp::tcp_socket socket) {
     assert(client_request->get_type() == ClientRequestType::ClientJoinRequest);
 
-    std::cout << "[ServerNetworkManager] (Debug) Received join request from "
+    std::cout << "[ServerNetworkManager] Received join request from "
               << socket.peer_address().to_string() << std::endl;
 
     // create a player id string by creating a random hash string
@@ -180,32 +180,40 @@ void ServerNetworkManager::_handle_join_request(
 
     // create new player object
     Player* new_player = new Player(new_player_id);
-    std::cout << "[ServerNetworkManager] (Debug) Created new Player object"
-              << std::endl;
+    // std::cout << "[ServerNetworkManager] (Debug) Created new Player object"
+    //           << std::endl;
 
     // add new player to player manager
     PlayerManager::add_or_get_player(new_player_id, new_player);
-    std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
-                 "PlayerManager"
-              << std::endl;
+    // std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
+    //              "PlayerManager"
+    //           << std::endl;
 
     // add the player to a game
     GameInstance* game = nullptr;
-    if (!GameInstanceManager::add_player_to_any_game(new_player, game)) {
+    if (GameInstanceManager::add_player_to_any_game(new_player, game)) {
+        std::cout << "[ServerNetworkManager] Added Player to game with ID '"
+                  << game->get_id() << "'" << std::endl;
+
+        // formulate response
+        const ServerResponse response = ServerResponse(
+            ServerResponseType::RequestResponse, game->get_id());
+        // send the serialized response to the client
+        _send_response(response, std::move(socket));
+    } else {
         // Error adding player to a game
-        std::cout << "[ServerNetworkManager] Could not add player to any game!"
+        std::cout << "[ServerNetworkManager] Error: Could not add player to "
+                     "any game!"
                   << std::endl;
         // TODO add more error messages
+
+        // Formulate error response message
+        const ServerResponse error_response =
+            ServerResponse(ServerResponseType::RequestResponse, "",
+                           "Error: Could not add player to any game!");
+        // send the serialized response to the client
+        _send_response(error_response, std::move(socket));
     }
-    std::cout << "[ServerNetworkManager] Added Player to game with ID '"
-              << game->get_id() << "'" << std::endl;
-
-    // formulate response
-    const ServerResponse response =
-        ServerResponse(ServerResponseType::RequestResponse, game->get_id());
-
-    // send the serialized response to the client
-    _send_response(response, std::move(socket));
 }
 
 void ServerNetworkManager::_handle_ready_request(
