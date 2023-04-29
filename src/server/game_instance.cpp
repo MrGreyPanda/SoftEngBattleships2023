@@ -21,36 +21,37 @@ bool GameInstance::has_ended() {
 bool GameInstance::start_game() {
     Phase phase = Preparation;
     _game_state->set_phase(phase);
+    return true;  // TODO, do we need an error check here for set_phase?
 }
 
 bool GameInstance::remove_player(Player *player) {
     _lock.lock();
-    if(_players[0] == player){
+    if (_players[0] == player) {
         _players[0] = nullptr;
         delete player;
         _lock.unlock();
         return true;
-    } else if(_players[1] == player){
+    } else if (_players[1] == player) {
         _players[1] = nullptr;
         delete player;
         _lock.unlock();
         return true;
-    } 
+    }
     _lock.unlock();
     return false;
 }
 
 bool GameInstance::add_player(Player *new_player) {
     _lock.lock();
-    if(_players[0] == nullptr){
+    if (_players[0] == nullptr) {
         _players[0] = new_player;
         _lock.unlock();
         return true;
-    } else if(_players[1] == nullptr){
+    } else if (_players[1] == nullptr) {
         _players[1] = new_player;
         _lock.unlock();
         return true;
-    } 
+    }
     _lock.unlock();
     return false;
 }
@@ -65,11 +66,14 @@ bool GameInstance::player_prepared() {
     throw std::runtime_error("Not implemented");
 }
 
-bool GameInstance::has_player(std::string player_id) {}
+bool GameInstance::has_player(std::string player_id) {
+    // TODO
+    throw std::runtime_error("Not implemented");
+}
 
-bool GameInstance::is_full() { 
+bool GameInstance::is_full() {
     _lock.lock();
-    if(_players[0] == nullptr || _players[1] == nullptr){
+    if (_players[0] == nullptr || _players[1] == nullptr) {
         _lock.unlock();
         return false;
     }
