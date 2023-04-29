@@ -1,7 +1,8 @@
 
 #include "client_request.h"
 
-ClientRequestType _get_client_request_type_from_message_type_string(
+ClientRequestType
+ClientRequest::get_client_request_type_from_message_type_string(
     const std::string message_type) {
     if (message_type == "join") {
         return ClientJoinRequest;
@@ -14,7 +15,7 @@ ClientRequestType _get_client_request_type_from_message_type_string(
     } else if (message_type == "give_up") {
         return ClientGiveUpRequest;
     } else {
-        throw std::runtime_error("Invalid message type");
+        return ClientUnknownRequest;
     }
 }
 
@@ -24,8 +25,7 @@ ClientRequest::ClientRequest(const json& data) {
     // set the message type
     if (data.contains("message_type") && data["message_type"].is_string()) {
         std::string message_type = data["message_type"];
-        _type =
-            _get_client_request_type_from_message_type_string(message_type);
+        _type = get_client_request_type_from_message_type_string(message_type);
 
         // a player join request doesn't need a player_id or game_id
         if (_type == ClientJoinRequest) {

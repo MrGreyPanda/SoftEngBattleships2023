@@ -48,19 +48,12 @@ class ServerNetworkManager {
      * @brief Handles an incoming message from a client
      *
      * @param message The message to handle
-     * @param socket The socket the message came from
-     */
-    static void _handle_incoming_message(const std::string& message,
-                                         sockpp::tcp_socket socket);
-
-    /**
-     * @brief Sends a response to a client socket
+     * @param peer_addres The address of the client
      *
-     * @param response The response to send
-     * @param socket The socket to send the response to
+     * @return The response string to send back to the client
      */
-    static void _send_response(const ServerResponse& response,
-                               sockpp::tcp_socket socket);
+    static std::string _handle_incoming_message(
+        const std::string& message, const sockpp::inet_address& peer_address);
 
     /**
      * @brief Handle a join request
@@ -68,20 +61,25 @@ class ServerNetworkManager {
      * @param request The client request object pointer
      * @param socket The socket the request came from
      */
-    static void _handle_join_request(const ClientRequest* request,
-                                     sockpp::tcp_socket socket);
+    static ServerResponse _handle_join_request(
+        const ClientRequest* request,
+        const sockpp::inet_address& peer_address);
 
-    static void _handle_ready_request(const ClientRequest* request,
-                                      sockpp::tcp_socket socket);
+    static ServerResponse _handle_ready_request(
+        const ClientRequest* request,
+        const sockpp::inet_address& peer_address);
 
-    static void _handle_prepared_request(const ClientRequest* request,
-                                         sockpp::tcp_socket socket);
+    static ServerResponse _handle_prepared_request(
+        const ClientRequest* request,
+        const sockpp::inet_address& peer_address);
 
-    static void _handle_shoot_request(const ClientRequest* request,
-                                      sockpp::tcp_socket socket);
+    static ServerResponse _handle_shoot_request(
+        const ClientRequest* request,
+        const sockpp::inet_address& peer_address);
 
-    static void _handle_give_up_request(const ClientRequest* request,
-                                        sockpp::tcp_socket socket);
+    static ServerResponse _handle_give_up_request(
+        const ClientRequest* request,
+        const sockpp::inet_address& peer_address);
 
     /**
      * @brief The mutex to lock when accessing the acceptor

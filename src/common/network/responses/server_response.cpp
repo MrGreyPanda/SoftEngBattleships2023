@@ -1,6 +1,7 @@
 #include "server_response.h"
 
-ServerResponseType _get_server_request_type_from_message_type_string(
+ServerResponseType
+ServerResponse::get_server_request_type_from_message_type_string(
     std::string message_type_string) {
     if (message_type_string == "response") {
         return ServerResponseType::RequestResponse;
@@ -17,8 +18,17 @@ ServerResponse::ServerResponse(const json& data) {
     // set the message type
     if (data.contains("message_type") && data["message_type"].is_string()) {
         std::string message_type = data["message_type"];
-        _type =
-            _get_server_request_type_from_message_type_string(message_type);
+        _type = get_server_request_type_from_message_type_string(message_type);
+
+        if (data.contains("request_type") &&
+            data["request_type"].is_string()) {
+            const std::string request_type_str = data["request_type"];
+            _request_type                      = ClientRequest::
+                get_client_request_type_from_message_type_string(
+                    request_type_str);
+        } else {
+            throw std::runtime_error("Invalid request_type");
+        }
 
         if (data.contains("game_id") && data["game_id"].is_string()) {
             _game_id = data["game_id"];
@@ -32,23 +42,49 @@ ServerResponse::ServerResponse(const json& data) {
     throw std::runtime_error("Not implemented");
 }
 
-ServerResponse::ServerResponse(const ServerResponseType type,
-                               const std::string& game_id)
-    : _type(type), _game_id(game_id) {}
-
-ServerResponse::ServerResponse(const ServerResponseType type,
-                               const std::string& game_id,
+ServerResponse::ServerResponse(const ServerResponseType& type,
                                const std::string& error_message)
-    : _type(type), _game_id(game_id), _error_message(error_message) {}
+    : _type(type),
+      _request_type(ClientRequestType::ClientUnknownRequest),
+      _error_message(error_message) {}
+
+ServerResponse::ServerResponse(const ServerResponseType& type,
+                               const ClientRequestType& request_type,
+                               const std::string& game_id,
+                               const std::string& player_id)
+    : _type(type),
+      _request_type(request_type),
+      _game_id(game_id),
+      _player_id(player_id) {}
+
+ServerResponse::ServerResponse(const ServerResponseType& type,
+                               const ClientRequestType& request_type,
+                               const std::string& game_id,
+                               const std::string& player_id,
+                               const std::string& error_message)
+    : _type(type),
+      _request_type(request_type),
+      _game_id(game_id),
+      _player_id(player_id),
+      _error_message(error_message) {}
 
 std::string ServerResponse::get_game_id() const { return _game_id; }
+
+std::string ServerResponse::get_player_id() const { return _player_id; }
 
 json ServerResponse::to_json() const {
     json data;
     data["message_type"] = "response";
-    data["game_id"]      = _game_id;
+
+    if (_request_type != ClientUnknownRequest)
+        data["request_type"] = _request_type;
+
+    data["game_id"]   = _game_id;
+    data["player_id"] = _player_id;
 
     if (!_error_message.empty()) data["error"] = _error_message;
 
     return data;
 }
+
+std::string ServerResponse::to_string() const { return to_json().dump(); }

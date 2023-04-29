@@ -4,6 +4,7 @@
 using json = nlohmann::json;
 
 enum ClientRequestType {
+    ClientUnknownRequest,
     ClientJoinRequest,
     ClientReadyRequest,
     ClientPreparedRequest,
@@ -14,6 +15,9 @@ enum ClientRequestType {
 class ClientRequest {
    public:
     ClientRequest(const json& data);
+
+    static ClientRequestType get_client_request_type_from_message_type_string(
+        const std::string message_type);
 
     /**
      * @brief Get the type of this ClientRequest
