@@ -40,6 +40,10 @@ class ClientRequest {
      */
     std::string get_game_id() const;
 
+    json to_json() const;
+
+    std::string to_string() const;
+
     static std::map<std::string, ClientRequestType> client_request_type_map;
 
    private:

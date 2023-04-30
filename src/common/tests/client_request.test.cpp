@@ -3,26 +3,52 @@
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <tuple>
 
 #include "gtest/gtest.h"
 
 using json = nlohmann::json;
 
-TEST(ClientRequestTest, CreateClientJoinRequestFromJSON) {
-    std::ifstream file(
-        "../src/common/network/requests/examples/join_request.json");
-
-    // load json from file
-    json json_data = json::parse(file);
-
-    ClientRequest *client_request_ptr;
+std::tuple<json, ClientRequest *> _parse_client_join_request() {
     try {
-        client_request_ptr = new ClientRequest(json_data);
+        // load json from file
+        std::ifstream file(
+            "../src/common/network/requests/examples/join_request.json");
+
+        json json_data = json::parse(file);
+
+        return {json_data, new ClientRequest(json_data)};
     } catch (const std::exception &e) {
         std::cout << "Error creating client request object: " << e.what()
                   << std::endl;
+        return {json(), nullptr};
+    }
+}
+
+std::tuple<json, ClientRequest *> _parse_client_ready_request() {
+    try {
+        std::ifstream file(
+            "../src/common/network/requests/examples/ready_request.json");
+
+        // load json from file
+        json json_data = json::parse(file);
+
+        return {json_data, new ClientRequest(json_data)};
+    } catch (const std::exception &e) {
+        std::cout << "Error creating client request object: " << e.what()
+                  << std::endl;
+        return {json(), nullptr};
+    }
+}
+
+TEST(ClientRequestTest, CreateClientJoinRequestFromJSON) {
+    auto parsed_info_tuple            = _parse_client_join_request();
+    ClientRequest *client_request_ptr = std::get<1>(parsed_info_tuple);
+
+    if (client_request_ptr == nullptr) {
         FAIL();
     }
+
     EXPECT_EQ(client_request_ptr->get_type(),
               ClientRequestType::ClientJoinRequest);
     EXPECT_EQ(client_request_ptr->get_game_id(), "");
@@ -30,18 +56,11 @@ TEST(ClientRequestTest, CreateClientJoinRequestFromJSON) {
 }
 
 TEST(ClientRequestTest, CreateClientReadyRequestFromJSON) {
-    std::ifstream file(
-        "../src/common/network/requests/examples/ready_request.json");
+    auto parsed_info_tuple            = _parse_client_ready_request();
+    json json_data                    = std::get<0>(parsed_info_tuple);
+    ClientRequest *client_request_ptr = std::get<1>(parsed_info_tuple);
 
-    // load json from file
-    json json_data = json::parse(file);
-
-    ClientRequest *client_request_ptr;
-    try {
-        client_request_ptr = new ClientRequest(json_data);
-    } catch (const std::exception &e) {
-        std::cout << "Error creating client request object: " << e.what()
-                  << std::endl;
+    if (client_request_ptr == nullptr) {
         FAIL();
     }
 
@@ -72,4 +91,28 @@ TEST(ClientRequestTest, GetClientRequestTypeFromMesssageTypeString) {
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "whatever"),
               ClientRequestType::ClientUnknownRequest);
+}
+
+TEST(ClientRequestTest, ClientRequestToJSON) {
+    auto parsed_info_tuple            = _parse_client_ready_request();
+    json json_data                    = std::get<0>(parsed_info_tuple);
+    ClientRequest *client_request_ptr = std::get<1>(parsed_info_tuple);
+
+    if (client_request_ptr == nullptr) {
+        FAIL();
+    }
+
+    EXPECT_EQ(client_request_ptr->to_json(), json_data);
+}
+
+TEST(ClientRequestTest, ClientRequestToString) {
+    auto parsed_info_tuple            = _parse_client_ready_request();
+    json json_data                    = std::get<0>(parsed_info_tuple);
+    ClientRequest *client_request_ptr = std::get<1>(parsed_info_tuple);
+
+    if (client_request_ptr == nullptr) {
+        FAIL();
+    }
+
+    EXPECT_EQ(client_request_ptr->to_string(), json_data.dump());
 }

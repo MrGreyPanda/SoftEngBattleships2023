@@ -53,3 +53,22 @@ ClientRequestType ClientRequest::get_type() const { return _type; }
 std::string ClientRequest::get_player_id() const { return _player_id; }
 
 std::string ClientRequest::get_game_id() const { return _game_id; }
+
+json ClientRequest::to_json() const {
+    json data;
+
+    // get the string representation of the message type
+    for (auto& it : client_request_type_map) {
+        if (it.second == _type) {
+            data["message_type"] = it.first;
+            break;
+        }
+    }
+
+    data["game_id"]   = _game_id;
+    data["player_id"] = _player_id;
+
+    return data;
+}
+
+std::string ClientRequest::to_string() const { return to_json().dump(); }

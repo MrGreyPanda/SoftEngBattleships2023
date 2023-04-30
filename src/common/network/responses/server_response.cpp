@@ -87,10 +87,22 @@ std::string ServerResponse::get_player_id() const { return _player_id; }
 
 json ServerResponse::to_json() const {
     json data;
-    data["message_type"] = "response";
 
-    if (_request_type != ClientUnknownRequest)
-        data["request_type"] = _request_type;
+    // set message type
+    for (auto& it : server_response_type_map) {
+        if (it.second == _type) {
+            data["message_type"] = it.first;
+            break;
+        }
+    }
+
+    // set request type
+    for (auto& it : ClientRequest::client_request_type_map) {
+        if (it.second == _request_type) {
+            data["request_type"] = it.first;
+            break;
+        }
+    }
 
     data["game_id"]   = _game_id;
     data["player_id"] = _player_id;

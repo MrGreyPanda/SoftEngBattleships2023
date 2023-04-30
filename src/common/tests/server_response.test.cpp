@@ -30,3 +30,5 @@ TEST(ServerResponseTest, CreateServerJoinRequestFromJSON) {
     EXPECT_EQ(server_response_ptr->get_game_id(), json_data["game_id"]);
     EXPECT_EQ(server_response_ptr->get_player_id(), json_data["player_id"]);
 }
+
+// TEST(ServerResponse)
