@@ -24,7 +24,7 @@ bool PlayerManager::add_or_get_player(const std::string& player_id, Player *&pla
     rw_lock.lock();    // exclusive
     PlayerManager::players.insert({player_id, player_ptr});
     rw_lock.unlock();
-    return true;
+    return false;
 }
 
 bool PlayerManager::remove_player(const std::string& player_id, Player *&player) {
