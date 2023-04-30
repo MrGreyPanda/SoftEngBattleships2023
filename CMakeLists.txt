@@ -59,14 +59,28 @@ add_executable(BattleshipsServer
 
 add_executable(common_tests 
     # Header files from common
+    src/common/game_state/include/board.h
+    src/common/game_state/include/ship.h
+    src/common/game_state/include/player.h
+    src/common/game_state/include/game_state.h
+    src/common/helpers/helper_functions.h
     src/common/network/requests/client_request.h
     src/common/network/responses/server_response.h
 
     # Source files from common
+    src/common/game_state/board.cpp
+    src/common/game_state/ship.cpp
+    src/common/game_state/player.cpp
+    src/common/game_state/game_state.cpp
+    src/common/helpers/helper_functions.cpp
     src/common/network/requests/client_request.cpp
     src/common/network/responses/server_response.cpp
 
     # test sources
+    #src/common/tests/board.test.cpp
+    #src/common/tests/game_state.test.cpp
+    #src/common/tests/player.test.cpp
+    #src/common/tests/ship.test.cpp
     src/common/tests/client_request.test.cpp
     src/common/tests/server_response.test.cpp
 )

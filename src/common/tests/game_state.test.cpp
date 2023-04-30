@@ -1,7 +1,8 @@
-#include "../../dependencies/googletest/googletest/include/gtest/gtest.h"
 #include "game_state/include/game_state.h"
 
-TEST(GameTest, CreateGameState){
+#include "gtest/gtest.h"
+
+TEST(GameTest, CreateGameState) {
     GameState game("1234");
     EXCEPT_EQ("1234", game.id);
     EXCEPT_EQ(0, game.phase);

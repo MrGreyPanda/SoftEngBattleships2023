@@ -1,8 +1,8 @@
-#include "../../dependencies/googletest/googletest/include/gtest/gtest.h"
 #include "include/ship.h"
 
+#include "gtest/gtest.h"
 
-TEST(ShipTest, CreateShipDestroyer){
+TEST(ShipTest, CreateShipDestroyer) {
     ShipCategory dest = Destroyer;
     Ship destroyer(dest);
     EXCEPT_EQ(0, destroyer.name);
@@ -11,7 +11,7 @@ TEST(ShipTest, CreateShipDestroyer){
     EXCEPT_EQ(2, category_to_size(destroyer.name));
 }
 
-TEST(ShipTest, ShootAtShip){
+TEST(ShipTest, ShootAtShip) {
     ShipCategory sub = Submarine;
     Ship my_ship(sub);
     EXCEPT_EQ(1, sub);
