@@ -1,15 +1,19 @@
 #include "server_response.h"
 
+std::map<std::string, ServerResponseType>
+    ServerResponse::server_response_type_map = {
+        {"response", RequestResponse},
+        {"full_state", FullStateMessage},
+};
+
 ServerResponseType
 ServerResponse::get_server_request_type_from_message_type_string(
     std::string message_type_string) {
-    if (message_type_string == "response") {
-        return ServerResponseType::RequestResponse;
-    } else if (message_type_string == "full_state") {
-        return ServerResponseType::FullStateMessage;
-    } else {
-        throw std::runtime_error("Invalid message type");
+    auto it = server_response_type_map.find(message_type_string);
+    if (it != server_response_type_map.end()) {
+        return it->second;
     }
+    return ServerResponseType::Unknown;
 }
 
 ServerResponse::ServerResponse(const json& data) {
@@ -43,8 +47,6 @@ ServerResponse::ServerResponse(const json& data) {
     } else {
         throw std::runtime_error("Invalid message_type");
     }
-
-    throw std::runtime_error("Not implemented");
 }
 
 ServerResponse::ServerResponse(const ServerResponseType& type,
@@ -72,6 +74,12 @@ ServerResponse::ServerResponse(const ServerResponseType& type,
       _game_id(game_id),
       _player_id(player_id),
       _error_message(error_message) {}
+
+ServerResponseType ServerResponse::get_type() const { return _type; }
+
+ClientRequestType ServerResponse::get_request_type() const {
+    return _request_type;
+}
 
 std::string ServerResponse::get_game_id() const { return _game_id; }
 

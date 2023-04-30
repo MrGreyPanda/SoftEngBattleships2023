@@ -68,6 +68,7 @@ add_executable(common_tests
 
     # test sources
     src/common/tests/client_request.test.cpp
+    src/common/tests/server_response.test.cpp
 )
 
 

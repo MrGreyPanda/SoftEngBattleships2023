@@ -1,22 +1,22 @@
 
 #include "client_request.h"
 
+std::map<std::string, ClientRequestType>
+    ClientRequest::client_request_type_map = {
+        {"join", ClientJoinRequest},
+        {"ready", ClientReadyRequest},
+        {"prepared", ClientPreparedRequest},
+        {"shoot", ClientShootRequest},
+        {"give_up", ClientGiveUpRequest}};
+
 ClientRequestType
 ClientRequest::get_client_request_type_from_message_type_string(
-    const std::string message_type) {
-    if (message_type == "join") {
-        return ClientJoinRequest;
-    } else if (message_type == "ready") {
-        return ClientReadyRequest;
-    } else if (message_type == "prepared") {
-        return ClientPreparedRequest;
-    } else if (message_type == "shoot") {
-        return ClientShootRequest;
-    } else if (message_type == "give_up") {
-        return ClientGiveUpRequest;
-    } else {
-        return ClientUnknownRequest;
+    const std::string message_type_string) {
+    auto it = client_request_type_map.find(message_type_string);
+    if (it != client_request_type_map.end()) {
+        return it->second;
     }
+    return ClientRequestType::ClientUnknownRequest;
 }
 
 ClientRequest::ClientRequest(const json& data) {

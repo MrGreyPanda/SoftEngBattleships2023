@@ -17,7 +17,7 @@ class ClientRequest {
     ClientRequest(const json& data);
 
     static ClientRequestType get_client_request_type_from_message_type_string(
-        const std::string message_type);
+        const std::string message_type_string);
 
     /**
      * @brief Get the type of this ClientRequest
@@ -39,6 +39,8 @@ class ClientRequest {
      * @return std::string
      */
     std::string get_game_id() const;
+
+    static std::map<std::string, ClientRequestType> client_request_type_map;
 
    private:
     ClientRequestType _type;

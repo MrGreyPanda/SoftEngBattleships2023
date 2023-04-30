@@ -5,7 +5,7 @@ using json = nlohmann::json;
 
 #include "../requests/client_request.h"
 
-enum ServerResponseType { RequestResponse, FullStateMessage };
+enum ServerResponseType { Unknown, RequestResponse, FullStateMessage };
 
 class ServerResponse {
    public:
@@ -23,6 +23,10 @@ class ServerResponse {
     static ServerResponseType get_server_request_type_from_message_type_string(
         const std::string message_type_string);
 
+    ServerResponseType get_type() const;
+
+    ClientRequestType get_request_type() const;
+
     std::string get_game_id() const;
 
     std::string get_player_id() const;
@@ -30,6 +34,8 @@ class ServerResponse {
     json to_json() const;
 
     std::string to_string() const;
+
+    static std::map<std::string, ServerResponseType> server_response_type_map;
 
    private:
     ServerResponseType _type;
