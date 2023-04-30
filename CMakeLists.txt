@@ -85,6 +85,43 @@ add_executable(common_tests
     src/common/tests/server_response.test.cpp
 )
 
+add_executable(server_tests
+    # Header files from common
+    src/common/network/requests/client_request.h
+    src/common/network/responses/server_response.h
+    src/common/helpers/helper_functions.h
+    src/common/game_state/include/ship.h
+    src/common/game_state/include/board.h
+    src/common/game_state/include/player.h
+    src/common/game_state/include/game_state.h
+
+    # Header files from server
+    src/server/server_network_manager.h
+    src/server/game_instance_manager.h
+    src/server/game_instance.h
+    src/server/player_manager.h
+
+    # Source files from common
+    src/common/network/requests/client_request.cpp
+    src/common/network/responses/server_response.cpp
+    src/common/helpers/helper_functions.cpp
+    src/common/game_state/ship.cpp
+    src/common/game_state/board.cpp
+    src/common/game_state/player.cpp
+    src/common/game_state/game_state.cpp
+
+    # Source files from server
+    src/server/server_network_manager.cpp
+    src/server/game_instance_manager.cpp
+    src/server/game_instance.cpp
+    src/server/player_manager.cpp
+
+    # Test Sources
+    src/server/tests/player_manager.test.cpp
+    src/server/tests/game_instance.test.cpp
+    src/server/tests/game_instance_manager.test.cpp
+)
+
 
 # Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
@@ -123,7 +160,10 @@ target_link_libraries(BattleshipsServer nlohmann_json)
 
 target_include_directories(common_tests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(common_tests nlohmann_json gtest gtest_main gmock gmock_main)
+target_include_directories(server_tests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
+target_link_libraries(server_tests sockpp nlohmann_json gtest gtest_main gmock gmock_main)
 
 
 include(GoogleTest)
 gtest_discover_tests(common_tests)
+gtest_discover_tests(server_tests)

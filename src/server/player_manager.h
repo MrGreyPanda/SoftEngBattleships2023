@@ -31,6 +31,9 @@ class PlayerManager {
      *
      * @param player_id
      * @param player_ptr
+     * 
+     * @return true if player exists
+     * @return false if player doesn't exist and was added
      */
     static bool add_or_get_player(const std::string& player_id,
                                   Player*& player_ptr);
