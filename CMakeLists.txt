@@ -10,10 +10,13 @@ if(WIN32)
     option(SOCKPP_BUILD_STATIC "" ON)
 endif()
 
+# enable testing
+include(CTest)
+enable_testing()
 
-add_subdirectory("dependencies/sockpp")
-add_subdirectory("dependencies/json")
-# don't include google tests as it is not needed to build
+add_subdirectory(dependencies/sockpp)
+add_subdirectory(dependencies/json)
+add_subdirectory(dependencies/googletest)
 
 # build client
 add_executable(Battleships
@@ -54,6 +57,19 @@ add_executable(BattleshipsServer
     src/server/player_manager.cpp
 )
 
+add_executable(common_tests 
+    # Header files from common
+    src/common/network/requests/client_request.h
+    src/common/network/responses/server_response.h
+
+    # Source files from common
+    src/common/network/requests/client_request.cpp
+    src/common/network/responses/server_response.cpp
+
+    # test sources
+    src/common/tests/client_request.test.cpp
+)
+
 
 # Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
@@ -90,4 +106,9 @@ target_link_libraries(Battleships nlohmann_json)
 target_include_directories(BattleshipsServer PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(BattleshipsServer nlohmann_json)
 
-include(CTest)
+target_include_directories(common_tests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
+target_link_libraries(common_tests nlohmann_json gtest gtest_main gmock gmock_main)
+
+
+include(GoogleTest)
+gtest_discover_tests(common_tests)
