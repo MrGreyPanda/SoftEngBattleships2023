@@ -10,10 +10,12 @@ build:
     - cmake --build build --target BattleshipsTests
   artifacts:
     paths:
-      - build/BattleshipsTests
+      - build/
 
 test:
   stage: test
   script:
-    - ./build/BattleshipsTests
+    - build/BattleshipsTests
+  dependencies:
+    - build
 
