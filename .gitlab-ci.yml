@@ -11,7 +11,7 @@
 # can use versions as well, like gcc:5.2
 # see https://hub.docker.com/_/gcc/
 
-image: gcc
+image: gcc:latest
 
 build:
   stage: build
@@ -21,7 +21,8 @@ build:
     - apt update && apt -y install make cmake autoconf git
     - git submodule update --init --recursive
   script:
-    - mkdir -p build && cd build && cmake .. && cmake --build . --target BattleshipsTests
+    - cmake cmake -B build -S .
+    - cmake --build build --target BattleshipsTests
   artifacts:
     paths:
       - build/BattleshipsTests
