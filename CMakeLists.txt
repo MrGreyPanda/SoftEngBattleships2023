@@ -40,43 +40,6 @@ add_executable(BattleshipsServer ${COMMON_SOURCES} src/server/main.cpp ${SERVER_
 
 add_executable(BattleshipsTests ${COMMON_SOURCES} ${CLIENT_SOURCES} ${SERVER_SOURCES} ${TEST_SOURCES})
 
-add_executable(server_tests
-    # Header files from common
-    src/common/network/requests/client_request.h
-    src/common/network/responses/server_response.h
-    src/common/helpers/helper_functions.h
-    src/common/game_state/include/ship.h
-    src/common/game_state/include/board.h
-    src/common/game_state/include/player.h
-    src/common/game_state/include/game_state.h
-
-    # Header files from server
-    src/server/server_network_manager.h
-    src/server/game_instance_manager.h
-    src/server/game_instance.h
-    src/server/player_manager.h
-
-    # Source files from common
-    src/common/network/requests/client_request.cpp
-    src/common/network/responses/server_response.cpp
-    src/common/helpers/helper_functions.cpp
-    src/common/game_state/ship.cpp
-    src/common/game_state/board.cpp
-    src/common/game_state/player.cpp
-    src/common/game_state/game_state.cpp
-
-    # Source files from server
-    src/server/server_network_manager.cpp
-    src/server/game_instance_manager.cpp
-    src/server/game_instance.cpp
-    src/server/player_manager.cpp
-
-    # Test Sources
-    src/server/tests/player_manager.test.cpp
-    src/server/tests/game_instance.test.cpp
-    src/server/tests/game_instance_manager.test.cpp
-)
-
 
 # Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
