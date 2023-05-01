@@ -19,7 +19,8 @@ build:
 test:
   stage: test
   script:
-    - build/BattleshipsTests
+    - cd build
+    - ./BattleshipsTests --gtest_output="xml:report.xml"
   dependencies:
     - build
   needs: ["build"]
