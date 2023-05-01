@@ -27,7 +27,13 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}",
-                "/usr/local/include"
+                "/usr/include/c++/12",
+                "/usr/include/x86_64-linux-gnu/c++/12",
+                "/usr/include/c++/12/backward",
+                "/usr/lib/gcc/x86_64-linux-gnu/12/include",
+                "/usr/local/include",
+                "/usr/include/x86_64-linux-gnu",
+                "/usr/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

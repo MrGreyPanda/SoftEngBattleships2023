@@ -1,4 +1,4 @@
-#include "../network/requests/client_request.h"
+#include "client_request.h"
 
 #include <fstream>
 #include <iostream>

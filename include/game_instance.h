@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "../common/game_state/include/game_state.h"
-#include "../common/game_state/include/player.h"
+#include "game_state.h"
+#include "player.h"
 
 /**
  * @brief Tool to maintain a game session. This includes keeping track of the
@@ -104,18 +104,18 @@ class GameInstance {
 
     /**
      * @brief Checks for a player with the given id
-     * 
-     * @param player_id 
-     * @return true if found    
+     *
+     * @param player_id
+     * @return true if found
      * @return false else
      */
     bool has_player(std::string player_id);
 
     /**
      * @brief Checks if game is ful;
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     bool is_full();
 

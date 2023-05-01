@@ -1,4 +1,4 @@
-#include "../network/responses/server_response.h"
+#include "server_response.h"
 
 #include <fstream>
 #include <iostream>

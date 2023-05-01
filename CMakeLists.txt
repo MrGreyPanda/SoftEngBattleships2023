@@ -22,16 +22,21 @@ add_subdirectory(dependencies/googletest)
 include_directories(include)
 
 # find source files
-file(GLOB COMMON_SOURCES src/common/*.cpp)
-file(GLOB CLIENT_SOURCES src/client/*.cpp)
+file(GLOB_RECURSE COMMON_SOURCES src/common/*.cpp)
+
+file(GLOB_RECURSE CLIENT_SOURCES src/client/*.cpp)
+list(FILTER CLIENT_SOURCES EXCLUDE REGEX ".*src/client/main\\.cpp$")
+
 file(GLOB SERVER_SOURCES src/server/*.cpp)
-file(GLOB TEST_SOURCES tests/*.cpp)
+list(FILTER SERVER_SOURCES EXCLUDE REGEX ".*src/server/main\\.cpp$")
+
+file(GLOB TEST_SOURCES tests/*.test.cpp)
 
 # build client
-add_executable(Battleships ${COMMON_SOURCES} ${CLIENT_SOURCES})
+add_executable(Battleships ${COMMON_SOURCES} src/client/main.cpp ${CLIENT_SOURCES})
 
 # build server
-add_executable(BattleshipsServer ${COMMON_SOURCES} ${SERVER_SOURCES})
+add_executable(BattleshipsServer ${COMMON_SOURCES} src/server/main.cpp ${SERVER_SOURCES})
 
 add_executable(BattleshipsTests ${COMMON_SOURCES} ${CLIENT_SOURCES} ${SERVER_SOURCES} ${TEST_SOURCES})
 
@@ -39,18 +44,22 @@ add_executable(BattleshipsTests ${COMMON_SOURCES} ${CLIENT_SOURCES} ${SERVER_SOU
 # Build sockpp
 target_include_directories(Battleships PUBLIC ${SOCKPP_INCLUDE_DIR})
 target_include_directories(BattleshipsServer 
+    PUBLIC ${SOCKPP_INCLUDE_DIR})
+target_include_directories(BattleshipsTests 
     PUBLIC ${SOCKPP_INCLUDE_DIR}
+
 )
 if(WIN32)
     message("Building for Win32")
 
     add_dependencies(Battleships sockpp-static)
-    target_link_libraries(Battleships sockpp-static)
-    target_link_libraries(Battleships wsock32 ws2_32)
+    target_link_libraries(Battleships sockpp-static wsock32 ws2_32)
     
     add_dependencies(BattleshipsServer sockpp-static)
-    target_link_libraries(BattleshipsServer sockpp-static)
-    target_link_libraries(BattleshipsServer wsock32 ws2_32)
+    target_link_libraries(BattleshipsServer sockpp-static wsock32 ws2_32)
+
+    add_dependencies(BattleshipsTests sockpp-static)
+    target_link_libraries(BattleshipsTests sockpp-static wsock32 ws2_32)
 else()
     message("Building for Unix")
 
@@ -59,6 +68,7 @@ else()
 
     target_link_libraries(Battleships sockpp Threads::Threads)
     target_link_libraries(BattleshipsServer sockpp Threads::Threads)
+    target_link_libraries(BattleshipsTests sockpp Threads::Threads)
 endif()
 
 # Build json

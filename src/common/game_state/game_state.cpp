@@ -1,6 +1,6 @@
-#include "include/game_state.h"
+#include "game_state.h"
 
-#include "../helpers/helper_functions.h"
+#include "helper_functions.h"
 
 // class GameState {
 // public:

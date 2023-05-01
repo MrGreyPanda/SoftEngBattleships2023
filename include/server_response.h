@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-#include "../requests/client_request.h"
+#include "client_request.h"
 
 enum ServerResponseType { Unknown, RequestResponse, FullStateMessage };
 

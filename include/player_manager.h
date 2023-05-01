@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "../common/game_state/include/player.h"
+#include "player.h"
 
 /**
  * @brief Handles player management during a game instance.
