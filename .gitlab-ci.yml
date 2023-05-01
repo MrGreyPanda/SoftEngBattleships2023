@@ -7,9 +7,10 @@ build:
     - git submodule update --init --recursive
   script:
     - cmake cmake -B build -S .
-    - cmake --build build #--target BattleshipsTests
+    - cmake --build build
   artifacts:
     untracked: true
+    when: on_success
     paths:
       - build/Battleships
       - build/BattleshipsServer
@@ -20,8 +21,13 @@ test:
   stage: test
   script:
     - cd build
-    - ./BattleshipsTests --gtest_output="xml:report.xml"
+    - ./BattleshipsTests --gtest_output="xml:../report.xml"
   dependencies:
     - build
   needs: ["build"]
+  artifacts:
+    untracked: true
+    when: always
+    reports:
+      junit: report.xml
 
