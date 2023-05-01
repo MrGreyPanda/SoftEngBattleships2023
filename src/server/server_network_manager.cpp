@@ -1,12 +1,13 @@
 
+
 #include "server_network_manager.h"
 
 #include <nlohmann/json.hpp>
 #include <thread>
 
-#include "../common/game_state/include/player.h"
-#include "../common/helpers/helper_functions.h"
 #include "game_instance_manager.h"
+#include "helper_functions.h"
+#include "player.h"
 #include "player_manager.h"
 
 using json = nlohmann::json;

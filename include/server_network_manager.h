@@ -4,8 +4,8 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-#include "../common/network/requests/client_request.h"
-#include "../common/network/responses/server_response.h"
+#include "client_request.h"
+#include "server_response.h"
 #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_socket.h"
 
