@@ -22,4 +22,5 @@ test:
     - build/BattleshipsTests
   dependencies:
     - build
+  needs: ["build"]
 
