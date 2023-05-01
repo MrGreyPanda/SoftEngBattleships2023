@@ -18,7 +18,8 @@ build:
   # instead of calling g++ directly you can also use some build toolkit like make
   # install the necessary build tools when needed
   before_script:
-    - apt update && apt -y install make cmake autoconf
+    - apt update && apt -y install make cmake autoconf git
+    - git submodule update --init --recursive
   script:
     - mkdir -p build && cd build && cmake .. && cmake --build . --target BattleshipsTests
   artifacts:
