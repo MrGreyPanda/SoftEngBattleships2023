@@ -7,10 +7,14 @@ build:
     - git submodule update --init --recursive
   script:
     - cmake cmake -B build -S .
-    - cmake --build build --target BattleshipsTests
+    - cmake --build build #--target BattleshipsTests
   artifacts:
+    untracked: true
     paths:
-      - build/
+      - build/Battleships
+      - build/BattleshipsServer
+      - build/BattleshipsTests
+    expire_in: 1 week
 
 test:
   stage: test
