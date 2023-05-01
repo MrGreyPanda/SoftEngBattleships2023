@@ -12,8 +12,7 @@ using json = nlohmann::json;
 std::tuple<json, ClientRequest *> _parse_client_join_request() {
     try {
         // load json from file
-        std::ifstream file(
-            "../src/common/network/requests/examples/join_request.json");
+        std::ifstream file("../json_examples/requests/join_request.json");
 
         json json_data = json::parse(file);
 
@@ -27,8 +26,7 @@ std::tuple<json, ClientRequest *> _parse_client_join_request() {
 
 std::tuple<json, ClientRequest *> _parse_client_ready_request() {
     try {
-        std::ifstream file(
-            "../src/common/network/requests/examples/ready_request.json");
+        std::ifstream file("../json_examples/requests/ready_request.json");
 
         // load json from file
         json json_data = json::parse(file);

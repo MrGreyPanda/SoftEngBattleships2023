@@ -9,8 +9,7 @@
 using json = nlohmann::json;
 
 TEST(ServerResponseTest, CreateServerJoinRequestFromJSON) {
-    std::ifstream file(
-        "../src/common/network/responses/examples/join_response.json");
+    std::ifstream file("../json_examples/responses/join_response.json");
 
     // load json from file
     json json_data = json::parse(file);
