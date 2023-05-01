@@ -8,6 +8,7 @@ TEST(PlayerManagerTest, TryGetPlayerFalse) {
     std::string player_id = "Johan";
     Player *player_ptr = nullptr;
     EXPECT_FALSE(manager->try_get_player(player_id, player_ptr));
+    delete manager;
 }
 
 TEST(PlayerManagerTest, TryGetPlayerTrue) {
@@ -16,6 +17,7 @@ TEST(PlayerManagerTest, TryGetPlayerTrue) {
     Player *player_ptr = nullptr;
     manager->add_or_get_player(player_id, player_ptr);
     EXPECT_TRUE(manager->try_get_player(player_id, player_ptr));
+    delete manager;
 }
 
 TEST(PlayerManagerTest, TryRemovePlayerTrue) {
@@ -24,4 +26,5 @@ TEST(PlayerManagerTest, TryRemovePlayerTrue) {
     Player *player_ptr = nullptr;
     manager->add_or_get_player(player_id, player_ptr);
     EXPECT_TRUE(manager->remove_player(player_id, player_ptr));
+    delete manager;
 }

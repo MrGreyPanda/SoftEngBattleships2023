@@ -44,4 +44,6 @@ class PlayerManager {
      * @param player
      */
     static bool remove_player(const std::string& player_id, Player*& player);
+
+    ~PlayerManager();
 };

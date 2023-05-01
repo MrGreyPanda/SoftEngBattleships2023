@@ -30,6 +30,7 @@ bool PlayerManager::add_or_get_player(const std::string& player_id, Player *&pla
 bool PlayerManager::remove_player(const std::string& player_id, Player *&player) {
     if (try_get_player(player_id, player)) {
         rw_lock.lock();    // exclusive
+        delete player;
         PlayerManager::players.erase(player_id);
         rw_lock.unlock();
         return true;
@@ -37,3 +38,9 @@ bool PlayerManager::remove_player(const std::string& player_id, Player *&player)
     return false;
 }
 
+PlayerManager::~PlayerManager() {
+    for(auto player : players){
+        delete player.second;
+    }
+    players.clear();
+}
