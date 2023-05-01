@@ -64,8 +64,10 @@ TEST(ClientRequestTest, CreateClientReadyRequestFromJSON) {
 
     EXPECT_EQ(client_request_ptr->get_type(),
               ClientRequestType::ClientReadyRequest);
-    EXPECT_EQ(client_request_ptr->get_game_id(), json_data["game_id"]);
-    EXPECT_EQ(client_request_ptr->get_player_id(), json_data["player_id"]);
+    EXPECT_EQ(client_request_ptr->get_game_id(),
+              json_data["game_id"].get<std::string>());
+    EXPECT_EQ(client_request_ptr->get_player_id(),
+              json_data["player_id"].get<std::string>());
 }
 
 TEST(ClientRequestTest, GetClientRequestTypeFromMesssageTypeString) {
@@ -100,7 +102,7 @@ TEST(ClientRequestTest, ClientRequestToJSON) {
         FAIL();
     }
 
-    EXPECT_EQ(client_request_ptr->to_json(), json_data);
+    EXPECT_EQ(client_request_ptr->to_json().dump(), json_data.dump());
 }
 
 TEST(ClientRequestTest, ClientRequestToString) {

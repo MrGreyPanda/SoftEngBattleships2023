@@ -21,24 +21,25 @@ ServerResponse::ServerResponse(const json& data) {
 
     // set the message type
     if (data.contains("message_type") && data["message_type"].is_string()) {
-        std::string message_type = data["message_type"];
+        std::string message_type = data["message_type"].get<std::string>();
         _type = get_server_request_type_from_message_type_string(message_type);
 
         if (data.contains("request_type") &&
             data["request_type"].is_string()) {
-            const std::string request_type_str = data["request_type"];
-            _request_type                      = ClientRequest::
+            const std::string request_type_str =
+                data["request_type"].get<std::string>();
+            _request_type = ClientRequest::
                 get_client_request_type_from_message_type_string(
                     request_type_str);
 
             if (data.contains("game_id") && data["game_id"].is_string()) {
-                _game_id = data["game_id"];
+                _game_id = data["game_id"].get<std::string>();
             }
             if (data.contains("player_id") && data["player_id"].is_string()) {
-                _player_id = data["player_id"];
+                _player_id = data["player_id"].get<std::string>();
             }
             if (data.contains("error") && data["error"].is_string()) {
-                _error_message = data["error"];
+                _error_message = data["error"].get<std::string>();
             }
         } else {
             throw std::runtime_error("Invalid request_type");
