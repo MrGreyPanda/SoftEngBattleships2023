@@ -13,25 +13,25 @@
 using json = nlohmann::json;
 
 // Declare the static variables to allocate them
-std::shared_mutex ServerNetworkManager::_mutex;
-sockpp::tcp_acceptor ServerNetworkManager::_acceptor;
+std::shared_mutex ServerNetworkManager::mutex_;
+sockpp::tcp_acceptor ServerNetworkManager::acceptor_;
 std::unordered_map<std::string, std::string>
-    ServerNetworkManager::_player_addresses;
+    ServerNetworkManager::player_addresses_;
 
 ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
-    _acceptor = sockpp::tcp_acceptor(port);
+    acceptor_ = sockpp::tcp_acceptor(port);
 
-    if (!_acceptor) {
+    if (!acceptor_) {
         std::cerr << "[ServerNetworkManager] Error creating acceptor: "
-                  << _acceptor.last_error_str() << std::endl;
+                  << acceptor_.last_error_str() << std::endl;
         return;
     }
 
     // Start the listener loop
     std::cout << "[ServerNetworkManager] Listening on port " << port
               << std::endl;
-    _start();
+    start_();
 }
 
 void ServerNetworkManager::broadcast(const std::string& message) {
@@ -46,12 +46,12 @@ void ServerNetworkManager::player_left(const std::string& player_id) {
     throw std::runtime_error("Not implemented");
 }
 
-void ServerNetworkManager::_start() {
+void ServerNetworkManager::start_() {
     // Start the listener loop
 
     while (true) {
         sockpp::inet_address peer_address;
-        sockpp::tcp_socket socket = _acceptor.accept(&peer_address);
+        sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
         std::cout << "[ServerNetworkManager] Received connection from "
                   << peer_address.to_string() << std::endl;
 
@@ -64,7 +64,7 @@ void ServerNetworkManager::_start() {
             // try and listen to messages from this connection
 
             // create thread to handle incoming messages
-            std::thread listener(_handle_socket, std::move(socket));
+            std::thread listener(handle_socket_, std::move(socket));
 
             // Detach the thread so it can run in the background
             listener.detach();
@@ -72,7 +72,7 @@ void ServerNetworkManager::_start() {
     }
 }
 
-void ServerNetworkManager::_handle_socket(sockpp::tcp_socket socket) {
+void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     //  handle incoming messages
     ssize_t msg_length;
     char msg_buffer[512];
@@ -82,7 +82,7 @@ void ServerNetworkManager::_handle_socket(sockpp::tcp_socket socket) {
     while ((msg_length = socket.read(msg_buffer, sizeof(msg_buffer))) > 0) {
         try {
             std::string message(msg_buffer, msg_length);
-            response_str = _handle_incoming_message(message, peer_address);
+            response_str = handle_incoming_message_(message, peer_address);
             socket.write(response_str.c_str(), response_str.length());
         } catch (std::exception& err) {
             std::cerr
@@ -95,7 +95,7 @@ void ServerNetworkManager::_handle_socket(sockpp::tcp_socket socket) {
               << socket.peer_address() << std::endl;
 }
 
-std::string ServerNetworkManager::_handle_incoming_message(
+std::string ServerNetworkManager::handle_incoming_message_(
     const std::string& message, const sockpp::inet_address& peer_address) {
     // try to parse the message as JSON and create a client request object
     json data;
@@ -129,13 +129,13 @@ std::string ServerNetworkManager::_handle_incoming_message(
     // Create a player id for this connection if it is a join request
     // Also add the player to a game
     if (client_request->get_type() == ClientRequestType::ClientJoinRequest) {
-        return _handle_join_request(client_request, peer_address).to_string();
+        return handle_join_request_(client_request, peer_address).to_string();
     }
 
     // check if this is a message from a known player
     std::string player_id = client_request->get_player_id();
 
-    if (_player_addresses.find(player_id) == _player_addresses.end()) {
+    if (player_addresses_.find(player_id) == player_addresses_.end()) {
         // This is not a message from a known player
         std::cout << "[ServerNetworkManager] Error: Player with ID '"
                   << player_id << "' is not a known player of this game."
@@ -148,17 +148,17 @@ std::string ServerNetworkManager::_handle_incoming_message(
     }
 
     if (client_request->get_type() == ClientRequestType::ClientReadyRequest) {
-        return _handle_ready_request(client_request, peer_address).to_string();
+        return handle_ready_request_(client_request, peer_address).to_string();
     } else if (client_request->get_type() ==
                ClientRequestType::ClientPreparedRequest) {
-        return _handle_prepared_request(client_request, peer_address)
+        return handle_prepared_request_(client_request, peer_address)
             .to_string();
     } else if (client_request->get_type() ==
                ClientRequestType::ClientShootRequest) {
-        return _handle_shoot_request(client_request, peer_address).to_string();
+        return handle_shoot_request_(client_request, peer_address).to_string();
     } else if (client_request->get_type() ==
                ClientRequestType::ClientGiveUpRequest) {
-        return _handle_give_up_request(client_request, peer_address)
+        return handle_give_up_request_(client_request, peer_address)
             .to_string();
     } else {
         throw std::runtime_error(
@@ -166,7 +166,7 @@ std::string ServerNetworkManager::_handle_incoming_message(
     }
 }
 
-ServerResponse ServerNetworkManager::_handle_join_request(
+ServerResponse ServerNetworkManager::handle_join_request_(
     const ClientRequest* client_request,
     const sockpp::inet_address& peer_address) {
     assert(client_request->get_type() == ClientRequestType::ClientJoinRequest);
@@ -177,9 +177,9 @@ ServerResponse ServerNetworkManager::_handle_join_request(
     // create a player id string by creating a random hash string
     std::string new_player_id = HelperFunctions::create_random_id();
 
-    _mutex.lock();
-    _player_addresses.emplace(new_player_id, peer_address.to_string());
-    _mutex.unlock();
+    mutex_.lock();
+    player_addresses_.emplace(new_player_id, peer_address.to_string());
+    mutex_.unlock();
 
     std::cout << "[ServerNetworkManager] Created player with ID '"
               << new_player_id << "' for '" << peer_address << "'"
@@ -221,7 +221,7 @@ ServerResponse ServerNetworkManager::_handle_join_request(
     }
 }
 
-ServerResponse ServerNetworkManager::_handle_ready_request(
+ServerResponse ServerNetworkManager::handle_ready_request_(
     const ClientRequest* client_request,
     const sockpp::inet_address& peer_address) {
     assert(client_request->get_type() ==
@@ -236,7 +236,7 @@ ServerResponse ServerNetworkManager::_handle_ready_request(
                           client_request->get_player_id());
 }
 
-ServerResponse ServerNetworkManager::_handle_prepared_request(
+ServerResponse ServerNetworkManager::handle_prepared_request_(
     const ClientRequest* client_request,
     const sockpp::inet_address& peer_address) {
     assert(client_request->get_type() ==
@@ -252,13 +252,13 @@ ServerResponse ServerNetworkManager::_handle_prepared_request(
                           client_request->get_player_id());
 }
 
-ServerResponse ServerNetworkManager::_handle_shoot_request(
+ServerResponse ServerNetworkManager::handle_shoot_request_(
     const ClientRequest* client_request,
     const sockpp::inet_address& peer_address) {
     throw std::runtime_error("Not implemented yet");
 }
 
-ServerResponse ServerNetworkManager::_handle_give_up_request(
+ServerResponse ServerNetworkManager::handle_give_up_request_(
     const ClientRequest* client_request,
     const sockpp::inet_address& peer_address) {
     throw std::runtime_error("Not implemented yet");
