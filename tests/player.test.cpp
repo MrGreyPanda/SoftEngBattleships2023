@@ -1,33 +1,28 @@
-// #include "player.h"
+#include "player.h"
 
-// #include "gtest/gtest.h"
+#include "gtest/gtest.h"
 
-// TEST(PlayerTest, CreatePlayer) {
-//     Player player;
-//     EXCEPT_EQ(10, player.own_board.size);
-//     EXCEPT_EQ(10, player.enemy_board.size);
-//     EXCEPT_EQ(5, player.own_board.ships.size());
-//     EXCEPT_EQ(5, player.enemy_board.ships.size());
-//     EXCEPT_EQ(false, player.is_ready);
-//     EXCEPT_EQ(false, player.is_prepared);
-// }
+TEST(PlayerTest, CreatePlayer) {
+    Player player("player1");
+    EXPECT_EQ(10, player.get_own_board().get_size());
+    EXPECT_EQ(10, player.get_enemy_board().get_size());
+    EXPECT_EQ(false, player.get_is_ready());
+    EXPECT_EQ(false, player.get_is_prepared());
+}
 
-// TEST(PlayerTest, CreatePlayerWithSize) {
-//     Player player(5);
-//     EXCEPT_EQ(5, player.own_board.size);
-//     EXCEPT_EQ(5, player.enemy_board.size);
-//     EXCEPT_EQ(5, player.own_board.ships.size());
-//     EXCEPT_EQ(5, player.enemy_board.ships.size());
-//     EXCEPT_EQ(false, player.is_ready);
-//     EXCEPT_EQ(false, player.is_prepared);
-// }
-
-// TEST(PlayerTest, CreatePlayerWithSizeAndShips) {
-//     Player player(5, 3);
-//     EXCEPT_EQ(5, player.own_board.size);
-//     EXCEPT_EQ(5, player.enemy_board.size);
-//     EXCEPT_EQ(3, player.own_board.ships.size());
-//     EXCEPT_EQ(3, player.enemy_board.ships.size());
-//     EXCEPT_EQ(false, player.is_ready);
-//     EXCEPT_EQ(false, player.is_prepared);
-// }
+TEST(PlayerTest, SetterAndGetterFunctionsPlayer){
+    Player player("player1");
+    EXPECT_EQ("player1", player.get_id());
+    player.set_id("player2");
+    EXPECT_EQ("player2", player.get_id());
+    EXPECT_FALSE(player.get_is_ready());
+    player.set_ready();
+    EXPECT_TRUE(player.get_is_ready());
+    EXPECT_FALSE(player.get_is_prepared());
+    player.unset_ready();
+    EXPECT_FALSE(player.get_is_ready());
+    player.set_prepared();
+    EXPECT_TRUE(player.get_is_prepared());
+    player.unset_prepared();
+    EXPECT_FALSE(player.get_is_prepared());
+}

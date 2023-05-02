@@ -8,7 +8,7 @@ class Board {
 public:
 
 // Implement later for customization of the game
-// Board(unsigned short size_, unsigned short n_ships);
+// Board(unsigned short grid_size_, unsigned short n_ships);
 
 /**
  * @brief Construct a new Board object
@@ -17,9 +17,9 @@ Board();
 
 /**
  * @brief Construct a new Board object
- * @param size_ The size of the board
+ * @param grid_size_ The grid_size_ of the board
 */
-Board(unsigned short size_);
+Board(unsigned short grid_size_);
 
 /**
  * @brief Destroy the Board object
@@ -27,28 +27,28 @@ Board(unsigned short size_);
 ~Board();
 
 /**
- * @brief Get the size of the board
- * @return The size of the board
+ * @brief Get the grid_size_ of the board
+ * @return The grid_size_ of the board
 */
 unsigned short get_size();
 
 /**
- * @brief Get the ships that are not sunk on the board
- * @return The ships on the board
+ * @brief Get the ships_ that are not sunk on the board
+ * @return The ships_ on the board
 */
 unsigned short get_num_active_ships();
 
-    int grid[10][10];
-    bool is_shot[10][10];
+    int grid_[10][10];
+    bool is_shot_[10][10];
 private:
-    unsigned short size = 10;
-    std::vector<Ship> ships;
+    unsigned short grid_size_ = 10;
+    std::vector<Ship> ships_;
 };
 
 /*
 The class operations are:
 is_valid_placement: bool, checks if ship placement is valid
-place_ship: bool, calls is_valid_placement, updates corresponding entries in grid and returns TRUE if successful
+place_ship: bool, calls is_valid_placement, updates corresponding entries in grid_ and returns TRUE if successful
 rotate_ship: bool, updates entries to represent a ship rotated by 90 degrees, returns TRUE if succesful
 */
 
@@ -62,14 +62,14 @@ OwnBoard();
 
 /**
  * @brief Construct a new Own Board object
- * @param size_ The size of the board
+ * @param grid_size_ The grid_size_ of the board
 */
-OwnBoard(unsigned int size_);
+OwnBoard(unsigned int grid_size_);
 
 /**
  * @brief Checks if a given placement is valid
  * @param coords The coordinates of the ship to be placed
- * TODO: throw an error if coords.size() != shiptype size
+ * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
 bool is_valid_placement(const std::vector<std::pair<unsigned short, unsigned short>> coords, ShipCategory shiptype);
 
@@ -82,7 +82,7 @@ bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> coo
 /**
  * @brief Rotates a ship on the board
  * @param coords The coordinates of the ship to be rotated
- * TODO: throw an error if coords.size() != shiptype size
+ * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
 bool rotate_ship(std::vector<std::pair<unsigned short, unsigned short>> &coords, ShipCategory shiptype);
 
@@ -93,7 +93,7 @@ private:
 
 /*
 The class operations are:
-is_valid_shot: bool, checks if a given shot is valid. Returns !is_shot.
+is_valid_shot: bool, checks if a given shot is valid. Returns !is_shot_.
 */
 
 class EnemyBoard : public Board {
@@ -106,9 +106,9 @@ EnemyBoard();
 
 /**
  * @brief Construct a new Enemy Board object
- * @param size_ The size of the board
+ * @param grid_size_ The grid_size_ of the board
 */
-EnemyBoard(unsigned int size_);
+EnemyBoard(unsigned int grid_size_);
 
 /**
  * @brief Checks if a given shot is valid

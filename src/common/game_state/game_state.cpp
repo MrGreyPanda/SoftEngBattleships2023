@@ -10,7 +10,7 @@
 //     std::string id;
 //     std::vector<Player*> players;
 //     Phase phase;
-//     std::vector<Ship> ships;
+//     std::vector<Ship> ships_;
 //     unsigned short turn_player_index;
 // };
 
@@ -22,11 +22,11 @@ GameState::GameState()
 
 GameState::GameState(std::string id, std::vector<Player> players)
     : id(id), phase(Lobby), turn_player_index(0), players(players) {
-    ships.push_back(Ship(Destroyer));
-    ships.push_back(Ship(Submarine));
-    ships.push_back(Ship(Cruiser));
-    ships.push_back(Ship(Battleship));
-    ships.push_back(Ship(Carrier));
+    ships_.push_back(Ship(Destroyer));
+    ships_.push_back(Ship(Submarine));
+    ships_.push_back(Ship(Cruiser));
+    ships_.push_back(Ship(Battleship));
+    ships_.push_back(Ship(Carrier));
 }
 
 GameState::GameState(std::string id, std::vector<std::string> player_ids)
@@ -34,11 +34,11 @@ GameState::GameState(std::string id, std::vector<std::string> player_ids)
     for (auto player_id : player_ids) {
         players.push_back(Player(player_id));
     }
-    ships.push_back(Ship(Destroyer));
-    ships.push_back(Ship(Submarine));
-    ships.push_back(Ship(Cruiser));
-    ships.push_back(Ship(Battleship));
-    ships.push_back(Ship(Carrier));
+    ships_.push_back(Ship(Destroyer));
+    ships_.push_back(Ship(Submarine));
+    ships_.push_back(Ship(Cruiser));
+    ships_.push_back(Ship(Battleship));
+    ships_.push_back(Ship(Carrier));
 }
 
 GameState::~GameState() {}
