@@ -31,14 +31,14 @@ class GameState {
      * @param id The id of the game
      * @param players The players in the game
      */
-    GameState(std::string id, std::vector<Player> players);
+    GameState(std::string id, std::vector<Player*> players);
 
     /**
      * @brief Construct a new Game State object
      * @param id The id of the game
      * @param player_ids The ids of the players in the game
      */
-    GameState(std::string id, std::vector<std::string> player_ids);
+    // GameState(std::string id, std::vector<std::string> player_ids);
 
     /**
      * @brief Destroy the Game State object
@@ -63,6 +63,36 @@ class GameState {
     Phase get_phase();
 
     /**
+     * @brief Get players of the game
+     * @return The players of the game
+     */
+    std::vector<Player*> get_players();
+
+    /**
+     * @brief Adds player to the game
+     * 
+     * @return true 
+     * @return false 
+     */
+    bool add_player(Player*);
+
+    /**
+     * @brief Removes player from the game
+     * 
+     * @return true 
+     * @return false 
+     */
+    bool remove_player(Player*);
+
+    /**
+     * @brief Checks if game is full
+     *
+     * @return true
+     * @return false
+     */
+    bool is_full();
+
+    /**
      * @brief get turn player index
      */
     unsigned short get_turn_player_index();
@@ -74,7 +104,7 @@ class GameState {
 
    private:
     std::string id;
-    std::vector<Player> players;
+    std::vector<Player*> players;
     Phase phase;
     std::vector<Ship> ships;
     unsigned short turn_player_index;
