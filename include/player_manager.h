@@ -9,7 +9,7 @@
 #include "player.h"
 
 /**
- * @brief Handles player management during a game instance.
+ * @brief Handles player management in the server. Doesn't exist on the client side!
  */
 class PlayerManager {
    private:

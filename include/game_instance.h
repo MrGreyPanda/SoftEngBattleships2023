@@ -69,7 +69,7 @@ class GameInstance {
      * @return true if succesful
      * @return false else
      */
-    bool add_player(Player* new_player);
+    bool try_add_player(Player* new_player);
     /**
      * @brief Removes player from game if possible
      *
@@ -77,7 +77,7 @@ class GameInstance {
      * @return true if succesful
      * @return false else
      */
-    bool remove_player(Player* player);
+    bool try_remove_player(Player* player);
     /**
      * @brief Attempts to start the game
      *
@@ -111,16 +111,9 @@ class GameInstance {
      */
     bool has_player(std::string player_id);
 
-    /**
-     * @brief Checks if game is ful;
-     *
-     * @return true
-     * @return false
-     */
-    bool is_full();
+    
 
    private:
     GameState* _game_state;
-    Player* _players[2];
     inline static std::mutex _lock;  // TODO why static? Why inline?
 };
