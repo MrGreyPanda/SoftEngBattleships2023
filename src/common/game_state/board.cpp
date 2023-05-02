@@ -42,6 +42,10 @@ unsigned short Board::get_num_active_ships() {
     return num_active_ships;
 }
 
+OwnBoard::OwnBoard() : Board() {}
+
+OwnBoard::OwnBoard(unsigned int size_) : Board(size_) {}
+
 bool OwnBoard::is_valid_placement(
     const std::vector<std::pair<unsigned short, unsigned short>> coords,
     ShipCategory shiptype) {
@@ -76,7 +80,7 @@ bool OwnBoard::place_ship(
 }
 
 bool OwnBoard::rotate_ship(
-    std::vector<std::pair<unsigned short, unsigned short>> coords,
+    std::vector<std::pair<unsigned short, unsigned short>> &coords,
     ShipCategory shiptype) {
     // if(coords.size() != category_to_size(shiptype)) throw
     // std::exception("Coordinate size doesn't match shiptype!");
@@ -87,12 +91,15 @@ bool OwnBoard::rotate_ship(
     new_coords[0] = std::make_pair<unsigned short, unsigned short>(x, y);
     is_rotated    = coords[1].first != x;
 
+    int c_size = coords.size();
     if (is_rotated) {
+        if(c_size + y > this->get_size()) return false;
         for (int i = 1; i < coords.size(); i++) {
             new_coords[i] =
                 std::make_pair<unsigned short, unsigned short>(x, y + i);
         }
     } else {
+        if(c_size + x > this->get_size()) return false;
         for (int i = 1; i < coords.size(); i++) {
             new_coords[i] =
                 std::make_pair<unsigned short, unsigned short>(x + i, y);
@@ -100,6 +107,10 @@ bool OwnBoard::rotate_ship(
     }
     return true;
 }
+
+EnemyBoard::EnemyBoard() : Board() {}
+
+EnemyBoard::EnemyBoard(unsigned int size_) : Board(size_) {}
 
 bool EnemyBoard::is_valid_shot(
     const std::pair<unsigned short, unsigned short> &coord) {

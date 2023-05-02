@@ -1,49 +1,130 @@
-// #include "board.h"
+#include "board.h"
 
-// #include "gtest/gtest.h"
+#include "gtest/gtest.h"
 
-// TEST(BoardTest, CreateBoard) {
-//     Board board;
-//     EXCEPT_EQ(10, board.size());
-//     EXCEPT_EQ(10, board[0].size());
-//     EXCEPT_EQ(10, board[9].size());
-// }
-// gtest TEST(BoardTest, CreateBoardWithSize) {
-//     Board board(5);
-//     EXCEPT_EQ(5, board.size());
-//     EXCEPT_EQ(5, board[0].size());
-//     EXCEPT_EQ(5, board[4].size());
-// }
+TEST(BoardTest, CreateBoard) {
+    Board board;
+    EXPECT_EQ(10, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[9][9]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][5]);
+}
 
-// TEST(BoardTest, CreateStandardBoard) {
-//     Board board;
-//     EXCEPT_EQ(10, board.size());
-//     EXCEPT_EQ(10, board[0].size());
-//     EXCEPT_EQ(10, board[9].size());
-//     EXCEPT_EQ(0, board[0][0]);
-//     EXCEPT_false(board.shots[0][0]);
-// }
+TEST(BoardTest, CreateBoardWithSize) {
+    Board board(5);
+    EXPECT_EQ(5, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[4][4]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][4]);
+}
 
-// TEST(BoardTest, PlacementOfShips) {
-//     OwnBoard board;
-//     std::pair<unsigned short, unsigned short> coords[5];
-//     std::pair<unsigned short, unsigned short> coords2[2];
-//     coords2[0] = std::make_pair(0, 0);
-//     coords2[1] = std::make_pair(0, 1);
-//     EXCEPT_FALSE(board.is_valid_placement(coords2, Destroyer));
-//     coords[0] = std::make_pair(0, 0);
-//     coords[1] = std::make_pair(0, 1);
-//     coords[2] = std::make_pair(0, 2);
-//     coords[3] = std::make_pair(0, 3);
-//     coords[4] = std::make_pair(0, 4);
-//     board.place_ship(coords, Carrier);
-//     EXCEPT_EQ(Carrier, board[0][0]);
-//     EXCEPT_EQ(Carrier, board[0][1]);
-//     EXCEPT_EQ(Carrier, board[0][2]);
-//     EXCEPT_EQ(Carrier, board[0][3]);
-//     EXCEPT_EQ(Carrier, board[0][4]);
-//     EXCEPT_EQ(0, board[0][5]);
-//     EXCEPT_FALSE(board.is_valid_placement(coords2, Destroyer));
-//     coords[0] = std::make_pair(0, 5);
-//     EXCEPT_TRUE(board.is_valid_placement(coords, Carrier));
-// }
+TEST(OwnBoardTest, CreateOwnBoard) {
+    OwnBoard board;
+    EXPECT_EQ(10, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[9][9]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][5]);
+}
+
+TEST(OwnBoardTest, CreateOwnBoardWithSize) {
+    OwnBoard board(5);
+    EXPECT_EQ(5, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[4][4]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][4]);
+}
+
+TEST(OwnBoardTest, PlaceShip){
+    OwnBoard board;
+    std::vector<std::pair<unsigned short, unsigned short>> coords;
+    coords.push_back(std::make_pair(0, 0));
+    coords.push_back(std::make_pair(0, 1));
+    coords.push_back(std::make_pair(0, 2));
+    coords.push_back(std::make_pair(0, 3));
+    coords.push_back(std::make_pair(0, 4));
+    EXPECT_TRUE(board.place_ship(coords, Carrier));
+    EXPECT_EQ(5, board.grid[0][0]);
+    EXPECT_EQ(5, board.grid[0][1]);
+    EXPECT_EQ(5, board.grid[0][2]);
+    EXPECT_EQ(5, board.grid[0][3]);
+    EXPECT_EQ(5, board.grid[0][4]);
+    EXPECT_FALSE(board.place_ship(coords, Carrier));
+    EXPECT_FALSE(board.place_ship(coords, Battleship));
+    EXPECT_FALSE(board.place_ship(coords, Cruiser));
+    EXPECT_FALSE(board.place_ship(coords, Submarine));
+    EXPECT_FALSE(board.place_ship(coords, Destroyer));
+    coords.clear();
+    coords.push_back(std::make_pair(2, 2));
+    coords.push_back(std::make_pair(3, 2));
+    coords.push_back(std::make_pair(4, 2));
+    EXPECT_TRUE(board.place_ship(coords, Submarine));
+    EXPECT_EQ(2, board.grid[2][2]);
+    EXPECT_EQ(2, board.grid[3][2]);
+}
+
+TEST(OwnBoardTest, RotateShip){
+    OwnBoard board;
+    std::vector<std::pair<unsigned short, unsigned short>> coords;
+    coords.push_back(std::make_pair(0, 0));
+    coords.push_back(std::make_pair(0, 1));
+    coords.push_back(std::make_pair(0, 2));
+    coords.push_back(std::make_pair(0, 3));
+    coords.push_back(std::make_pair(0, 4));
+    ShipCategory ship = Carrier;
+    EXPECT_TRUE(board.place_ship(coords, ship));
+    EXPECT_EQ(5, board.grid[0][0]);
+    EXPECT_EQ(5, board.grid[0][1]);
+    
+
+    EXPECT_EQ(5, board.grid[0][4]);
+    board.rotate_ship(coords, ship);
+    EXPECT_EQ(5, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[0][1]);
+    EXPECT_EQ(0, board.grid[0][3]);
+    EXPECT_EQ(5, board.grid[3][0]);
+    EXPECT_EQ(5, board.grid[4][0]);
+    coords.clear();
+    coords.push_back(std::make_pair(2, 2));
+    coords.push_back(std::make_pair(3, 2));
+    coords.push_back(std::make_pair(4, 2));
+    EXPECT_TRUE(board.place_ship(coords, Submarine));
+    EXPECT_EQ(2, board.grid[2][2]);
+    EXPECT_EQ(2, board.grid[3][2]);
+    board.rotate_ship(coords, Submarine);
+    EXPECT_EQ(0, board.grid[3][2]);
+    EXPECT_EQ(2, board.grid[2][3]);
+
+    coords.clear();
+    coords.push_back(std::make_pair(0,0));
+    coords.push_back(std::make_pair(1,0));
+    EXPECT_FALSE(board.place_ship(coords, Destroyer));
+    EXPECT_FALSE(board.rotate_ship(coords, Destroyer));
+}
+
+TEST(EnemyBoardTest, CreateEnemyBoard){
+    EnemyBoard board;
+    EXPECT_EQ(10, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[9][9]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][5]);
+}
+
+TEST(EnemyBoardTest, CreateEnemyBoardWithSize){
+    EnemyBoard board(5);
+    EXPECT_EQ(5, board.get_size());
+    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(0, board.grid[0][0]);
+    EXPECT_EQ(0, board.grid[4][4]);
+    EXPECT_FALSE(board.is_shot[0][0]);
+    EXPECT_FALSE(board.is_shot[4][4]);
+}

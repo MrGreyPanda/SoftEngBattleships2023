@@ -20,6 +20,7 @@ Board();
  * @param size_ The size of the board
 */
 Board(unsigned short size_);
+
 /**
  * @brief Destroy the Board object
 */
@@ -51,8 +52,19 @@ place_ship: bool, calls is_valid_placement, updates corresponding entries in gri
 rotate_ship: bool, updates entries to represent a ship rotated by 90 degrees, returns TRUE if succesful
 */
 
-class OwnBoard : private Board {
+class OwnBoard : public Board {
 public:
+
+/**
+ * @brief Construct a new Own Board object
+*/
+OwnBoard();
+
+/**
+ * @brief Construct a new Own Board object
+ * @param size_ The size of the board
+*/
+OwnBoard(unsigned int size_);
 
 /**
  * @brief Checks if a given placement is valid
@@ -72,7 +84,7 @@ bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> coo
  * @param coords The coordinates of the ship to be rotated
  * TODO: throw an error if coords.size() != shiptype size
 */
-bool rotate_ship(std::vector<std::pair<unsigned short, unsigned short>> coords, ShipCategory shiptype);
+bool rotate_ship(std::vector<std::pair<unsigned short, unsigned short>> &coords, ShipCategory shiptype);
 
 private:
 
@@ -84,8 +96,19 @@ The class operations are:
 is_valid_shot: bool, checks if a given shot is valid. Returns !is_shot.
 */
 
-class EnemyBoard : private Board {
+class EnemyBoard : public Board {
 public:
+
+/**
+ * @brief Construct a new Enemy Board object
+*/
+EnemyBoard();
+
+/**
+ * @brief Construct a new Enemy Board object
+ * @param size_ The size of the board
+*/
+EnemyBoard(unsigned int size_);
 
 /**
  * @brief Checks if a given shot is valid
