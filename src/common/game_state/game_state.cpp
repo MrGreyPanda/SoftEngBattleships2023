@@ -4,10 +4,10 @@
 
 // class GameState {
 // public:
-//     GameState(std::string id);
+//     GameState(std::string id_);
 
 // private:
-//     std::string id;
+//     std::string id_;
 //     std::vector<Player*> players;
 //     Phase phase;
 //     std::vector<Ship> ships_;
@@ -15,13 +15,13 @@
 // };
 
 GameState::GameState()
-    : id(HelperFunctions::create_random_id()),
-      phase(Lobby),
-      turn_player_index(0),
-      players({}) {}
+    : id_(HelperFunctions::create_random_id()),
+      phase_(Lobby),
+      turn_player_index_(0),
+      players_({}) {}
 
-GameState::GameState(std::string id, std::vector<Player> players)
-    : id(id), phase(Lobby), turn_player_index(0), players(players) {
+GameState::GameState(std::string id_, std::vector<Player> players)
+    : id_(id_), phase_(Lobby), turn_player_index_(0), players_(players) {
     ships_.push_back(Ship(Destroyer));
     ships_.push_back(Ship(Submarine));
     ships_.push_back(Ship(Cruiser));
@@ -29,10 +29,10 @@ GameState::GameState(std::string id, std::vector<Player> players)
     ships_.push_back(Ship(Carrier));
 }
 
-GameState::GameState(std::string id, std::vector<std::string> player_ids)
-    : id(id), phase(Lobby), turn_player_index(0) {
+GameState::GameState(std::string id_, std::vector<std::string> player_ids)
+    : id_(id_), phase_(Lobby), turn_player_index_(0) {
     for (auto player_id : player_ids) {
-        players.push_back(Player(player_id));
+        players_.push_back(Player(player_id));
     }
     ships_.push_back(Ship(Destroyer));
     ships_.push_back(Ship(Submarine));
@@ -43,14 +43,18 @@ GameState::GameState(std::string id, std::vector<std::string> player_ids)
 
 GameState::~GameState() {}
 
-std::string GameState::get_id() { return id; }
+std::string GameState::get_id() { return id_; }
 
-void GameState::set_phase(Phase phase) { this->phase = phase; }
+void GameState::set_phase(Phase phase) { this->phase_ = phase; }
 
-Phase GameState::get_phase() { return phase; }
+Phase GameState::get_phase() { return phase_; }
 
-unsigned short GameState::get_turn_player_index() { return turn_player_index; }
+unsigned short GameState::get_turn_player_index() { return turn_player_index_; }
 
 void GameState::change_turn_player_index() {
-    turn_player_index = (turn_player_index + 1) % players.size();
+    turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
+
+std::vector<Player> GameState::get_players() { return players_; }
+
+std::vector<Ship> GameState::get_ships() { return ships_; }

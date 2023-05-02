@@ -6,7 +6,7 @@
 #include "player.h"
 /*
 The class attributes are
-id: string, unique game ID
+id_: string, unique game ID
 players: vector<player*>, representing the players playing the current game
 phase: int, number representing which phase the game is in (0) lobby (not
 started yet), (1) preparation phase, (2) battle phase, (3) game ended. ships_:
@@ -28,17 +28,17 @@ class GameState {
 
     /**
      * @brief Construct a new Game State object
-     * @param id The id of the game
+     * @param id_ The id_ of the game
      * @param players The players in the game
      */
-    GameState(std::string id, std::vector<Player> players);
+    GameState(std::string id_, std::vector<Player> players);
 
     /**
      * @brief Construct a new Game State object
-     * @param id The id of the game
+     * @param id_ The id_ of the game
      * @param player_ids The ids of the players in the game
      */
-    GameState(std::string id, std::vector<std::string> player_ids);
+    GameState(std::string id_, std::vector<std::string> player_ids);
 
     /**
      * @brief Destroy the Game State object
@@ -46,8 +46,8 @@ class GameState {
     ~GameState();
 
     /**
-     * @brief Get the id of the game
-     * @return The id of the game
+     * @brief Get the id_ of the game
+     * @return The id_ of the game
      */
     std::string get_id();
 
@@ -72,10 +72,22 @@ class GameState {
      */
     void change_turn_player_index();
 
+    /**
+     * @brief Get the players in the game
+     * @return The players in the game
+     */
+    std::vector<Player> get_players();
+
+    /**
+     * @brief Get the ships_ in the game
+     * @return The ships_ in the game
+     */
+    std::vector<Ship> get_ships();
+
    private:
-    std::string id;
-    std::vector<Player> players;
-    Phase phase;
+    std::string id_;
+    std::vector<Player> players_;
+    Phase phase_;
     std::vector<Ship> ships_;
-    unsigned short turn_player_index;
+    unsigned short turn_player_index_;
 };

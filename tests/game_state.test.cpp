@@ -1,12 +1,13 @@
-// #include "game_state.h"
+#include "game_state.h"
 
-// #include "gtest/gtest.h"
+#include "gtest/gtest.h"
 
-// TEST(GameTest, CreateGameState) {
-//     GameState game("1234");
-//     EXCEPT_EQ("1234", game.id);
-//     EXCEPT_EQ(0, game.phase);
-//     EXCEPT_EQ(5, game.ships_.size());
-//     EXCEPT_EQ(0, game.turn_player_index);
-//     EXCEPT_EQ(2, game.players.size());
-// }
+TEST(GameTest, CreateGameState) {
+    std::vector<std::string> player_ids = {"player1", "player2"};
+    GameState game("1234", player_ids);
+    EXPECT_EQ("1234", game.get_id());
+    EXPECT_EQ(0, game.get_phase());
+    EXPECT_EQ(5, game.get_ships().size());
+    EXPECT_EQ(0, game.get_turn_player_index());
+    EXPECT_EQ(2, game.get_players().size());
+}
