@@ -32,7 +32,7 @@ test:
   script:
     - cd build
     - ./BattleshipsTests --gtest_output="xml:../report.xml"
-    - gcovr --xml-pretty --exclude-unreachable-branches -e dependencies --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
+    - gcovr --xml-pretty --exclude-unreachable-branches -e dependencies -e include -e tests --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
   dependencies:
     - build
   needs: ["build"]
