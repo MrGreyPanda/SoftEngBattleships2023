@@ -21,6 +21,24 @@ The implementation and unit tests of the game Battleships for the course Softwar
 ### Formatting rules
 
 Filenames, variables, member functions and object names are written in snake_case, Class names are written in CamelCase.
+Private member variables should be named with a trailing underscore.
+
+Example:
+
+```cpp
+// example_class.cpp
+
+class Example {
+    public:
+        void example_function();
+
+        int example_member_1;
+
+    private:
+        int example_member_2_;
+};
+
+```
 
 ### Installing dependencies
 
