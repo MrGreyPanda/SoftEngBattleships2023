@@ -87,7 +87,7 @@ class GameInstanceManager {
     static GameInstance* find_joinable_game_instance();
     
     inline static std::shared_mutex games_lock;
-    static std::unordered_map<std::string, GameInstance*> games;
+    static std::unordered_map<std::string, GameInstance> games;
 
     FRIEND_TEST(GameInstanceManagerTest, TryAddPlayer);
     FRIEND_TEST(GameInstanceManagerTest, FindGameByPlayerId);

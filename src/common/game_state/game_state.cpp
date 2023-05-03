@@ -62,12 +62,11 @@ bool GameState::add_player(Player* player) {
 }
 
 bool GameState::remove_player(Player* player) {
-    if(players.at(0) == player) {
-        players.erase(players.begin());
-        return true;
-    } else if(players.at(1) == player) {
-        players.erase(players.begin()+1);
-        return true;
+    for(auto it = players.begin(); it != players.end(); it++){
+        if(*it == player){
+            players.erase(it);
+            return true;
+        }
     }
     return false;
 }

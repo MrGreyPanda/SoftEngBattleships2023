@@ -6,19 +6,16 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, GameInstance *> GameInstanceManager::games;
+std::unordered_map<std::string, GameInstance> GameInstanceManager::games;
 
 GameInstanceManager::~GameInstanceManager(){
-    for(auto game : games){
-        delete game.second;
-    }
     games.clear();
 }
 
 GameInstance *GameInstanceManager::create_new_game() {
     GameInstance *new_game = new GameInstance();
     games_lock.lock();  // exclusive
-    GameInstanceManager::games.insert({new_game->get_id(), new_game});
+    GameInstanceManager::games.insert({new_game->get_id(), *new_game});
     games_lock.unlock();
     std::cout << "[GameInstanceManager] (Debug) Created new game with ID: "
               << new_game->get_id() << std::endl;
@@ -31,7 +28,7 @@ bool GameInstanceManager::get_game_instance(const std::string &game_id,
     games_lock.lock_shared();
     auto it = GameInstanceManager::games.find(game_id);
     if (it != games.end()) {
-        game_instance_ptr = it->second;
+        game_instance_ptr = &(it->second);
     }
     games_lock.unlock_shared();
     return game_instance_ptr != nullptr;
@@ -120,8 +117,8 @@ GameInstance *GameInstanceManager::find_game_by_player_id(
     GameInstance *game_instance_ptr = nullptr;
     games_lock.lock_shared();
     for (auto it = games.begin(); it != games.end(); ++it) {
-        if (it->second->has_player(player_id)) {
-            game_instance_ptr = it->second;
+        if (it->second.has_player(player_id)) {
+            game_instance_ptr = &(it->second);
             break;
         }
     }
@@ -133,8 +130,8 @@ GameInstance *GameInstanceManager::find_joinable_game_instance() {
     GameInstance *game_instance_ptr = nullptr;
     games_lock.lock_shared();
     for (auto it = games.begin(); it != games.end(); ++it) {
-        if (!it->second->get_game_state()->is_full()) {
-            game_instance_ptr = it->second;
+        if (!it->second.get_game_state()->is_full()) {
+            game_instance_ptr = &(it->second);
             break;
         }
     }
