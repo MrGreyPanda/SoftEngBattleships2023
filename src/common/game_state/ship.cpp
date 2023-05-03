@@ -59,3 +59,11 @@ void Ship::shot_at() {
         // std::cout << "Your " << name_ << " has been sunk!\n";
     }
 }
+
+unsigned short Ship::get_length() const { return length_; }
+
+unsigned short Ship::get_damage() const { return damage_; }
+
+ShipCategory Ship::get_name() const { return name_; }
+
+bool Ship::get_is_sunk() const { return is_sunk_; }

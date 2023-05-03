@@ -57,19 +57,19 @@ public:
      * @brief Get the length_ of the ship
      * @return The length_ of the ship
     */
-    unsigned short get_length() const { return length_; }
+    unsigned short get_length() const;
 
     /**
      * @brief Get the damage_ of the ship
      * @return The damage_ of the ship
     */
-    unsigned short get_damage() const { return damage_; }
+    unsigned short get_damage() const;
 
     /**
      * @brief Get the name_ of the ship
      * @return The name_ of the ship
     */
-    ShipCategory get_name() const { return name_; }
+    ShipCategory get_name() const;
 
     /**
      * @brief Get the is_sunk_ of the ship
@@ -77,7 +77,7 @@ public:
      * TODO: Add except/assertion to make it safer
      * TODO: Add a player message or something like that
     */
-    bool get_is_sunk() const { return is_sunk_; }
+    bool get_is_sunk() const;
 
 private:
 

@@ -1,12 +1,12 @@
 #include "board.h"
 
 Board::Board() : grid_size_(10) {
-    ships_.resize(5);
-    ships_[Carrier]    = Ship(Carrier);
-    ships_[Battleship] = Ship(Battleship);
-    ships_[Cruiser]    = Ship(Cruiser);
-    ships_[Submarine]  = Ship(Submarine);
-    ships_[Destroyer]  = Ship(Destroyer);
+    // ships_.resize(5);
+    ships_ = {Ship(Carrier),
+    Ship(Battleship),
+    Ship(Cruiser),
+    Ship(Submarine),
+    Ship(Destroyer)};
 }
 
 // Board::Board(unsigned short grid_size) : grid_size_(grid_size) {
