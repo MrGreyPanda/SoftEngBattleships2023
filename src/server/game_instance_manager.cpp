@@ -6,13 +6,17 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, GameInstance *> GameInstanceManager::games_lut;
+std::unordered_map<std::string, GameInstance> GameInstanceManager::games;
+
+GameInstanceManager::~GameInstanceManager(){
+    games.clear();
+}
 
 GameInstance *GameInstanceManager::create_new_game() {
     GameInstance *new_game = new GameInstance();
-    games_lut_lock.lock();  // exclusive
-    GameInstanceManager::games_lut.insert({new_game->get_id(), new_game});
-    games_lut_lock.unlock();
+    games_lock.lock();  // exclusive
+    GameInstanceManager::games.insert({new_game->get_id(), *new_game});
+    games_lock.unlock();
     std::cout << "[GameInstanceManager] (Debug) Created new game with ID: "
               << new_game->get_id() << std::endl;
     return new_game;
@@ -21,12 +25,12 @@ GameInstance *GameInstanceManager::create_new_game() {
 bool GameInstanceManager::get_game_instance(const std::string &game_id,
                                             GameInstance *&game_instance_ptr) {
     game_instance_ptr = nullptr;
-    games_lut_lock.lock_shared();
-    auto it = GameInstanceManager::games_lut.find(game_id);
-    if (it != games_lut.end()) {
-        game_instance_ptr = it->second;
+    games_lock.lock_shared();
+    auto it = GameInstanceManager::games.find(game_id);
+    if (it != games.end()) {
+        game_instance_ptr = &(it->second);
     }
-    games_lut_lock.unlock_shared();
+    games_lock.unlock_shared();
     return game_instance_ptr != nullptr;
 }
 
@@ -35,7 +39,7 @@ bool GameInstanceManager::add_player_to_any_game(
     // check that player is not already subscribed to another game
     if (game_instance_ptr != nullptr) {
         GameInstance *player_game_ptr =
-            _find_game_by_player_id(player->get_id());
+            find_game_by_player_id(player->get_id());
         std::string player_game_id = player_game_ptr->get_id();
 
         if (player_game_ptr != nullptr &&
@@ -57,7 +61,7 @@ bool GameInstanceManager::add_player_to_any_game(
         // the game could already be full or started by the time
         // try_add_player_to_any_game() is invoked) But with only few
         // concurrent requests it should succeed in the first iteration.
-        game_instance_ptr = _find_joinable_game_instance();
+        game_instance_ptr = find_joinable_game_instance();
 
         if (game_instance_ptr == nullptr) {
             // No joinable game found, create a new one
@@ -85,7 +89,7 @@ bool GameInstanceManager::add_player_to_any_game(
 bool GameInstanceManager::try_add_player(Player *player,
                                          GameInstance *&game_instance_ptr) {
     if (game_instance_ptr != nullptr) {
-        return game_instance_ptr->add_player(player);
+        return game_instance_ptr->try_add_player(player);
     }
     return false;
 }
@@ -105,32 +109,32 @@ bool GameInstanceManager::try_remove_player(Player *player,
 
 bool GameInstanceManager::try_remove_player(Player *player,
                                             GameInstance *&game_instance_ptr) {
-    return game_instance_ptr->remove_player(player);
+    return game_instance_ptr->try_remove_player(player);
 }
 
-GameInstance *GameInstanceManager::_find_game_by_player_id(
+GameInstance *GameInstanceManager::find_game_by_player_id(
     const std::string &player_id) {
     GameInstance *game_instance_ptr = nullptr;
-    games_lut_lock.lock_shared();
-    for (auto it = games_lut.begin(); it != games_lut.end(); ++it) {
-        if (it->second->has_player(player_id)) {
-            game_instance_ptr = it->second;
+    games_lock.lock_shared();
+    for (auto it = games.begin(); it != games.end(); ++it) {
+        if (it->second.has_player(player_id)) {
+            game_instance_ptr = &(it->second);
             break;
         }
     }
-    games_lut_lock.unlock_shared();
+    games_lock.unlock_shared();
     return game_instance_ptr;
 }
 
-GameInstance *GameInstanceManager::_find_joinable_game_instance() {
+GameInstance *GameInstanceManager::find_joinable_game_instance() {
     GameInstance *game_instance_ptr = nullptr;
-    games_lut_lock.lock_shared();
-    for (auto it = games_lut.begin(); it != games_lut.end(); ++it) {
-        if (!it->second->is_full()) {
-            game_instance_ptr = it->second;
+    games_lock.lock_shared();
+    for (auto it = games.begin(); it != games.end(); ++it) {
+        if (!it->second.get_game_state()->is_full()) {
+            game_instance_ptr = &(it->second);
             break;
         }
     }
-    games_lut_lock.unlock_shared();
+    games_lock.unlock_shared();
     return game_instance_ptr;
 }
