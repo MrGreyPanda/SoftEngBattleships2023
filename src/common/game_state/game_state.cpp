@@ -62,6 +62,9 @@ bool GameState::add_player(Player* player) {
 }
 
 bool GameState::remove_player(Player* player) {
+    if(players_.size() == 0) {
+        return false;
+    }
     for(auto it = players_.begin(); it != players_.end(); it++){
         if(*it == player){
             players_.erase(it);
