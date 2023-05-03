@@ -27,8 +27,8 @@ class GameInstance {
      *
      */
     ~GameInstance() {
-        if (_game_state != nullptr) {
-            delete _game_state;
+        if (game_state_ != nullptr) {
+            delete game_state_;
         }
     }
     /**
@@ -111,9 +111,7 @@ class GameInstance {
      */
     bool has_player(std::string player_id);
 
-    
-
-   private:
-    GameState* _game_state;
-    inline static std::mutex _lock;  // TODO why static? Why inline?
+      private:
+    GameState* game_state_;
+    inline static std::mutex lock_;  // TODO why static? Why inline?
 };
