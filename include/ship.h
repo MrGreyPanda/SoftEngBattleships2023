@@ -14,11 +14,11 @@ shot_at, void, updates damage_ and checks is_sunk_, then sets the value accordin
 // Enumerators to categorize the different ship types
 
 enum ShipCategory{
-    Carrier = 5,        // size = 5
-    Battleship = 4,     // size = 4
-    Cruiser = 3,        // size = 3
-    Submarine = 2,      // size = 3
-    Destroyer = 1       // size = 2
+    Carrier = (unsigned short)5,        // size = 5
+    Battleship = (unsigned short)4,     // size = 4
+    Cruiser = (unsigned short)3,        // size = 3
+    Submarine = (unsigned short)2,      // size = 3
+    Destroyer = (unsigned short)1       // size = 2
 }; 
 
 /**

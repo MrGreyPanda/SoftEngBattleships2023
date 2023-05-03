@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 #include "board.h"
+#include <iostream>
 
 
 /**
@@ -30,7 +31,7 @@ public:
      * @brief Creates a player with a default board size and number of ships
      * @param id The id of the player
     */
-    Player(std::string id);
+    Player(const std::string &id);
 
     ~Player();
 

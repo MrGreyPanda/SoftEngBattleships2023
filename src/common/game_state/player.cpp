@@ -9,12 +9,24 @@
 // enemy_board(EnemyBoard(board_size, n_ships)), is_prepared(false),
 // is_ready(false) {}
 
-Player::Player(std::string id)
-    : id_(id),
-      is_ready_(false),
-      is_prepared_(false),
-      own_board_(OwnBoard()),
-      enemy_board_(EnemyBoard()) {}
+Player::Player(const std::string &id)
+    // : id_(id),
+    //   is_ready_(false),
+    //   is_prepared_(false),
+    //   own_board_(OwnBoard()),
+    //   enemy_board_(EnemyBoard())
+    {
+    this->id_ = id;
+    std::cout << "Player created with id: " << this->id_ << "\n";
+    this->is_ready_ = false;
+    std::cout << "Player is ready: " << this->is_ready_ << "\n";
+    this->is_prepared_ = false;
+    std::cout << "Player is prepared: " << this->is_prepared_ << "\n";
+    this->own_board_ = OwnBoard();
+    std::cout << "Player own board created\n";
+    this->enemy_board_ = EnemyBoard();
+    std::cout << "Player enemy board created\n";
+      }
 
 std::string Player::get_id() { return id_; }
 
@@ -48,6 +60,7 @@ bool Player::shoot(const std::pair<unsigned short, unsigned short> &coord) {
         // return true if hit
         // return false if miss
     }
+    return false;
 }
 
 Player::~Player() {}
