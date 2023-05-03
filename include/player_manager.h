@@ -9,12 +9,13 @@
 #include "player.h"
 
 /**
- * @brief Handles player management in the server. Doesn't exist on the client side!
+ * @brief Handles player management in the server. Doesn't exist on the client
+ * side!
  */
 class PlayerManager {
    private:
-    inline static std::shared_mutex rw_lock;
-    static std::unordered_map<std::string, Player> players;
+    inline static std::shared_mutex rw_lock_;
+    static std::unordered_map<std::string, Player> players_;
 
    public:
     /**
@@ -31,7 +32,7 @@ class PlayerManager {
      *
      * @param player_id
      * @param player_ptr
-     * 
+     *
      * @return true if player exists
      * @return false if player doesn't exist and was added
      */
