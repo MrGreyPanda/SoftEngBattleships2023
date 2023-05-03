@@ -21,12 +21,12 @@ GameState::GameState()
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id(id), phase(Lobby), turn_player_index(0), players(players) {
-    ships.push_back(Ship(Destroyer));
-    ships.push_back(Ship(Submarine));
-    ships.push_back(Ship(Cruiser));
-    ships.push_back(Ship(Battleship));
-    ships.push_back(Ship(Carrier));
+    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players) {
+    ships_.push_back(Ship(Destroyer));
+    ships_.push_back(Ship(Submarine));
+    ships_.push_back(Ship(Cruiser));
+    ships_.push_back(Ship(Battleship));
+    ships_.push_back(Ship(Carrier));
 }
 
 // Not sure if this is needed, will confirm eventually
@@ -51,20 +51,20 @@ void GameState::set_phase(Phase phase) { this->phase_ = phase; }
 
 Phase GameState::get_phase() { return phase_; }
 
-std::vector<Player*> GameState::get_players() {return players;}
+std::vector<Player*> GameState::get_players() {return players_;}
 
 bool GameState::add_player(Player* player) {
     if(!is_full()) {
-        players.push_back(player);
+        players_.push_back(player);
         return true;
     }
     return false;
 }
 
 bool GameState::remove_player(Player* player) {
-    for(auto it = players.begin(); it != players.end(); it++){
+    for(auto it = players_.begin(); it != players_.end(); it++){
         if(*it == player){
-            players.erase(it);
+            players_.erase(it);
             return true;
         }
     }
@@ -72,18 +72,16 @@ bool GameState::remove_player(Player* player) {
 }
 
 bool GameState::is_full() {
-    if(players.size() >= 2) {
+    if(players_.size() >= 2) {
         return true;
     }
     return false;
 }
 
-unsigned short GameState::get_turn_player_index() { return turn_player_index; }
+unsigned short GameState::get_turn_player_index() { return turn_player_index_; }
 
 void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
-
-std::vector<Player> GameState::get_players() { return players_; }
 
 std::vector<Ship> GameState::get_ships() { return ships_; }
