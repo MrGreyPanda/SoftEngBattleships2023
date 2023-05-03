@@ -9,12 +9,12 @@
 #include "player.h"
 
 /**
- * @brief Handles player management in the server. Doesn't exist on the client side!
+ * @brief Handles player management during a game instance.
  */
 class PlayerManager {
    private:
     inline static std::shared_mutex rw_lock;
-    static std::unordered_map<std::string, Player> players;
+    static std::unordered_map<std::string, Player*> players;
 
    public:
     /**

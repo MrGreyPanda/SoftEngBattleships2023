@@ -7,7 +7,6 @@
 #include <unordered_map>
 
 #include "game_instance.h"
-#include "gtest/gtest.h"
 
 /**
  * @brief Manages game instances. Makes hosting multiple game instances possible.
@@ -15,9 +14,6 @@
  */
 class GameInstanceManager {
    public:
-
-    ~GameInstanceManager();
-    
     /**
      * @brief Tries to return a game instance given the game ID
      * 
@@ -77,19 +73,15 @@ class GameInstanceManager {
      * @param player_id 
      * @return GameInstance*, nullptr if no game exists
      */
-    static GameInstance* find_game_by_player_id(const std::string& player_id);
+    static GameInstance* _find_game_by_player_id(const std::string& player_id);
 
     /**
      * @brief Finds a game with less than 2 players
      * 
      * @return GameInstance*, nullptr if no suitable game exists
      */
-    static GameInstance* find_joinable_game_instance();
+    static GameInstance* _find_joinable_game_instance();
     
-    inline static std::shared_mutex games_lock;
-    static std::unordered_map<std::string, GameInstance> games;
-
-    FRIEND_TEST(GameInstanceManagerTest, TryAddPlayer);
-    FRIEND_TEST(GameInstanceManagerTest, FindGameByPlayerId);
-    FRIEND_TEST(GameInstanceManagerTest, FindJoinableGameInstance);
+    inline static std::shared_mutex games_lut_lock;
+    static std::unordered_map<std::string, GameInstance*> games_lut;
 };

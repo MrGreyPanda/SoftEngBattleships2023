@@ -79,7 +79,7 @@ target_include_directories(Battleships PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR}
 target_link_libraries(Battleships nlohmann_json)
 
 target_include_directories(BattleshipsServer PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
-target_link_libraries(BattleshipsServer nlohmann_json gtest gtest_main gmock gmock_main)
+target_link_libraries(BattleshipsServer nlohmann_json)
 
 target_include_directories(BattleshipsTests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(BattleshipsTests nlohmann_json gtest gtest_main gmock gmock_main)
