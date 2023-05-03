@@ -27,10 +27,11 @@ build:
 
 test:
   stage: test
+  before_script:
+    - apt update && apt -y install gcovr
   script:
     - cd build
     - ./BattleshipsTests --gtest_output="xml:../report.xml"
-    - ctest
     - gcovr --xml-pretty --exclude-unreachable-branches -e dependencies --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
   dependencies:
     - build
