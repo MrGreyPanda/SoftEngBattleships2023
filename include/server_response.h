@@ -38,9 +38,9 @@ class ServerResponse {
     static std::map<std::string, ServerResponseType> server_response_type_map;
 
    private:
-    ServerResponseType _type;
-    ClientRequestType _request_type;
-    std::string _game_id;
-    std::string _player_id;
-    std::string _error_message;
+    ServerResponseType type_;
+    ClientRequestType request_type_;
+    std::string game_id_;
+    std::string player_id_;
+    std::string error_message_;
 };

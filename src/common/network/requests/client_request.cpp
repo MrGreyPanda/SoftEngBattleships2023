@@ -25,18 +25,18 @@ ClientRequest::ClientRequest(const json& data) {
     // set the message type
     if (data.contains("message_type") && data["message_type"].is_string()) {
         std::string message_type = data["message_type"].get<std::string>();
-        _type = get_client_request_type_from_message_type_string(message_type);
+        type_ = get_client_request_type_from_message_type_string(message_type);
 
         // a player join request doesn't need a player_id or game_id
-        if (_type == ClientJoinRequest) {
+        if (type_ == ClientJoinRequest) {
             return;
         }
 
         if (data.contains("game_id") && data["game_id"].is_string()) {
-            _game_id = data["game_id"].get<std::string>();
+            game_id_ = data["game_id"].get<std::string>();
 
             if (data.contains("player_id") && data["player_id"].is_string()) {
-                _player_id = data["player_id"].get<std::string>();
+                player_id_ = data["player_id"].get<std::string>();
             } else {
                 throw std::runtime_error("Invalid player_id");
             }
@@ -48,25 +48,25 @@ ClientRequest::ClientRequest(const json& data) {
     }
 }
 
-ClientRequestType ClientRequest::get_type() const { return _type; }
+ClientRequestType ClientRequest::get_type() const { return type_; }
 
-std::string ClientRequest::get_player_id() const { return _player_id; }
+std::string ClientRequest::get_player_id() const { return player_id_; }
 
-std::string ClientRequest::get_game_id() const { return _game_id; }
+std::string ClientRequest::get_game_id() const { return game_id_; }
 
 json ClientRequest::to_json() const {
     json data;
 
     // get the string representation of the message type
     for (auto& it : client_request_type_map) {
-        if (it.second == _type) {
+        if (it.second == type_) {
             data["message_type"] = it.first;
             break;
         }
     }
 
-    data["game_id"]   = _game_id;
-    data["player_id"] = _player_id;
+    data["game_id"]   = game_id_;
+    data["player_id"] = player_id_;
 
     return data;
 }

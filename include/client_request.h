@@ -47,7 +47,7 @@ class ClientRequest {
     static std::map<std::string, ClientRequestType> client_request_type_map;
 
    private:
-    ClientRequestType _type;
-    std::string _game_id;
-    std::string _player_id;
+    ClientRequestType type_;
+    std::string game_id_;
+    std::string player_id_;
 };
