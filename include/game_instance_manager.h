@@ -26,8 +26,7 @@ class GameInstanceManager {
      * @return true if succesful
      * @return false else
      */
-    static bool get_game_instance(const std::string& game_id,
-                                  GameInstance*& game_instance_ptr);
+    static GameInstance* get_game_instance(const std::string& game_id);
 
     /**
      * @brief Tries to add the player to a game, preferably a game where a
@@ -38,8 +37,7 @@ class GameInstanceManager {
      * @return true if succesful
      * @return false else
      */
-    static bool add_player_to_any_game(Player* player,
-                                       GameInstance*& game_instance_ptr);
+    static GameInstance* add_player_to_any_game(Player* playe_ptr);
 
     /**
      * @brief Tries to return a game instance given the game ID
@@ -49,8 +47,7 @@ class GameInstanceManager {
      * @return true if succesful
      * @return false else
      */
-    static bool try_add_player(Player* player,
-                               GameInstance*& game_instance_ptr);
+    static bool try_add_player(Player* player_ptr, GameInstance *&game_instance_ptr);
 
     /**
      * @brief Removes a certain player from a game instance
@@ -60,9 +57,7 @@ class GameInstanceManager {
      * @return true if sucessful
      * @return false else
      */
-    static bool try_remove_player(Player* player, const std::string& game_id);
-    static bool try_remove_player(Player* player,
-                                  GameInstance*& game_instance_ptr);
+    static bool try_remove_player(Player* player_ptr, GameInstance *&game_instance_ptr);
 
    private:
     /**

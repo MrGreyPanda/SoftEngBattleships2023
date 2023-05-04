@@ -191,14 +191,14 @@ ServerResponse ServerNetworkManager::handle_join_request_(
               << std::endl;
 
     // add new player to player manager
-    PlayerManager::add_or_get_player(new_player_id, new_player);
+    PlayerManager::add_or_get_player(new_player_id);
     std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
                  "PlayerManager"
               << std::endl;
 
     // add the player to a game
     GameInstance* game = nullptr;
-    if (GameInstanceManager::add_player_to_any_game(new_player, game)) {
+    if (GameInstanceManager::add_player_to_any_game(new_player)) {
         std::cout << "[ServerNetworkManager] Added Player to game with ID '"
                   << game->get_id() << "'" << std::endl;
 

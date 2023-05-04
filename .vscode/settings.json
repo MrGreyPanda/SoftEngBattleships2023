@@ -94,7 +94,9 @@
         "filesystem": "cpp",
         "codecvt": "cpp",
         "csignal": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "charconv": "cpp",
+        "format": "cpp"
     },
     "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 79, IndentPPDirectives: BeforeHash, AlignAfterOpenBracket: true, AlignConsecutiveAssignments: true, AlignConsecutiveMacros : true}",
     "vue.features.codeActions.enable": false,
