@@ -87,5 +87,7 @@ class GameInstanceManager {
 
     FRIEND_TEST(GameInstanceManagerTest, TryAddPlayer);
     FRIEND_TEST(GameInstanceManagerTest, FindGameByPlayerId);
+    FRIEND_TEST(GameInstanceManagerTest, AddPlayerToAnyGame);
+    FRIEND_TEST(GameInstanceManagerTest, TryRemovePlayer);
     FRIEND_TEST(GameInstanceManagerTest, FindJoinableGameInstance);
 };
