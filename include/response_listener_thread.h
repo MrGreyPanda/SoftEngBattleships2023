@@ -19,12 +19,23 @@ public:
     ~ResponseListenerThread();
 
 protected:
-    virtual ExitCode Entry();
+    /**
+     * @brief  threaded loop which deals with incoming server responses
+     */
+    //virtual ExitCode entry(); //from wxwidgets?
 
 
 private:
-    void outputError(std::string title, std::string message);
+    /**
+     * @brief communicates error to the user
+     * @param title
+     * @param message
+     */
+    void output_error_(std::string title, std::string message);
 
+    /**
+     * @brief a tcp connector on which the listener listens for incoming responses
+     */
     sockpp::tcp_connector* connection_;
 
 

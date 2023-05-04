@@ -11,7 +11,7 @@
 #include "sockpp/tcp_socket.h"
 #include "sockpp/tcp_connector.h"
 
-#include "ResponseListenerThread.h"
+#include "response_listener_thread.h"
 
 
 
@@ -25,17 +25,24 @@ public:
      */
     static void init(const std::string& host, const uint16_t port);
 
-    static void sendRequest(const ClientRequest& request);
+    /**
+     * @brief client sends a request to connected host
+     * @param request the request to be sent
+     */
+    static void send_request(const ClientRequest& request);
 
-    static void parseResponse(const std::string& message);
+    /**
+     * @brief parses a received response from the server for further processing
+     * @param message the string of the message
+     */
+    static void parse_response(const std::string& message);
 
 private:
-
-    static bool connect(const std::string& host, const uint16_t port);
+    static bool connect_(const std::string& host, const uint16_t port);
 
     static sockpp::tcp_connector* connection_;
 
-    static bool connectionSuccess_;
-    static bool failedToConnect_;
+    static bool connection_success_;
+    static bool failed_to_connect_;
 
 };
