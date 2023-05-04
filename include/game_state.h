@@ -2,6 +2,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 #include "player.h"
 /*
@@ -38,7 +39,7 @@ class GameState {
      * @param id_ The id_ of the game
      * @param player_ids The ids of the players in the game
      */
-    // GameState(std::string id, std::vector<std::string> player_ids);
+    GameState(std::string id, std::vector<std::string> player_ids);
 
     /**
      * @brief Destroy the Game State object

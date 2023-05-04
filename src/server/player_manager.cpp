@@ -12,9 +12,10 @@ bool PlayerManager::try_get_player(const std::string& player_id,
     auto it = PlayerManager::players_.find(player_id);
     if (it != players_.end()) {
         player_ptr = &(it->second);
+        return true;
     }
     rw_lock_.unlock_shared();
-    return player_ptr;
+    return false;
 }
 
 bool PlayerManager::add_or_get_player(const std::string& player_id,
