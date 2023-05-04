@@ -13,7 +13,7 @@ TEST(GameInstanceManagerTest, TryAddPlayer) {
     game_manager->try_add_player(player2, game);
     Player* player3 = player_manager->add_or_get_player("Simon");
     EXPECT_FALSE(game_manager->try_add_player(player3, game));
-    // delete game_manager;
+    delete game_manager;
     delete player_manager;
 }
 
