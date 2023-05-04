@@ -22,7 +22,7 @@ Player *PlayerManager::add_or_get_player(const std::string& player_id) {
     }
     Player *player_ptr = new Player(player_id);
     rw_lock_.lock();  // exclusive
-    PlayerManager::players_.insert({player_id, player_ptr}); 
+    PlayerManager::players_.insert({player_id, *player_ptr});
     rw_lock_.unlock();
     return player_ptr;
 }
@@ -38,10 +38,4 @@ bool PlayerManager::remove_player(const std::string& player_id) {
     return false;
 }
 
-PlayerManager::~PlayerManager() { 
-    for(auto player : players_){
-        if(player.second != nullptr)
-        delete player.second;
-    }
-    players_.clear();
-}
+PlayerManager::~PlayerManager() { players_.clear(); }
