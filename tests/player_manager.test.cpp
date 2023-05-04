@@ -11,7 +11,6 @@ TEST(PlayerManagerTest, TryGetPlayer) {
     player_ptr = manager->add_or_get_player(player_id);
     EXPECT_TRUE(player_ptr != nullptr);
     delete manager;
-    delete player1;
 }
 
 TEST(PlayerManagerTest, TryAddPlayer) {
@@ -20,7 +19,6 @@ TEST(PlayerManagerTest, TryAddPlayer) {
     Player *player_ptr     = manager->add_or_get_player(player_id);
     EXPECT_TRUE(player_ptr != nullptr);
     delete manager;
-    delete player1;
 }
 
 TEST(PlayerManagerTest, TryRemovePlayer) {
@@ -30,5 +28,4 @@ TEST(PlayerManagerTest, TryRemovePlayer) {
     EXPECT_TRUE(manager->remove_player(player_id));
     EXPECT_FALSE(manager->remove_player(player_id));
     delete manager;
-    delete player_ptr;
 }
