@@ -27,9 +27,9 @@ class GameInstance {
      *
      */
     ~GameInstance() {
-        if (game_state_ != nullptr) {
-            delete game_state_;
-        }
+        // if (game_state_ != nullptr) {
+        //     delete game_state_;
+        // }
     }
     /**
      * @brief Returns the id of game_state

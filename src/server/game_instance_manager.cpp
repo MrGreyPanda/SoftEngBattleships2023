@@ -6,7 +6,7 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, GameInstance> GameInstanceManager::games_;
+std::unordered_map<std::string, GameInstance> GameInstanceManager::games_ = {};
 
 GameInstanceManager::~GameInstanceManager() { games_.clear(); }
 
