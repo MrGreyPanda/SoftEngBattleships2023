@@ -24,7 +24,7 @@ TEST(GameInstanceTest, HasPlayer) {
     PlayerManager *player_manager = new PlayerManager();
     EXPECT_FALSE(game->has_player("Johan"));
     Player *player1 = player_manager->add_or_get_player("Johan");
-    game->try_add_player(player1);
+    EXPECT_TRUE(game->try_add_player(player1));
     EXPECT_TRUE(game->has_player("Johan"));
     delete game;
     game = nullptr;
