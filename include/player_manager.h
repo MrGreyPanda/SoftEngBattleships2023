@@ -22,29 +22,27 @@ class PlayerManager {
      * @brief Retrieves a player form the player list.
      *
      * @param player_id
-     * @param player_ptr
+     * 
+     * @return pointer to player with player_id, nullptr if not found
      */
-    static bool try_get_player(const std::string& player_id,
-                               Player*& player_ptr);
+    static Player *try_get_player(const std::string& player_id);
     /**
      * @brief Adds new player to the player list or retrieves the existing
      * player if present.
      *
      * @param player_id
-     * @param player_ptr
      *
-     * @return true if player exists
-     * @return false if player doesn't exist and was added
+     * @return pointer to found/added player
      */
-    static bool add_or_get_player(const std::string& player_id,
-                                  Player*& player_ptr);
+    static Player *add_or_get_player(const std::string& player_id);
     /**
      * @brief Removes the player form the player list.
      *
      * @param player_id
-     * @param player
+     * 
+     * @return true if succesful, false otherwise
      */
-    static bool remove_player(const std::string& player_id, Player*& player);
+    static bool remove_player(const std::string& player_id);
 
     ~PlayerManager();
 };
