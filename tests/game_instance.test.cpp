@@ -18,7 +18,6 @@ TEST(GameInstanceTest, TryAddPlayer) {
     EXPECT_FALSE(game->try_add_player(player3));
     delete game;
     delete player_manager;
-    delete player3;
 }
 
 TEST(GameInstanceTest, HasPlayer) {
