@@ -30,7 +30,8 @@ Player *PlayerManager::add_or_get_player(const std::string& player_id) {
 bool PlayerManager::remove_player(const std::string& player_id) {
     if (try_get_player(player_id) != nullptr) {
         rw_lock_.lock();  // exclusive
-        // delete player;
+        delete PlayerManager::players_.at(player_id);
+        PlayerManager::players_.at(player_id) =  nullptr;
         PlayerManager::players_.erase(player_id);
         rw_lock_.unlock();
         return true;

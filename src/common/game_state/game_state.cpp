@@ -17,26 +17,7 @@ GameState::GameState(std::string id, std::vector<Player*> players)
     ships_.push_back(Ship(Carrier));
 }
 
-// Not sure if this is needed, will confirm eventually
-GameState::GameState(std::string id, std::vector<std::string> player_ids)
-    : id_(id), phase_(Lobby), turn_player_index_(0) {
-    for (auto player_id : player_ids) {
-        Player* player = new Player(player_id);
-        players_.push_back(player);
-    }
-    ships_.push_back(Ship(Destroyer));
-    ships_.push_back(Ship(Submarine));
-    ships_.push_back(Ship(Cruiser));
-    ships_.push_back(Ship(Battleship));
-    ships_.push_back(Ship(Carrier));
-}
-
-GameState::~GameState() {
-    for(auto player : players_) {
-        if(player != nullptr) delete player;
-    }
-    players_.clear();
-}
+GameState::~GameState() {}
 
 std::string GameState::get_id() { return id_; }
 
