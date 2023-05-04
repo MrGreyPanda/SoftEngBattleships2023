@@ -3,7 +3,7 @@
 #include "player_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, Player*> PlayerManager::players_ = {};
+std::unordered_map<std::string, Player> PlayerManager::players_ = {};
 
 Player *PlayerManager::try_get_player(const std::string& player_id) {
     rw_lock_.lock_shared();
@@ -22,7 +22,7 @@ Player *PlayerManager::add_or_get_player(const std::string& player_id) {
     }
     Player *player_ptr = new Player(player_id);
     rw_lock_.lock();  // exclusive
-    PlayerManager::players_.insert({player_id, player_ptr});
+    PlayerManager::players_.insert({player_id, player_ptr}); 
     rw_lock_.unlock();
     return player_ptr;
 }

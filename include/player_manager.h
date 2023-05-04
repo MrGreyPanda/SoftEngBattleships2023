@@ -16,7 +16,7 @@
 class PlayerManager {
    private:
     inline static std::shared_mutex rw_lock_;
-    static std::unordered_map<std::string, Player*> players_;
+    static std::unordered_map<std::string, Player> players_;
 
    public:
     /**
