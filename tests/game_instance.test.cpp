@@ -14,7 +14,9 @@ TEST(GameInstanceTest, TryAddPlayer) {
     game->try_add_player(player2);
     EXPECT_FALSE(game->try_add_player(player3));
     delete game;
+    game = nullptr;
     delete player_manager;
+    player_manager = nullptr;
 }
 
 TEST(GameInstanceTest, HasPlayer) {
@@ -25,7 +27,9 @@ TEST(GameInstanceTest, HasPlayer) {
     game->try_add_player(player1);
     EXPECT_TRUE(game->has_player("Johan"));
     delete game;
+    game = nullptr;
     delete player_manager;
+    player_manager = nullptr;
 }
 
 TEST(GameInstanceTest, TryRemovePlayer) {
@@ -36,5 +40,7 @@ TEST(GameInstanceTest, TryRemovePlayer) {
     EXPECT_TRUE(game->try_remove_player(player1));
     EXPECT_FALSE(game->try_remove_player(player1));
     delete game;
+    game = nullptr;
     delete player_manager;
+    player_manager = nullptr;
 }

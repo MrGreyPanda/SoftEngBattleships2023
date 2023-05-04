@@ -37,7 +37,7 @@ class GameInstanceManager {
      * @return true if succesful
      * @return false else
      */
-    static GameInstance* add_player_to_any_game(Player* playe_ptr);
+    static GameInstance* add_player_to_any_game(Player* player_ptr);
 
     /**
      * @brief Tries to return a game instance given the game ID
@@ -83,7 +83,7 @@ class GameInstanceManager {
     static GameInstance* find_joinable_game_instance_();
 
     inline static std::shared_mutex games_lock_;
-    static std::unordered_map<std::string, GameInstance> games_;
+    static std::unordered_map<std::string, GameInstance*> games_;
 
     FRIEND_TEST(GameInstanceManagerTest, TryAddPlayer);
     FRIEND_TEST(GameInstanceManagerTest, FindGameByPlayerId);
