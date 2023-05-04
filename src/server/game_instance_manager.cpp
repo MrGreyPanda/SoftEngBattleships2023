@@ -6,14 +6,20 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, GameInstance> GameInstanceManager::games_ = {};
+std::unordered_map<std::string, GameInstance*> GameInstanceManager::games_ = {};
 
-GameInstanceManager::~GameInstanceManager() { games_.clear(); }
+GameInstanceManager::~GameInstanceManager() { 
+    for(auto& it : games_) {
+        delete it.second;
+        it.second = nullptr;
+    }
+    games_.clear(); 
+}
 
 GameInstance *GameInstanceManager::create_new_game_() {
     GameInstance *new_game = new GameInstance();
     games_lock_.lock();  // exclusive
-    GameInstanceManager::games_.insert({new_game->get_id(), *new_game});
+    GameInstanceManager::games_.insert({new_game->get_id(), new_game});
     games_lock_.unlock();
     std::cout << "[GameInstanceManager] (Debug) Created new game with ID: "
               << new_game->get_id() << std::endl;
@@ -25,7 +31,7 @@ GameInstance* GameInstanceManager::get_game_instance(const std::string &game_id)
     auto it = GameInstanceManager::games_.find(game_id);
     if (it != games_.end()) {
         games_lock_.unlock_shared();
-        return &(it->second);
+        return it->second;
     }
     games_lock_.unlock_shared();
     return nullptr;
@@ -36,7 +42,7 @@ GameInstance* GameInstanceManager::add_player_to_any_game(
     // check that player is not already subscribed to another game
     games_lock_.lock();
     for(auto& it : games_) {
-        if(it.second.has_player(player_ptr->get_id())) {
+        if(it.second->has_player(player_ptr->get_id())) {
             games_lock_.unlock();
             return nullptr;
         }
@@ -44,10 +50,10 @@ GameInstance* GameInstanceManager::add_player_to_any_game(
 
     // find first joinable instance and add player
     for(auto& it : games_) {
-        if(!it.second.get_game_state()->is_full()) {
-            it.second.try_add_player(player_ptr);
+        if(!it.second->get_game_state()->is_full()) {
+            it.second->try_add_player(player_ptr);
             games_lock_.unlock();
-            return &(it.second);
+            return it.second;
         }
     }
     games_lock_.unlock();
@@ -72,8 +78,8 @@ GameInstance *GameInstanceManager::find_game_by_player_id_(
     GameInstance *game_instance_ptr = nullptr;
     games_lock_.lock_shared();
     for (auto it = games_.begin(); it != games_.end(); ++it) {
-        if (it->second.has_player(player_id)) {
-            game_instance_ptr = &(it->second);
+        if (it->second->has_player(player_id)) {
+            game_instance_ptr = it->second;
             break;
         }
     }
@@ -85,8 +91,8 @@ GameInstance *GameInstanceManager::find_joinable_game_instance_() {
     GameInstance *game_instance_ptr = nullptr;
     games_lock_.lock_shared();
     for (auto it = games_.begin(); it != games_.end(); ++it) {
-        if (!it->second.get_game_state()->is_full()) {
-            game_instance_ptr = &(it->second);
+        if (!it->second->get_game_state()->is_full()) {
+            game_instance_ptr = it->second;
             break;
         }
     }
