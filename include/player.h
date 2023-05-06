@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 #include "board.h"
+#include <iostream>
 
 
 /**
@@ -30,7 +31,7 @@ public:
      * @brief Creates a player with a default board size and number of ships
      * @param id The id of the player
     */
-    Player(std::string id);
+    Player(const std::string &id);
 
     ~Player();
 
@@ -68,18 +69,29 @@ public:
      * @brief Returns the player' state of readiness
      * @return True if the player is ready, false otherwise
     */
-    bool is_player_ready();
+    bool get_is_ready();
 
     /**
      * @brief Returns the player' state of preparedness
      * @return True if the player is prepared, false otherwise
     */
-    bool is_player_prepared();
+    bool get_is_prepared();
 
     /**
      * @brief Checks if a given placement is valid, if it is, places the ship
      * @param coords The coordinates of the ship to be placed
     */
+
+   /**
+    * @brief Returns the player's own board
+   */
+    OwnBoard get_own_board();
+
+    /**
+     * @brief Returns the player's enemy board
+    */
+    EnemyBoard get_enemy_board();
+
     bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> coords, ShipCategory shiptype);
 
     /**
@@ -90,9 +102,9 @@ public:
     bool shoot(const std::pair<unsigned short, unsigned short> &coord);
 
 private:
-    std::string id;
-    bool is_ready;
-    bool is_prepared;
-    OwnBoard own_board;
-    EnemyBoard enemy_board;
+    std::string id_;
+    bool is_ready_;
+    bool is_prepared_;
+    OwnBoard own_board_;
+    EnemyBoard enemy_board_;
 };

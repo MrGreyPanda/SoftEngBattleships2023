@@ -30,6 +30,19 @@ TEST(ServerResponseTest, CreateServerJoinRequestFromJSON) {
               json_data["game_id"].get<std::string>());
     EXPECT_EQ(server_response_ptr->get_player_id(),
               json_data["player_id"].get<std::string>());
+              
+    delete server_response_ptr;
+    server_response_ptr = nullptr;
 }
 
-// TEST(ServerResponse)
+TEST(ServerResponseTest, GetServerRequestTypeFromMessageTypeString) {
+    ServerResponseType req_res_type =
+        ServerResponse::get_server_request_type_from_message_type_string(
+            "response");
+    EXPECT_EQ(req_res_type, ServerResponseType::RequestResponse);
+
+    ServerResponseType full_res_type =
+        ServerResponse::get_server_request_type_from_message_type_string(
+            "full_state");
+    EXPECT_EQ(full_res_type, ServerResponseType::FullStateMessage);
+}

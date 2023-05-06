@@ -51,6 +51,8 @@ TEST(ClientRequestTest, CreateClientJoinRequestFromJSON) {
               ClientRequestType::ClientJoinRequest);
     EXPECT_EQ(client_request_ptr->get_game_id(), "");
     EXPECT_EQ(client_request_ptr->get_player_id(), "");
+
+    delete std::get<1>(parsed_info_tuple);
 }
 
 TEST(ClientRequestTest, CreateClientReadyRequestFromJSON) {
@@ -68,6 +70,8 @@ TEST(ClientRequestTest, CreateClientReadyRequestFromJSON) {
               json_data["game_id"].get<std::string>());
     EXPECT_EQ(client_request_ptr->get_player_id(),
               json_data["player_id"].get<std::string>());
+              
+    delete std::get<1>(parsed_info_tuple);
 }
 
 TEST(ClientRequestTest, GetClientRequestTypeFromMesssageTypeString) {
@@ -103,6 +107,8 @@ TEST(ClientRequestTest, ClientRequestToJSON) {
     }
 
     EXPECT_EQ(client_request_ptr->to_json().dump(), json_data.dump());
+
+    delete std::get<1>(parsed_info_tuple);
 }
 
 TEST(ClientRequestTest, ClientRequestToString) {
@@ -115,4 +121,6 @@ TEST(ClientRequestTest, ClientRequestToString) {
     }
 
     EXPECT_EQ(client_request_ptr->to_string(), json_data.dump());
+
+    delete std::get<1>(parsed_info_tuple);
 }

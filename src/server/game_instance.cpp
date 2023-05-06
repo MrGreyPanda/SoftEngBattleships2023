@@ -2,57 +2,46 @@
 
 #include "game_instance.h"
 
-GameInstance::GameInstance() : _game_state(new GameState()), _players() {}
+GameInstance::GameInstance() : game_state_(new GameState()) {}
 
-GameState *GameInstance::get_game_state() { return _game_state; }
+GameState *GameInstance::get_game_state() { return game_state_; }
 
-std::string GameInstance::get_id() { return _game_state->get_id(); }
+std::string GameInstance::get_id() { return game_state_->get_id(); }
 
 bool GameInstance::has_started() {
-    Phase phase = _game_state->get_phase();
-    return phase == Preparation;
+    return game_state_->get_phase() == Preparation;
 }
 
 bool GameInstance::has_ended() {
-    Phase phase = _game_state->get_phase();
-    return phase == End;
+    return game_state_->get_phase() == End;
 }
 
 bool GameInstance::start_game() {
     Phase phase = Preparation;
-    _game_state->set_phase(phase);
-    return true;  // TODO, do we need an error check here for set_phase?
-}
-
-bool GameInstance::remove_player(Player *player) {
-    _lock.lock();
-    if (_players[0] == player) {
-        _players[0] = nullptr;
-        delete player;
-        _lock.unlock();
-        return true;
-    } else if (_players[1] == player) {
-        _players[1] = nullptr;
-        delete player;
-        _lock.unlock();
+    if (game_state_->get_phase() == Lobby) {
+        game_state_->set_phase(phase);
         return true;
     }
-    _lock.unlock();
     return false;
 }
 
-bool GameInstance::add_player(Player *new_player) {
-    _lock.lock();
-    if (_players[0] == nullptr) {
-        _players[0] = new_player;
-        _lock.unlock();
-        return true;
-    } else if (_players[1] == nullptr) {
-        _players[1] = new_player;
-        _lock.unlock();
+bool GameInstance::try_remove_player(Player *player) {
+    lock_.lock();
+    if (game_state_->remove_player(player)) {
+        lock_.unlock();
         return true;
     }
-    _lock.unlock();
+    lock_.unlock();
+    return false;
+}
+
+bool GameInstance::try_add_player(Player *new_player) {
+    lock_.lock();
+    if (game_state_->add_player(new_player)) {
+        lock_.unlock();
+        return true;
+    }
+    lock_.unlock();
     return false;
 }
 
@@ -67,16 +56,13 @@ bool GameInstance::player_prepared() {
 }
 
 bool GameInstance::has_player(std::string player_id) {
-    // TODO
-    throw std::runtime_error("Not implemented");
-}
-
-bool GameInstance::is_full() {
-    _lock.lock();
-    if (_players[0] == nullptr || _players[1] == nullptr) {
-        _lock.unlock();
-        return false;
+    lock_.lock();
+    for (auto &i : game_state_->get_players()) {
+        if (i->get_id() == player_id) {
+            lock_.unlock();
+            return true;
+        }
     }
-    _lock.unlock();
-    return true;
+    lock_.unlock();
+    return false;
 }

@@ -12,7 +12,16 @@ endif()
 
 # enable testing
 include(CTest)
+include(GoogleTest)
 enable_testing()
+
+# TODO ONLY RUN IF NOT PROD
+# Enable code coverage
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
+endif()
+set(CMAKE_BUILD_TYPE Debug)
+
 
 add_subdirectory(dependencies/sockpp)
 add_subdirectory(dependencies/json)
@@ -79,11 +88,33 @@ target_include_directories(Battleships PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR}
 target_link_libraries(Battleships nlohmann_json)
 
 target_include_directories(BattleshipsServer PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
-target_link_libraries(BattleshipsServer nlohmann_json)
+target_link_libraries(BattleshipsServer nlohmann_json gtest gtest_main gmock gmock_main)
 
 target_include_directories(BattleshipsTests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(BattleshipsTests nlohmann_json gtest gtest_main gmock gmock_main)
 
-
-include(GoogleTest)
 gtest_discover_tests(BattleshipsTests)
+
+# Doxygen
+
+# look for Doxygen package
+find_package(Doxygen)
+
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_SOURCE_DIR}/docs/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_BINARY_DIR}/Doxyfile.out)
+
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+
+    # Note: do not put "ALL" - this builds docs together with application EVERY TIME!
+    add_custom_target( docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM )
+else (DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
+endif (DOXYGEN_FOUND)
