@@ -14,7 +14,7 @@ TEST(PlayerManagerTest, TryGetPlayer) {
     manager = nullptr;
 }
 
-TEST(PlayerManagerTest, TryAddPlayer) {
+TEST(PlayerManagerTest, AddOrGetPlayer) {
     PlayerManager *manager = new PlayerManager();
     std::string player_id  = "Johan";
     Player *player_ptr     = manager->add_or_get_player(player_id);
@@ -26,7 +26,7 @@ TEST(PlayerManagerTest, TryAddPlayer) {
 TEST(PlayerManagerTest, TryRemovePlayer) {
     PlayerManager *manager = new PlayerManager();
     std::string player_id  = "Johan";
-    Player *player_ptr = manager->add_or_get_player(player_id);
+    Player *player_ptr     = manager->add_or_get_player(player_id);
     EXPECT_TRUE(manager->remove_player(player_id));
     EXPECT_FALSE(manager->remove_player(player_id));
     delete manager;

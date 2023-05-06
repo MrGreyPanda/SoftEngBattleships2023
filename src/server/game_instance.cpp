@@ -9,13 +9,11 @@ GameState *GameInstance::get_game_state() { return game_state_; }
 std::string GameInstance::get_id() { return game_state_->get_id(); }
 
 bool GameInstance::has_started() {
-    Phase phase = game_state_->get_phase();
-    return phase == Preparation;
+    return game_state_->get_phase() == Preparation;
 }
 
 bool GameInstance::has_ended() {
-    Phase phase = game_state_->get_phase();
-    return phase == End;
+    return game_state_->get_phase() == End;
 }
 
 bool GameInstance::start_game() {

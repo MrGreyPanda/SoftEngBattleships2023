@@ -1,17 +1,17 @@
 #include "game_instance_manager.h"
-#include "player_manager.h"
 
 #include "gtest/gtest.h"
+#include "player_manager.h"
 
 TEST(GameInstanceManagerTest, TryAddPlayer) {
     PlayerManager *player_manager = new PlayerManager();
-    Player* player1 = player_manager->add_or_get_player("Johan");
+    Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
-    GameInstance *game = game_manager->create_new_game_();
+    GameInstance *game                = game_manager->create_new_game_();
     EXPECT_TRUE(game_manager->try_add_player(player1, game));
-    Player* player2 = player_manager->add_or_get_player("Lukas");
+    Player *player2 = player_manager->add_or_get_player("Lukas");
     game_manager->try_add_player(player2, game);
-    Player* player3 = player_manager->add_or_get_player("Simon");
+    Player *player3 = player_manager->add_or_get_player("Simon");
     EXPECT_FALSE(game_manager->try_add_player(player3, game));
     delete game_manager;
     delete player_manager;
@@ -19,18 +19,18 @@ TEST(GameInstanceManagerTest, TryAddPlayer) {
 
 TEST(GameInstanceManagerTest, AddPlayerToAnyGame) {
     PlayerManager *player_manager = new PlayerManager();
-    Player* player1 = player_manager->add_or_get_player("Johan");
+    Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
     GameInstance *added_game = game_manager->add_player_to_any_game(player1);
     EXPECT_TRUE(added_game == nullptr);
-    GameInstance* game = game_manager->create_new_game_();
-    added_game = game_manager->add_player_to_any_game(player1);
+    GameInstance *game = game_manager->create_new_game_();
+    added_game         = game_manager->add_player_to_any_game(player1);
     EXPECT_TRUE(added_game != nullptr);
-    Player* player2 = player_manager->add_or_get_player("Lukas");
-    added_game = game_manager->add_player_to_any_game(player2);
+    Player *player2 = player_manager->add_or_get_player("Lukas");
+    added_game      = game_manager->add_player_to_any_game(player2);
     EXPECT_TRUE(added_game != nullptr);
-    Player* player3 = player_manager->add_or_get_player("Simon");
-    added_game = game_manager->add_player_to_any_game(player3);
+    Player *player3 = player_manager->add_or_get_player("Simon");
+    added_game      = game_manager->add_player_to_any_game(player3);
     EXPECT_TRUE(added_game == nullptr);
     delete game_manager;
     delete player_manager;
@@ -38,11 +38,11 @@ TEST(GameInstanceManagerTest, AddPlayerToAnyGame) {
 
 TEST(GameInstanceManagerTest, TryRemovePlayer) {
     PlayerManager *player_manager = new PlayerManager();
-    Player* player1 = player_manager->add_or_get_player("Johan");
+    Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
-    GameInstance *game = game_manager->create_new_game_();
+    GameInstance *game                = game_manager->create_new_game_();
     game_manager->try_add_player(player1, game);
-    Player* player2 = player_manager->add_or_get_player("Lukas");
+    Player *player2 = player_manager->add_or_get_player("Lukas");
     game_manager->try_add_player(player2, game);
     EXPECT_TRUE(game_manager->try_remove_player(player1, game));
     EXPECT_TRUE(game_manager->try_remove_player(player2, game));
@@ -52,15 +52,16 @@ TEST(GameInstanceManagerTest, TryRemovePlayer) {
 
 TEST(GameInstanceManagerTest, FindGameByPlayerId) {
     PlayerManager *player_manager = new PlayerManager();
-    Player* player1 = player_manager->add_or_get_player("Johan");
+    Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
-    GameInstance *game = game_manager->create_new_game_();
+    GameInstance *game                = game_manager->create_new_game_();
     EXPECT_TRUE(game_manager->find_game_by_player_id_("Johan") == nullptr);
     game_manager->try_add_player(player1, game);
-    Player* player2 = player_manager->add_or_get_player("Lukas");
+    Player *player2 = player_manager->add_or_get_player("Lukas");
     game_manager->try_add_player(player2, game);
-    GameInstance* found_game = game_manager->find_game_by_player_id_("Johan");
-    EXPECT_TRUE(found_game == game && game_manager->find_game_by_player_id_("Lukas") == game);
+    GameInstance *found_game = game_manager->find_game_by_player_id_("Johan");
+    EXPECT_TRUE(found_game == game &&
+                game_manager->find_game_by_player_id_("Lukas") == game);
     delete game_manager;
     delete player_manager;
 }

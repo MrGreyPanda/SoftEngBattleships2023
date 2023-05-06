@@ -5,7 +5,7 @@
 // Initialize static map
 std::unordered_map<std::string, Player*> PlayerManager::players_ = {};
 
-Player *PlayerManager::try_get_player(const std::string& player_id) {
+Player* PlayerManager::try_get_player(const std::string& player_id) {
     rw_lock_.lock_shared();
     auto it = PlayerManager::players_.find(player_id);
     if (it != players_.end()) {
@@ -16,11 +16,11 @@ Player *PlayerManager::try_get_player(const std::string& player_id) {
     return nullptr;
 }
 
-Player *PlayerManager::add_or_get_player(const std::string& player_id) {
+Player* PlayerManager::add_or_get_player(const std::string& player_id) {
     if (try_get_player(player_id) != nullptr) {
         return try_get_player(player_id);
     }
-    Player *player_ptr = new Player(player_id);
+    Player* player_ptr = new Player(player_id);
     rw_lock_.lock();  // exclusive
     PlayerManager::players_.insert({player_id, player_ptr});
     rw_lock_.unlock();
@@ -31,7 +31,7 @@ bool PlayerManager::remove_player(const std::string& player_id) {
     if (try_get_player(player_id) != nullptr) {
         rw_lock_.lock();  // exclusive
         delete PlayerManager::players_.at(player_id);
-        PlayerManager::players_.at(player_id) =  nullptr;
+        PlayerManager::players_.at(player_id) = nullptr;
         PlayerManager::players_.erase(player_id);
         rw_lock_.unlock();
         return true;
@@ -39,10 +39,10 @@ bool PlayerManager::remove_player(const std::string& player_id) {
     return false;
 }
 
-PlayerManager::~PlayerManager() { 
-    for(auto& it : players_) {
+PlayerManager::~PlayerManager() {
+    for (auto& it : players_) {
         delete it.second;
         it.second = nullptr;
     }
-    players_.clear(); 
+    players_.clear();
 }

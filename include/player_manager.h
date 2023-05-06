@@ -9,8 +9,8 @@
 #include "player.h"
 
 /**
- * @brief Handles player management in the server. Doesn't exist on the client
- * side!
+ * @brief Handles player management.
+ *
  */
 class PlayerManager {
    private:
@@ -19,30 +19,35 @@ class PlayerManager {
 
    public:
     /**
-     * @brief Retrieves a player form the player list.
+     * @brief Retrieves a player from the player list.
      *
      * @param player_id
-     * 
-     * @return pointer to player with player_id, nullptr if not found
+     *
+     * @return Pointer to Player with player_id, nullptr if not found.
      */
-    static Player *try_get_player(const std::string& player_id);
+    static Player* try_get_player(const std::string& player_id);
+
     /**
      * @brief Adds new player to the player list or retrieves the existing
      * player if present.
      *
      * @param player_id
      *
-     * @return pointer to found/added player
+     * @return Pointer to found/added player
      */
-    static Player *add_or_get_player(const std::string& player_id);
+    static Player* add_or_get_player(const std::string& player_id);
+
     /**
-     * @brief Removes the player form the player list.
+     * @brief Removes the player from the player list.
      *
      * @param player_id
-     * 
-     * @return true if succesful, false otherwise
+     *
+     * @return True if succesful, false if not.
      */
     static bool remove_player(const std::string& player_id);
 
+    /**
+     * @brief Destroys the PlayerManager object.
+     */
     ~PlayerManager();
 };
