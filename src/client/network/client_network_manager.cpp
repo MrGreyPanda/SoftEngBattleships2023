@@ -5,12 +5,9 @@
 #include <nlohmann/json.hpp>
 #include <thread>
 
-#include "game_instance_manager.h"
 #include "helper_functions.h"
 #include "player.h"
-#include "player_manager.h"
 #include "server_response.h"
-#include "GameController.h"
 #include <sockpp/exception.h>
 
 
