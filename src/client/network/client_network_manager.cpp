@@ -42,7 +42,7 @@ void::ClientNetworkManager::init(const std::string& host, const uint16_t port){
         ClientNetworkManager::connection_success_=true;
 
         //start network thread
-        ResponseListenerThread* response_listener_thread= new ResponseListenerThread(ClientNetworkManager::connection_);
+        //ResponseListenerThread* response_listener_thread= new ResponseListenerThread(ClientNetworkManager::connection_);
 
         //TODO: check if no error, showError if there is an error
         //if(response_listener_thread->Run() != )
@@ -105,13 +105,13 @@ void ClientNetworkManager::send_request(const ClientRequest &request) {
         //#endif
 
         //send message to server
-        ssize_t bytesSent = ClientNetworkManager::connection_->write(message);
+        //ssize_t bytesSent = ClientNetworkManager::connection_->write(message);
 
         //if number of bytes sent doesn't match length of message, something probably went wrong
-        if (bytesSent != ssize_t(message.length())){
-            //TODO:
-            //GameController::showError...
-        }
+        // if (bytesSent != ssize_t(message.length())){
+        //     //TODO:
+        //     //GameController::showError...
+        // }
 
     } else {
         //TODO:

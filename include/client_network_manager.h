@@ -12,8 +12,6 @@
 #include "sockpp/tcp_socket.h"
 #include "sockpp/tcp_connector.h"
 
-#include "response_listener_thread.h"
-
 
 
 class ClientNetworkManager{
