@@ -104,7 +104,7 @@ void ClientNetworkManager::send_request(const ClientRequest &request) {
 
         //output message for debugging purposes
         //#ifdef PRINT_NETWORK_MESSAGES
-        std::cout << "Sending request : " << message << std::endl;
+        //std::cout << "Sending request : " << message << std::endl;
         //#endif
 
         //send message to server
