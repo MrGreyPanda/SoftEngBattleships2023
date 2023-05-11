@@ -36,14 +36,8 @@ OwnBoard Player::get_own_board() { return own_board_; }
 
 EnemyBoard Player::get_enemy_board() { return enemy_board_; }
 
-bool Player::place_ship(
-    const std::vector<std::pair<unsigned short, unsigned short>> coords,
-    ShipCategory shiptype) {
-    return this->get_own_board().place_ship(coords, shiptype);
-}
-
-bool Player::shoot(const std::pair<unsigned short, unsigned short> &coord) {
-    if (this->get_enemy_board().is_valid_shot(coord)) {
+bool Player::shoot(const short &x, const short &y) {
+    if (this->get_enemy_board().is_valid_shot(x, y)) {
         // Send shot to server
         // return true if hit
         // return false if miss
