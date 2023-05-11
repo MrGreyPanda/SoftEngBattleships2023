@@ -35,7 +35,7 @@ unsigned short category_to_size(ShipCategory type) {
 }
 
 // Constructor
-Ship::Ship(ShipCategory name_) : name_(name_), is_sunk_(false) {
+Ship::Ship(ShipCategory name_) : name_(name_), is_sunk_(false), is_placed_(false){
     length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
@@ -67,3 +67,27 @@ unsigned short Ship::get_damage() const { return damage_; }
 ShipCategory Ship::get_name() const { return name_; }
 
 bool Ship::get_is_sunk() const { return is_sunk_; }
+
+bool Ship::get_is_horizontal(){
+    return is_horizontal_;
+}
+
+void Ship::change_orientation(){
+    is_horizontal_ = !is_horizontal_;   
+}
+
+bool Ship::get_is_placed(){
+    return is_placed_;
+}
+
+void Ship::set_is_placed(bool is_placed){
+    is_placed_ = is_placed;
+}
+
+std::pair<unsigned short, unsigned short> Ship::get_start_coord(){
+    return start_coord_;
+}
+
+void Ship::set_start_coord(std::pair<unsigned short, unsigned short> &coord){
+    start_coord_ = coord;
+}

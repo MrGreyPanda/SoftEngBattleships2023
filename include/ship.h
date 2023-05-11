@@ -79,10 +79,50 @@ public:
     */
     bool get_is_sunk() const;
 
+    /**
+     * @brief Get the is_horizontal_ of the ship
+     * @return The is_horizontal_ of the ship
+    */
+    bool get_is_horizontal() const;
+
+    /**
+     * @brief Set the is_horizontal_ of the ship
+     * @param is_horizontal_ The new is_horizontal_ of the ship
+    */
+    void change_orientation();
+
+    /**
+     * @brief Get the is_placed_ of the ship
+     * @return The is_placed_ of the ship
+    */
+    bool get_is_placed() const;
+
+    /**
+     * @brief Set the is_placed_ of the ship
+     * @param is_placed_ The new is_placed_ of the ship
+    */
+
+    void set_is_placed(bool is_placed);
+
+    /**
+     * @brief Get the ship_start_coord_ of the ship
+     * @return The ship_start_coord_ of the ship
+    */
+    std::pair<unsigned short, unsigned short> get_start_coord() const;
+
+    /**
+     * @brief Set the ship_start_coord_ of the ship
+     * @param ship_start_coord_ The new ship_start_coord_ of the ship
+    */
+    void set_start_coord(const std::pair<unsigned short, unsigned short> &ship_start_coord);
+
 private:
 
     unsigned short length_;
     bool is_sunk_;
     unsigned short damage_;
     ShipCategory name_;
+    bool is_horizontal_;
+    bool is_placed_;
+    std::pair<unsigned short, unsigned short> start_coord_;
 };

@@ -102,20 +102,20 @@ using Board::Board;
  * @param coords The coordinates of the ship to be placed
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
-bool is_valid_placement(const std::vector<std::pair<unsigned short, unsigned short>> &coords, const ShipCategory &shiptype);
+bool is_valid_placement(const std::pair<unsigned short, unsigned short>&coord, const Ship &ship);
 
 /**
  * @brief Places a ship on the board
  * @param coords The coordinates of the ship to be placed
 */
-bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> &coords, const ShipCategory &shiptype);
+bool place_ship(const std::pair<unsigned short, unsigned short> &coord, const ShipC &ship);
 
 /**
  * @brief Rotates a ship on the board
  * @param coords The coordinates of the ship to be rotated
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
-bool rotate_ship(std::vector<std::pair<unsigned short, unsigned short>> &coords, const ShipCategory &shiptype);
+bool rotate_ship(std::pair<unsigned short, unsigned short> &coord, Ship &ship);
 
 private:
 
