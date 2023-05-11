@@ -39,9 +39,15 @@ Player* RequestHandler::handle_join_request(
 
     // add new player to player manager
     Player* new_player_ptr = PlayerManager::add_or_get_player(new_player_id);
-    std::cout << "[RequestHandler] (Debug) Added Player object to "
-                 "PlayerManager"
-              << std::endl;
+    if (new_player_ptr == nullptr) {
+        std::cout
+            << "[RequestHandler] Error: Could not add player to PlayerManager"
+            << std::endl;
+        return nullptr;
+    }
+
+    std::cout << "[RequestHandler] (Debug) Added  player with ID '"
+              << new_player_id << "'" << std::endl;
 
     // add the player to a game
     GameInstance* game_ptr =
@@ -74,8 +80,6 @@ Player* RequestHandler::handle_join_request(
             "Error: Could not add player to any game!");
 
         ServerNetworkManager::send_response(response, new_player_id);
-
-        delete new_player_ptr;
 
         return nullptr;
     }
