@@ -24,7 +24,7 @@ void ConnectionWindow::init()
     connectionWindowContext->addWidget(serverAddressTextInput);
 
     SDLGui::TextWidget* serverMessageText = 
-        new SDLGui::TextWidget("serverMessageText", "Server Message", 
+        new SDLGui::TextWidget("serverMessageText", "", 
             .0f, .7f, .3f, .04f, 0., SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground | SDLGui::TextFlagsExt_CenterHorizontal);
     connectionWindowContext->addWidget(serverMessageText);
 
@@ -42,7 +42,8 @@ void ConnectionWindow::render()
     SDLGui::begin("connectionWindow");
 
     if (SDLGui::TextButton("serverConnectionButton")) {
-        printf("Trying to connect\n");
+        SDLGui::Text("serverMessageText").updateText(32, "Connecting...");
+        // Try to connect to the server
     }
 
     SDLGui::end();
