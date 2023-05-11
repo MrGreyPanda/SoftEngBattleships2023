@@ -79,3 +79,17 @@ make
 ```
 
 The executable file are built in the _build/debug_ and _build/release_ folder respectively
+
+## Documentation
+
+Doxygen documentation for this project is provided in the "build/docs'" folder. Doxygen needs to be installed via 
+```bash 
+sudo apt-get install doxygen
+```
+on Linux and 
+```bash
+sudo brew install doxygen
+```
+on macOS using Homebrew.
+
+To obtain the documentation, build the target "docs" and open "build/docs/index.html" in your browser of preference.
