@@ -3,6 +3,7 @@
 #include "server_network_manager.h"
 
 #include <nlohmann/json.hpp>
+#include <sstream>
 #include <thread>
 
 #include "request_handler.h"
@@ -116,11 +117,11 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     // TODO handle messages larger than 512 bytes
     while ((msg_length = socket.read(msg_buffer, sizeof(msg_buffer))) > 0) {
         try {
-            std::stringstream ss;
-            ss.write(msg_buffer, msg_length);
+            std::stringstream str_stream;
+            str_stream.write(msg_buffer, msg_length);
             std::string line;
 
-            while (std::getline(ss, line, '\0')) {
+            while (std::getline(str_stream, line, '\0')) {
                 std::string message = line;
                 handle_incoming_message_(message, peer_address);
             }
