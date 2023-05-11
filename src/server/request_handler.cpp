@@ -37,14 +37,8 @@ Player* RequestHandler::handle_join_request(
     // create a player id string by creating a random hash string
     std::string new_player_id = HelperFunctions::create_random_id();
 
-    // create new player object
-    Player* new_player_ptr = new Player(new_player_id);
-
-    std::cout << "[RequestHandler] (Debug) Created new Player with ID '"
-              << new_player_ptr->get_id() << "'" << std::endl;
-
     // add new player to player manager
-    PlayerManager::add_or_get_player(new_player_id);
+    Player* new_player_ptr = PlayerManager::add_or_get_player(new_player_id);
     std::cout << "[RequestHandler] (Debug) Added Player object to "
                  "PlayerManager"
               << std::endl;
