@@ -27,7 +27,8 @@ class ClientNetworkManager {
      * @param host the host of the connection
      * @param port the port for the connection
      */
-    static bool connect(const std::string& address, const uint16_t port);
+    static bool connect(const std::string& address_string,
+                        const uint16_t& port);
 
     /**
      * @brief client sends a request to connected host
@@ -49,7 +50,8 @@ class ClientNetworkManager {
     static ClientNetworkConnectionStatus get_connection_status();
 
    private:
-    static bool connect_to_host_(const std::string& host, const uint16_t port);
+    static bool connect_to_host_(const std::string& address_string,
+                                 const uint16_t& port);
 
     static sockpp::tcp_connector* connection_;
 

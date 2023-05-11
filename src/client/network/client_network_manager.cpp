@@ -21,8 +21,8 @@ sockpp::tcp_connector* ClientNetworkManager::connection_ = nullptr;
 ClientNetworkConnectionStatus ClientNetworkManager::connection_status_ =
     ClientNetworkConnectionStatus::NOT_CONNECTED;
 
-bool ClientNetworkManager::connect(const std::string& host,
-                                   const uint16_t port) {
+bool ClientNetworkManager::connect(const std::string& address_string,
+                                   const uint16_t& port) {
     // initialise sockpp framework
     // sockpp::socket_initializer sock_init;
 
@@ -38,7 +38,7 @@ bool ClientNetworkManager::connect(const std::string& host,
     ClientNetworkManager::connection_ = new sockpp::tcp_connector();
 
     // try connecting to server
-    if (ClientNetworkManager::connect_to_host_(host, port)) {
+    if (ClientNetworkManager::connect_to_host_(address_string, port)) {
         // connected to host
         // TODO check for errors
 
@@ -54,12 +54,12 @@ bool ClientNetworkManager::connect(const std::string& host,
     }
 }
 
-bool ClientNetworkManager::connect_to_host_(const std::string& address,
-                                            const uint16_t port) {
+bool ClientNetworkManager::connect_to_host_(const std::string& address_string,
+                                            const uint16_t& port) {
     // create sockpp address and catch any errors
     sockpp::inet_address address;
     try {
-        address = sockpp::inet_address(host, port);
+        address = sockpp::inet_address(address_string, port);
     } catch (const sockpp::getaddrinfo_error& e) {
         // GameController::showError("Connection error",
         //                           "Failed to resolve address " +
@@ -78,9 +78,23 @@ bool ClientNetworkManager::connect_to_host_(const std::string& address,
     return true;  // connect worked
 }
 
-// void ClientNetworkManager::send_request(const ClientRequest& request) {
-//     if()
-// }
+void ClientNetworkManager::send_request(const ClientRequest& request) {
+    // 1. check if connected to server
+    if (!ClientNetworkManager::connection_->is_connected()) {
+        std::cout << "Not connected to server" << std::endl;
+        return;
+    }
+
+    // 2. Send the client request to the server as json
+
+    auto bytes_sent =
+        ClientNetworkManager::connection_->write(request.to_string());
+    if (bytes_sent != request.to_string().size()) {
+        std::cout << "Failed to send full request to server" << std::endl;
+        std::cerr << ClientNetworkManager::connection_->last_error_str()
+                  << std::endl;
+    }
+}
 
 ClientNetworkConnectionStatus ClientNetworkManager::get_connection_status() {
     return ClientNetworkManager::connection_status_;

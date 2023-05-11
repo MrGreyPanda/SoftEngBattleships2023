@@ -1,4 +1,3 @@
-#include ""
 
 #include <cstdint>
 #include <cstdio>
@@ -10,7 +9,7 @@ int main(int argc, const char** argv) {
 
     // TODO open connection window
 
-    if (ClientNetworkManager::connect("localhost", 1337)) {
+    if (ClientNetworkManager::connect("192.168.71.117", 1337)) {
         std::cout << "Connected to server!" << std::endl;
 
         // simulate ready in lobby...
