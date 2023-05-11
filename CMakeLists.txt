@@ -15,10 +15,13 @@ include(CTest)
 include(GoogleTest)
 enable_testing()
 
-# TODO ONLY RUN IF NOT PROD
+# TODO ONLY RUN IF DEBUG AND / OR NOT PROD
 # Enable code coverage
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
+    set(GCOV_LINK_FLAGS "-lgcov --coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-array-bounds")  # Workaround for gcc 4.9.2 bug
 endif()
 set(CMAKE_BUILD_TYPE Debug)
 
