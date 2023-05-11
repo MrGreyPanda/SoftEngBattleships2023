@@ -109,10 +109,16 @@ void RequestHandler::handle_prepared_request_(
 
 void RequestHandler::handle_shoot_request_(
     const ClientRequest& client_request) {
+
+        // GameInstance* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id());
+
+        
+
     throw std::runtime_error("Not implemented yet");
 }
 
 void RequestHandler::handle_give_up_request_(
     const ClientRequest& client_request) {
+
     throw std::runtime_error("Not implemented yet");
 }
