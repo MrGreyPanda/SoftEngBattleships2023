@@ -89,14 +89,13 @@ public:
      * @brief Set the is_horizontal_ of the ship
      * @param is_horizontal_ The new is_horizontal_ of the ship
     */
-    void change_orientation();
+    void set_is_horizontal(bool is_horizontal);
 
     /**
      * @brief Get the is_placed_ of the ship
      * @return The is_placed_ of the ship
     */
     bool get_is_placed() const;
-
     /**
      * @brief Set the is_placed_ of the ship
      * @param is_placed_ The new is_placed_ of the ship
@@ -105,16 +104,22 @@ public:
     void set_is_placed(bool is_placed);
 
     /**
-     * @brief Get the ship_start_coord_ of the ship
-     * @return The ship_start_coord_ of the ship
+     * @brief Get the x_ of the ship
+     * @return The x_ of the ship
     */
-    std::pair<unsigned short, unsigned short> get_start_coord() const;
+    short get_x() const;
 
     /**
-     * @brief Set the ship_start_coord_ of the ship
-     * @param ship_start_coord_ The new ship_start_coord_ of the ship
+     * @brief Get the y_ of the ship
+     * @return The y_ of the ship
     */
-    void set_start_coord(const std::pair<unsigned short, unsigned short> &ship_start_coord);
+    short get_y() const;
+
+    /**
+     * @brief Set the x_ of the ship
+     * @param x, y The new x_ & y_ of the ship
+    */
+    void set_xy(const short &x, const short &y);
 
 private:
 
@@ -124,5 +129,10 @@ private:
     ShipCategory name_;
     bool is_horizontal_;
     bool is_placed_;
-    std::pair<unsigned short, unsigned short> start_coord_;
+
+    /**
+     * Starting coordinates of the ship
+    */
+    short x_;
+    short y_;
 };

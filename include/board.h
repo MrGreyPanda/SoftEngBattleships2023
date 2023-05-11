@@ -40,27 +40,24 @@ unsigned short get_num_active_ships();
 
 /**
  * @brief Get the grid value at a given coordinate
- * @param x The x coordinate
- * @param y The y coordinate
+ * @param x, y The coordinates
  * @return The grid value at the given coordinate
 */
-unsigned short get_grid_value(const std::pair<unsigned short, unsigned short> &coord);
+unsigned short get_grid_value(const short &x, const short &y);
 
 /**
  * @brief Set the grid value at a given coordinate
- * @param x The x coordinate
- * @param y The y coordinate
+ * @param x, y The coordinates
  * @param value The value to set the grid value to
 */
-void set_grid_value(const std::pair<unsigned short, unsigned short> &coord, int value);
+void set_grid_value(const short &x, const short &y, int value);
 
 /**
  * @brief Get the is_shot_ value at a given coordinate
- * @param x The x coordinate
- * @param y The y coordinate
+ * @param x, y The coordinates
  * @return The is_shot_ value at the given coordinate
 */
-bool get_is_shot(const std::pair<unsigned short, unsigned short> &coord);
+bool get_is_shot(const short &x, const short &y);
 
 
 private:
@@ -99,23 +96,27 @@ using Board::Board;
 
 /**
  * @brief Checks if a given placement is valid
- * @param coords The coordinates of the ship to be placed
+ * @param x, y The coordinates of the ship to be placed
+ * @param ship The ship to be checked
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
-bool is_valid_placement(const std::pair<unsigned short, unsigned short>&coord, const Ship &ship);
+bool is_valid_placement(const short &x, const short &y, const Ship &ship);
 
 /**
  * @brief Places a ship on the board
- * @param coords The coordinates of the ship to be placed
+ * @param x, y  The coordinates of the ship to be placed
+ * @param ship The ship to be placed
 */
-bool place_ship(const std::pair<unsigned short, unsigned short> &coord, const ShipC &ship);
+bool place_ship(const short &x, const short &y, Ship &ship);
+
 
 /**
- * @brief Rotates a ship on the board
- * @param coords The coordinates of the ship to be rotated
+ * @brief If ship is on the board, it checks if it can be rotated. 
+ * @brief If not, it returns false. If it can, it rotates the ship and returns true. If not on board, it returns rotates it and returns true.  
+ * @param ship The ship to be rotated
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
 */
-bool rotate_ship(std::pair<unsigned short, unsigned short> &coord, Ship &ship);
+bool rotate_ship(Ship &ship);
 
 private:
 
@@ -146,9 +147,9 @@ using Board::Board;
 
 /**
  * @brief Checks if a given shot is valid
- * @param coords The coordinates of the shot to be placed
+ * @param x, y The coordinates of the shot to be placed
 */
-bool is_valid_shot(const std::pair<unsigned short, unsigned short> &coord);
+bool is_valid_shot(const short &x, const short &y);
 
 private:
 

@@ -32,16 +32,16 @@ unsigned short Board::get_num_active_ships() {
     return num_active_ships;
 }
 
-unsigned short Board::get_grid_value(const std::pair<unsigned short, unsigned short> &coord) {
-    return grid_[coord.first][coord.second];
+unsigned short Board::get_grid_value(const short &x, const short &y) {
+    return grid_[y][x];
 }
 
-void Board::set_grid_value(const std::pair<unsigned short, unsigned short> &coord, int value) {
-    grid_[coord.first][coord.second] = value;
+void Board::set_grid_value(const short &x, const short &y, int value) {
+    grid_[y][x] = value;
 }
 
-bool Board::get_is_shot(const std::pair<unsigned short, unsigned short> &coord) {
-    return is_shot_[coord.first][coord.second];
+bool Board::get_is_shot(const short &x, const short &y) {
+    return is_shot_[y][x];
 }
 
 // OwnBoard::OwnBoard() : Board() {}
@@ -50,82 +50,119 @@ bool Board::get_is_shot(const std::pair<unsigned short, unsigned short> &coord) 
 
 OwnBoard::~OwnBoard() {}
 
-bool OwnBoard::is_valid_placement(
-    const std::vector<std::pair<unsigned short, unsigned short>> &coords,
-    const ShipCategory &shiptype) {
-    if (coords.size() != category_to_size(shiptype)) return false;
-    // throw an error or something like that here
-
+bool OwnBoard::is_valid_placement(const short &x, const short &y, const Ship &ship) {
     int grid_size_ = this->get_grid_size();
-    for (int i = 0; i < coords.size(); i++) {
-        unsigned short x = coords[i].first;
-        unsigned short y = coords[i].second;
-        if (x < 0 || x > grid_size_) return false;
-        if (y < 0 || y > grid_size_) return false;
-        int curr_grid_value = get_grid_value(std::make_pair(x, y));
-        if (curr_grid_value != 0 && curr_grid_value != shiptype) return false;
+    if (x >= grid_size_ || y >= grid_size_ ||
+        x < 0 || y < 0) return false;
+
+    bool is_horizontal = ship.get_is_horizontal();
+    short ship_length = ship.get_length();
+
+    if(is_horizontal){
+        if(x + ship_length > grid_size_) return false;
+        ShipCategory shiptype = ship.get_name();
+        for(int i = 0; i < ship_length; i++){
+            if(get_grid_value(x + i, y) != 0 && get_grid_value(x + i, y) != shiptype) return false;
+        }
+        return true;
     }
-    return true;
+
+    else if(!is_horizontal){
+        if(y + ship_length > grid_size_) return false;
+        ShipCategory shiptype = ship.get_name();
+
+        for(int i = 0; i < ship_length; i++){
+            if(get_grid_value(x, y + i) != 0 && get_grid_value(x, y + i) != shiptype) return false;
+        }
+        return true;
+    }
+    return false; // Throw exception here
 }
 
-bool OwnBoard::place_ship(
-    const std::vector<std::pair<unsigned short, unsigned short>> &coords,
-    const ShipCategory &shiptype) {
-    if (!this->is_valid_placement(coords, shiptype)) return false;
-    int grid_size_ = this->get_grid_size();
-    for (int i = 0; i < grid_size_; i++) {
-        for (int j = 0; j < grid_size_; j++) {
-            int curr_grid_value = get_grid_value(std::make_pair(i, j));
-            if (curr_grid_value == shiptype) set_grid_value(std::make_pair(i, j), 0);
+bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
+    if (!this->is_valid_placement(x, y, ship)) return false;
+    bool is_horizontal = ship.get_is_horizontal();
+    short ship_length = ship.get_length();
+    bool is_placed = ship.get_is_placed();
+    short old_x = ship.get_x();
+    short old_y = ship.get_y();
+    ShipCategory shiptype = ship.get_name();
+
+    if(is_horizontal){
+        if(is_placed){
+            // Remove old ship
+            for(int i = 0; i < ship_length; i++){
+                set_grid_value(old_x + i, old_y, 0);
+            }
         }
+        // Place new ship
+        for(int i = 0; i < ship_length; i++){
+            set_grid_value(x + i, y, shiptype);
+        }
+        ship.set_xy(x, y);
+        return true;
     }
-    for (int i = 0; i < coords.size(); i++) {
-        set_grid_value(coords[i], shiptype);
+    else if(!is_horizontal){
+        if(is_placed){
+            // Remove old ship
+            for(int i = 0; i < ship_length; i++){
+                set_grid_value(old_x, old_y + i, 0);
+            }
+        }
+        // Place new ship
+        for(int i = 0; i < ship_length; i++){
+            set_grid_value(x, y + i, shiptype);
+        }
+        ship.set_xy(x, y);
+        return true;
     }
-    return true;
+    else return false; // Throw exception here, unexpected behaviour
 }
 
-bool OwnBoard::rotate_ship(
-    std::vector<std::pair<unsigned short, unsigned short>> &coords,
-    const ShipCategory &shiptype) {
-    // if(coords.size() != category_to_size(shiptype)) throw
-    // std::exception("Coordinate grid_size_ doesn't match shiptype!");
-    bool is_rotated = false;
-    int x         = coords[0].first;
-    int y         = coords[0].second;
-    is_rotated    = coords[1].first != x;
-
-    int coords_size = coords.size();
-    if (is_rotated) {
-        if(coords_size + x > this->get_grid_size()) return false;
-        for (int i = 1; i < coords.size(); i++) {
-            coords[i] =
-                std::make_pair<unsigned short, unsigned short>(x, y + i);
+bool OwnBoard::rotate_ship(Ship &ship) {
+    bool is_horizontal = ship.get_is_horizontal();
+    if(ship.get_is_placed() == true){
+        
+        short ship_length = ship.get_length();
+        short x = ship.get_x();
+        short y = ship.get_y();
+        ShipCategory shiptype = ship.get_name();
+        ship.set_is_horizontal(!is_horizontal);
+        if(!this->is_valid_placement(x, y, ship)){
+            ship.set_is_horizontal(is_horizontal);
+            return false;
         }
-    } else if(!is_rotated){
-        if(coords_size + y > this->get_grid_size()) return false;
-        for (int i = 1; i < coords.size(); i++) {
-            coords[i] =
-                std::make_pair<unsigned short, unsigned short>(x + i, y);
+        if(is_horizontal){
+            // Remove old ship & place new ship
+            for(int i = 0; i < ship_length; i++){
+                set_grid_value(x + i, y, 0);
+                set_grid_value(x, y + i, shiptype);
+            }
+            return true;
         }
+        else if(!is_horizontal){
+            // Remove old ship
+            for(int i = 0; i < ship_length; i++){
+                set_grid_value(x, y + i, 0);
+                set_grid_value(x + i, y, shiptype);
+            }
+            return true;
+        }
+        else return false; // Throw exception here unexpected behaviour
     }
-    else return false;
-    return true;
+    else {
+        ship.set_is_horizontal(!is_horizontal);
+        return true;
+    }
 }
-
-// EnemyBoard::EnemyBoard() : Board() {}
-
-// EnemyBoard::EnemyBoard(unsigned int grid_size_) : Board(grid_size_) {}
 
 EnemyBoard::~EnemyBoard() {}
 
 bool EnemyBoard::is_valid_shot(
-    const std::pair<unsigned short, unsigned short> &coord) {
-    unsigned short x = coord.first;
-    unsigned short y = coord.second;
-    int grid_size_        = this->get_grid_size();
+    const short &x, const short &y) {
+    int grid_size_ = this->get_grid_size();
     if (x < 0 || x > grid_size_) return false;
     if (y < 0 || y > grid_size_) return false;
-    if (this->get_is_shot(coord)) return false;
+    if (this->get_is_shot(x, y)) return false;
     return true;
 }
