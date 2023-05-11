@@ -15,6 +15,8 @@ enum ClientRequestType {
 class ClientRequest {
    public:
     ClientRequest(const json& data);
+    ClientRequest(ClientRequestType type, std::string player_id = "",
+                  std::string game_id = "");
 
     static ClientRequestType get_client_request_type_from_message_type_string(
         const std::string message_type_string);

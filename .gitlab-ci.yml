@@ -12,9 +12,7 @@ build:
     untracked: true
     when: on_success
     paths:
-      - build/Battleships
-      - build/BattleshipsServer
-      - build/BattleshipsTests
+      - build
     expire_in: 1 week
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -52,5 +50,3 @@ test:
       when: always
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: manual
-
-
