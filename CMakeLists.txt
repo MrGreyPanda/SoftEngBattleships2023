@@ -17,15 +17,16 @@ enable_testing()
 
 # TODO ONLY RUN IF NOT PROD
 # Enable code coverage
-if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
-endif()
-set(CMAKE_BUILD_TYPE Debug)
+#if(CMAKE_COMPILER_IS_GNUCXX)
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -O0")
+#endif()
+#set(CMAKE_BUILD_TYPE Debug)
 
 
 add_subdirectory(dependencies/sockpp)
 add_subdirectory(dependencies/json)
 add_subdirectory(dependencies/googletest)
+add_subdirectory(dependencies/sdlgui)
 
 # Include header files
 include_directories(include)
@@ -92,6 +93,14 @@ target_link_libraries(BattleshipsServer nlohmann_json gtest gtest_main gmock gmo
 
 target_include_directories(BattleshipsTests PUBLIC ${NLOHMANN_JSON_INCLUDE_BUILD_DIR})
 target_link_libraries(BattleshipsTests nlohmann_json gtest gtest_main gmock gmock_main)
+
+add_dependencies(Battleships SDLGui)
+
+target_include_directories(Battleships PUBLIC dependencies/sdlgui/src)
+target_link_libraries(Battleships SDLGui)
+
+target_include_directories(BattleshipsTests PUBLIC dependencies/sdlgui/src)
+target_link_libraries(BattleshipsTests SDLGui)
 
 gtest_discover_tests(BattleshipsTests)
 
