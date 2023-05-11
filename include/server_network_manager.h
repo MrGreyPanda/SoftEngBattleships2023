@@ -72,7 +72,8 @@ class ServerNetworkManager {
     /**
      * @brief A map of player ids to their addresses
      */
-    static std::unordered_map<std::string, std::string> player_addresses_;
+    static std::unordered_map<std::string, sockpp::inet_address>
+        player_addresses_;
 
     /**
      * @brief The mutex to lock when accessing the sockets map

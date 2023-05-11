@@ -53,6 +53,8 @@ class ClientNetworkManager {
     static bool connect_to_host_(const std::string& address_string,
                                  const uint16_t& port);
 
+    static void handle_incoming_messages_();
+
     static sockpp::tcp_connector* connection_;
 
     static ClientNetworkConnectionStatus connection_status_;
