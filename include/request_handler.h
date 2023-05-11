@@ -1,3 +1,5 @@
+#pragma once
+
 #include "client_request.h"
 #include "player.h"
 
@@ -7,8 +9,8 @@ class RequestHandler {
 
     /**
      * @brief Handle a join request. Creates a new player and returns a pointer
-     * to the object. Creates a ServerResponse and calls the send_response
-     * function of the ServerNetworkManager
+     * to the player object. Creates a ServerResponse and calls the
+     * send_response function of the ServerNetworkManager
      *
      * @param request The client request object
      * @returns The pointer to the new player object

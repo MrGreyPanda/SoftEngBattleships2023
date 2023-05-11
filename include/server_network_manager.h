@@ -45,10 +45,8 @@ class ServerNetworkManager {
      *
      * @param message The message to handle
      * @param peer_addres The address of the client
-     *
-     * @return The response string to send back to the client
      */
-    static std::string handle_incoming_message_(
+    static void handle_incoming_message_(
         const std::string& message, const sockpp::inet_address& peer_address);
 
     /**
