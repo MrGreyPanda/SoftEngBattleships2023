@@ -88,8 +88,8 @@ void ClientNetworkManager::send_request(const ClientRequest& request) {
     // 2. Send the client request to the server as json
     const std::string message = request.to_string() + '\0';
 
-    auto bytes_sent = ClientNetworkManager::connection_->write_n(
-        message.c_str(), message.size());
+    auto bytes_sent = ClientNetworkManager::connection_->write(message.c_str(),
+                                                               message.size());
 
     if (bytes_sent != message.size()) {
         std::cout << "Failed to send full request to server" << std::endl;
@@ -101,3 +101,5 @@ void ClientNetworkManager::send_request(const ClientRequest& request) {
 ClientNetworkConnectionStatus ClientNetworkManager::get_connection_status() {
     return ClientNetworkManager::connection_status_;
 }
+
+void ClientNetworkManager::handle_incoming_messages_() {}
