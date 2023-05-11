@@ -87,10 +87,17 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_.emplace(peer_address.to_string(), std::move(socket.clone()));
     sockets_mutex_.unlock();
 
+    // TODO handle messages larger than 512 bytes
     while ((msg_length = socket.read(msg_buffer, sizeof(msg_buffer))) > 0) {
         try {
-            std::string message(msg_buffer, msg_length);
-            handle_incoming_message_(message, peer_address);
+            std::stringstream ss;
+            ss.write(msg_buffer, msg_length);
+            std::string line;
+
+            while (std::getline(ss, line, '\0')) {
+                std::string message = line;
+                handle_incoming_message_(message, peer_address);
+            }
         } catch (std::exception& err) {
             std::cerr
                 << "[ServerNetworkManager] Error handling socket message: "
@@ -105,6 +112,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_mutex_.lock();
     sockets_.erase(peer_address.to_string());
     sockets_mutex_.unlock();
+
+    std::cout << "[ServerNetworkManager] (Debug) Removed the socket for peer "
+              << socket.peer_address() << std::endl;
 }
 
 void ServerNetworkManager::handle_incoming_message_(
@@ -116,31 +126,35 @@ void ServerNetworkManager::handle_incoming_message_(
     } catch (json::parse_error& e) {
         std::cout << "[ServerNetworkManager] JSON parse error: " << e.what()
                   << std::endl;
+        std::cout << "[ServerNetworkManager] Message was: '" << message << "'"
+                  << std::endl;
 
         // create error response
         const ServerResponse error_response(
             ServerResponseType::RequestResponse, "Error: Invalid JSON");
 
         send_response(error_response, peer_address.to_string());
+        return;
     }
 
     ClientRequest* client_request;
     try {
         client_request = new ClientRequest(data);
     } catch (std::exception& e) {
-        std::cout
-            << "[ServerNetworkManager] Message is not a valid ClientRequest.\n"
-               " Error from ClientRequest constructor: "
-            << e.what()
-            << "\nClientRequest was not created and reading the message "
-               "aborted!"
-            << std::endl;
+        std::cout << "[ServerNetworkManager] Message is not a valid "
+                     "ClientRequest.\n"
+                     " Error from ClientRequest constructor: "
+                  << e.what()
+                  << "\nClientRequest was not created and reading the message "
+                     "aborted!"
+                  << std::endl;
 
         const ServerResponse response(
             ServerResponseType::RequestResponse,
             "Error: Message is not a valid ClientRequest");
 
         send_response(response, peer_address.to_string());
+        return;
     }
 
     // Create a player id for this connection if it is a join request
@@ -173,6 +187,7 @@ void ServerNetworkManager::handle_incoming_message_(
             "", player_id, "Error: Player is not a known player of this game");
 
         send_response(response, peer_address.to_string());
+        return;
     }
 
     RequestHandler::handle_request(*client_request);

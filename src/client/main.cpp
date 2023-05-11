@@ -9,13 +9,16 @@ int main(int argc, const char** argv) {
 
     // TODO open connection window
 
-    if (ClientNetworkManager::connect("192.168.71.117", 1337)) {
+    if (ClientNetworkManager::connect("localhost", 1337)) {
         std::cout << "Connected to server!" << std::endl;
+
+        ClientNetworkManager::send_request(
+            ClientRequest(ClientRequestType::ClientJoinRequest, "", ""));
 
         // simulate ready in lobby...
 
-        ClientNetworkManager::send_request(
-            ClientRequest(ClientRequestType::ClientReadyRequest, "", ""));
+        // ClientNetworkManager::send_request(
+        //     ClientRequest(ClientRequestType::ClientReadyRequest, "", ""));
     }
 
     return 0;

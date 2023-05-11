@@ -69,8 +69,12 @@ json ClientRequest::to_json() const {
         }
     }
 
-    data["game_id"]   = game_id_;
-    data["player_id"] = player_id_;
+    if (!game_id_.empty()) {
+        data["game_id"] = game_id_;
+    }
+    if (!player_id_.empty()) {
+        data["player_id"] = player_id_;
+    }
 
     return data;
 }

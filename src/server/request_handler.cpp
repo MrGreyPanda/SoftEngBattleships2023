@@ -50,17 +50,21 @@ Player* RequestHandler::handle_join_request(
               << std::endl;
 
     // add the player to a game
-    GameInstance* game = nullptr;
-    if (GameInstanceManager::add_player_to_any_game(new_player_ptr)) {
-        std::cout << "[RequestHandler] Added Player to game with ID '"
-                  << game->get_id() << "'" << std::endl;
+    GameInstance* game_ptr =
+        GameInstanceManager::add_player_to_any_game(new_player_ptr);
+
+    if (game_ptr != nullptr) {
+        std::cout << "[RequestHandler] Added Player to a game with ID '"
+                  << game_ptr->get_id() << "'" << std::endl;
 
         // formulate response
         const ServerResponse response(ServerResponseType::RequestResponse,
                                       ClientRequestType::ClientJoinRequest,
-                                      game->get_id(), new_player_id);
+                                      game_ptr->get_id(), new_player_id);
 
         ServerNetworkManager::send_response(response, new_player_id);
+
+        return new_player_ptr;
 
     } else {
         // Error adding player to a game
@@ -76,9 +80,11 @@ Player* RequestHandler::handle_join_request(
             "Error: Could not add player to any game!");
 
         ServerNetworkManager::send_response(response, new_player_id);
-    }
 
-    return new_player_ptr;
+        delete new_player_ptr;
+
+        return nullptr;
+    }
 }
 
 void RequestHandler::handle_ready_request_(
