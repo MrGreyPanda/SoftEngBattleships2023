@@ -47,7 +47,8 @@ void ServerNetworkManager::send_response(const ServerResponse& response,
 
     if (player_address_it == player_addresses_.end()) {
         std::cerr << "[ServerNetworkManager] Error sending response: "
-                  << "Player " << player_id << " not found!" << std::endl;
+                  << "Player with ID '" << player_id << "' not found!"
+                  << std::endl;
         return;
     }
 
@@ -73,14 +74,18 @@ void ServerNetworkManager::send_response_to_peer_(
     auto bytes_sent = socket.write(message.c_str(), message.size());
 
     if (bytes_sent != message.size()) {
-        std::cout << "Failed to send full request to server" << std::endl;
+        std::cout << "[ServerNetworkManager] Error Failed to send full "
+                     "request to server"
+                  << std::endl;
         std::cerr << socket.last_error_str() << std::endl;
+    } else {
+        std::cout
+            << "[ServerNetworkManager] (Debug) Sent response to client: '"
+            << message << "'" << std::endl;
     }
 }
 
 void ServerNetworkManager::start_() {
-    // Start the listener loop
-
     while (true) {
         sockpp::inet_address peer_address;
         sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
@@ -126,9 +131,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
                 handle_incoming_message_(message, peer_address);
             }
         } catch (std::exception& err) {
-            std::cerr
-                << "[ServerNetworkManager] Error handling socket message: "
-                << err.what() << std::endl;
+            std::cerr << "[ServerNetworkManager] Error while handling socket "
+                         "message: "
+                      << err.what() << std::endl;
         }
     }
 
@@ -140,8 +145,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_.erase(peer_address.to_string());
     sockets_mutex_.unlock();
 
-    std::cout << "[ServerNetworkManager] (Debug) Removed the socket for peer "
-              << socket.peer_address() << std::endl;
+    std::cout
+        << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
+        << socket.peer_address() << std::endl;
 }
 
 void ServerNetworkManager::handle_incoming_message_(
@@ -160,7 +166,7 @@ void ServerNetworkManager::handle_incoming_message_(
         const ServerResponse error_response(
             ServerResponseType::RequestResponse, "Error: Invalid JSON");
 
-        send_response(error_response, peer_address.to_string());
+        send_response_to_peer_(error_response, peer_address);
         return;
     }
 
@@ -180,15 +186,18 @@ void ServerNetworkManager::handle_incoming_message_(
             ServerResponseType::RequestResponse,
             "Error: Message is not a valid ClientRequest");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 
     // Create a player id for this connection if it is a join request
     // Also add the player to a game
     if (client_request->get_type() == ClientRequestType::ClientJoinRequest) {
-        Player* player_ptr =
+        std::tuple<Player*, ServerResponse> join_req_tuple =
             RequestHandler::handle_join_request(*client_request);
+
+        Player* player_ptr      = std::get<0>(join_req_tuple);
+        ServerResponse response = std::get<1>(join_req_tuple);
 
         if (player_ptr != nullptr) {
             player_addr_mutex_.lock();
@@ -196,6 +205,9 @@ void ServerNetworkManager::handle_incoming_message_(
             player_addresses_.emplace(player_ptr->get_id(), peer_address);
             player_addr_mutex_.unlock();
         }
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
 
     // check if this is a message from a known player
@@ -216,7 +228,7 @@ void ServerNetworkManager::handle_incoming_message_(
             ServerResponseType::RequestResponse, client_request->get_type(),
             "", player_id, "Error: Player is not a known player of this game");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 
@@ -235,7 +247,7 @@ void ServerNetworkManager::handle_incoming_message_(
             "address stored for this player id. "
             "Only one player per peer is currently supported!");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 

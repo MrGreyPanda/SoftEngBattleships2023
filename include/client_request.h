@@ -14,9 +14,31 @@ enum ClientRequestType {
 
 class ClientRequest {
    public:
+    /**
+     * @brief Construct a new Client Request object from JSON
+     *
+     * @param data
+     */
     ClientRequest(const json& data);
-    ClientRequest(ClientRequestType type, std::string player_id = "",
-                  std::string game_id = "");
+
+    /**
+     * @brief Construct a new Client Request object form the given parameters
+     *
+     * @param type
+     * @param player_id
+     * @param game_id
+     */
+    ClientRequest(ClientRequestType type, std::string player_id,
+                  std::string game_id);
+
+    /**
+     * @brief Construct a new Client Request object
+     * NOTE: This constructor is only used for ClientJoinRequest. It will set
+     * the game_id_ and player_id_ to empty strings.
+     *
+     * @param type
+     */
+    ClientRequest(ClientRequestType type);
 
     static ClientRequestType get_client_request_type_from_message_type_string(
         const std::string message_type_string);

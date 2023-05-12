@@ -48,6 +48,9 @@ ClientRequest::ClientRequest(const json& data) {
     }
 }
 
+ClientRequest::ClientRequest(ClientRequestType type)
+    : type_(type), player_id_(""), game_id_("") {}
+
 ClientRequest::ClientRequest(ClientRequestType type, std::string player_id,
                              std::string game_id)
     : type_(type), player_id_(player_id), game_id_(game_id) {}
