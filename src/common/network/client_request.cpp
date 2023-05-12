@@ -48,6 +48,13 @@ ClientRequest::ClientRequest(const json& data) {
     }
 }
 
+ClientRequest::ClientRequest(ClientRequestType type)
+    : type_(type), player_id_(""), game_id_("") {}
+
+ClientRequest::ClientRequest(ClientRequestType type, std::string player_id,
+                             std::string game_id)
+    : type_(type), player_id_(player_id), game_id_(game_id) {}
+
 ClientRequestType ClientRequest::get_type() const { return type_; }
 
 std::string ClientRequest::get_player_id() const { return player_id_; }
@@ -65,8 +72,12 @@ json ClientRequest::to_json() const {
         }
     }
 
-    data["game_id"]   = game_id_;
-    data["player_id"] = player_id_;
+    if (!game_id_.empty()) {
+        data["game_id"] = game_id_;
+    }
+    if (!player_id_.empty()) {
+        data["player_id"] = player_id_;
+    }
 
     return data;
 }

@@ -6,14 +6,15 @@
 #include "server_network_manager.h"
 
 // Initialize static map
-std::unordered_map<std::string, GameInstance*> GameInstanceManager::games_ = {};
+std::unordered_map<std::string, GameInstance *> GameInstanceManager::games_ =
+    {};
 
-GameInstanceManager::~GameInstanceManager() { 
-    for(auto& it : games_) {
+GameInstanceManager::~GameInstanceManager() {
+    for (auto &it : games_) {
         delete it.second;
         it.second = nullptr;
     }
-    games_.clear(); 
+    games_.clear();
 }
 
 GameInstance *GameInstanceManager::create_new_game_() {
@@ -26,7 +27,8 @@ GameInstance *GameInstanceManager::create_new_game_() {
     return new_game;
 }
 
-GameInstance* GameInstanceManager::get_game_instance(const std::string &game_id) {
+GameInstance *GameInstanceManager::get_game_instance(
+    const std::string &game_id) {
     games_lock_.lock_shared();
     auto it = GameInstanceManager::games_.find(game_id);
     if (it != games_.end()) {
@@ -37,27 +39,26 @@ GameInstance* GameInstanceManager::get_game_instance(const std::string &game_id)
     return nullptr;
 }
 
-GameInstance* GameInstanceManager::add_player_to_any_game(
-    Player *player_ptr) {
+GameInstance *GameInstanceManager::add_player_to_any_game(Player *player_ptr) {
     // check that player is not already subscribed to another game
     games_lock_.lock();
-    for(auto& it : games_) {
-        if(it.second->has_player(player_ptr->get_id())) {
+    for (auto &it : games_) {
+        if (it.second->has_player(player_ptr->get_id())) {
             games_lock_.unlock();
             return nullptr;
         }
     }
 
     // find first joinable instance and add player
-    for(auto& it : games_) {
-        if(!it.second->get_game_state()->is_full()) {
+    for (auto &it : games_) {
+        if (!it.second->get_game_state()->is_full()) {
             it.second->try_add_player(player_ptr);
             games_lock_.unlock();
             return it.second;
         }
     }
     games_lock_.unlock();
-    return nullptr;
+    return create_new_game_();
 }
 
 bool GameInstanceManager::try_add_player(Player *player_ptr,

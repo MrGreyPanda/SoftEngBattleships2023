@@ -20,16 +20,12 @@ class ServerNetworkManager {
     // TODO check if we need a destructor
 
     /**
-     * @brief Broadcasts a message to all connected clients
-     *
-     * @param message The message to broadcast
+     * @brief Sends a response to a player
+     * @param response The ServerResponse object with the information to send
+     * @param player_id The id of the player to send the response to
      */
-    static void broadcast(const std::string& message);
-
-    /**
-     * // TODO
-     */
-    static void player_left(const std::string& player_id);
+    static void send_response(const ServerResponse& response,
+                              const std::string& player_id);
 
    private:
     /**
@@ -49,42 +45,19 @@ class ServerNetworkManager {
      *
      * @param message The message to handle
      * @param peer_addres The address of the client
-     *
-     * @return The response string to send back to the client
      */
-    static std::string handle_incoming_message_(
+    static void handle_incoming_message_(
         const std::string& message, const sockpp::inet_address& peer_address);
 
     /**
-     * @brief Handle a join request
+     * @brief Sends a response to a peer
      *
-     * @param request The client request object pointer
-     * @param socket The socket the request came from
+     * @param response The ServerResponse object with the information to send
+     * @param peer_address The address of the peer to send the response to
      */
-    static ServerResponse handle_join_request_(
-        const ClientRequest* request,
+    static void send_response_to_peer_(
+        const ServerResponse& response,
         const sockpp::inet_address& peer_address);
-
-    static ServerResponse handle_ready_request_(
-        const ClientRequest* request,
-        const sockpp::inet_address& peer_address);
-
-    static ServerResponse handle_prepared_request_(
-        const ClientRequest* request,
-        const sockpp::inet_address& peer_address);
-
-    static ServerResponse handle_shoot_request_(
-        const ClientRequest* request,
-        const sockpp::inet_address& peer_address);
-
-    static ServerResponse handle_give_up_request_(
-        const ClientRequest* request,
-        const sockpp::inet_address& peer_address);
-
-    /**
-     * @brief The mutex to lock when accessing the acceptor
-     */
-    static std::shared_mutex mutex_;
 
     /**
      * @brief The acceptor to listen for new connections
@@ -92,12 +65,24 @@ class ServerNetworkManager {
     static sockpp::tcp_acceptor acceptor_;
 
     /**
-     * @brief A map of player ids to their addresses
+     * @brief The mutex to lock when accessing the player_addresses map
      */
-    static std::unordered_map<std::string, std::string> player_addresses_;
+    static std::shared_mutex player_addr_mutex_;
 
     /**
-     * @brief A map of player ids to their sockets
+     * @brief A map of player ids to their addresses
+     */
+    static std::unordered_map<std::string, sockpp::inet_address>
+        player_addresses_;
+
+    /**
+     * @brief The mutex to lock when accessing the sockets map
+     *
+     */
+    static std::shared_mutex sockets_mutex_;
+
+    /**
+     * @brief A map of internet addresses to sockets
      */
     static std::unordered_map<std::string, sockpp::tcp_socket> sockets_;
 };

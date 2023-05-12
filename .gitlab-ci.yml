@@ -12,9 +12,7 @@ build:
     untracked: true
     when: on_success
     paths:
-      - build/Battleships
-      - build/BattleshipsServer
-      - build/BattleshipsTests
+      - build
     expire_in: 1 week
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -32,7 +30,7 @@ test:
   script:
     - cd build
     - ./BattleshipsTests --gtest_output="xml:../report.xml"
-    - gcovr --xml-pretty --exclude-unreachable-branches -e dependencies -e include -e tests --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
+    #- gcovr --xml-pretty --exclude-unreachable-branches -e ../dependencies -e ../include -e ../tests --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
   dependencies:
     - build
   needs: ["build"]
@@ -41,9 +39,9 @@ test:
     when: always
     reports:
       junit: report.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: build/coverage.xml
+      #coverage_report:
+      #  coverage_format: cobertura
+      #  path: build/coverage.xml
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
@@ -52,5 +50,3 @@ test:
       when: always
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: manual
-
-

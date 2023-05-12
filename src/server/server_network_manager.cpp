@@ -3,20 +3,26 @@
 #include "server_network_manager.h"
 
 #include <nlohmann/json.hpp>
+#include <sstream>
 #include <thread>
 
-#include "game_instance_manager.h"
-#include "helper_functions.h"
-#include "player.h"
-#include "player_manager.h"
+#include "request_handler.h"
 
 using json = nlohmann::json;
 
 // Declare the static variables to allocate them
-std::shared_mutex ServerNetworkManager::mutex_;
+
 sockpp::tcp_acceptor ServerNetworkManager::acceptor_;
-std::unordered_map<std::string, std::string>
+
+std::shared_mutex ServerNetworkManager::player_addr_mutex_;
+
+std::unordered_map<std::string, sockpp::inet_address>
     ServerNetworkManager::player_addresses_;
+
+std::shared_mutex ServerNetworkManager::sockets_mutex_;
+
+std::unordered_map<std::string, sockpp::tcp_socket>
+    ServerNetworkManager::sockets_;
 
 ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
@@ -34,21 +40,52 @@ ServerNetworkManager::ServerNetworkManager(unsigned port) {
     start_();
 }
 
-void ServerNetworkManager::broadcast(const std::string& message) {
-    // TODO
+void ServerNetworkManager::send_response(const ServerResponse& response,
+                                         const std::string& player_id) {
+    // Get the IP address of the player
+    auto player_address_it = player_addresses_.find(player_id);
 
-    throw std::runtime_error("Not implemented");
+    if (player_address_it == player_addresses_.end()) {
+        std::cerr << "[ServerNetworkManager] Error sending response: "
+                  << "Player with ID '" << player_id << "' not found!"
+                  << std::endl;
+        return;
+    }
+
+    send_response_to_peer_(response, player_address_it->second);
 }
 
-void ServerNetworkManager::player_left(const std::string& player_id) {
-    // TODO
+void ServerNetworkManager::send_response_to_peer_(
+    const ServerResponse& response, const sockpp::inet_address& address) {
+    // Get the socket for the IP address
+    auto socket_it = sockets_.find(address.to_string());
 
-    throw std::runtime_error("Not implemented");
+    if (socket_it == sockets_.end()) {
+        std::cerr << "[ServerNetworkManager] Error sending response: "
+                  << "Socket for IP " << address.to_string() << " not found!"
+                  << std::endl;
+        return;
+    }
+
+    // Send the response
+    std::string message        = response.to_string() + '\0';
+    sockpp::tcp_socket& socket = socket_it->second;
+
+    auto bytes_sent = socket.write(message.c_str(), message.size());
+
+    if (bytes_sent != message.size()) {
+        std::cout << "[ServerNetworkManager] Error Failed to send full "
+                     "request to server"
+                  << std::endl;
+        std::cerr << socket.last_error_str() << std::endl;
+    } else {
+        std::cout
+            << "[ServerNetworkManager] (Debug) Sent response to client: '"
+            << message << "'" << std::endl;
+    }
 }
 
 void ServerNetworkManager::start_() {
-    // Start the listener loop
-
     while (true) {
         sockpp::inet_address peer_address;
         sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
@@ -77,25 +114,43 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     ssize_t msg_length;
     char msg_buffer[512];
     const sockpp::inet_address peer_address = socket.peer_address();
-    std::string response_str;
 
+    sockets_mutex_.lock();
+    sockets_.emplace(peer_address.to_string(), std::move(socket.clone()));
+    sockets_mutex_.unlock();
+
+    // TODO handle messages larger than 512 bytes
     while ((msg_length = socket.read(msg_buffer, sizeof(msg_buffer))) > 0) {
         try {
-            std::string message(msg_buffer, msg_length);
-            response_str = handle_incoming_message_(message, peer_address);
-            socket.write(response_str.c_str(), response_str.length());
+            std::stringstream str_stream;
+            str_stream.write(msg_buffer, msg_length);
+            std::string line;
+
+            while (std::getline(str_stream, line, '\0')) {
+                std::string message = line;
+                handle_incoming_message_(message, peer_address);
+            }
         } catch (std::exception& err) {
-            std::cerr
-                << "[ServerNetworkManager] Error handling socket message: "
-                << err.what() << std::endl;
+            std::cerr << "[ServerNetworkManager] Error while handling socket "
+                         "message: "
+                      << err.what() << std::endl;
         }
     }
 
     std::cout << "[ServerNetworkManager] Closing connection to "
               << socket.peer_address() << std::endl;
+
+    // Delete the socket from the map
+    sockets_mutex_.lock();
+    sockets_.erase(peer_address.to_string());
+    sockets_mutex_.unlock();
+
+    std::cout
+        << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
+        << socket.peer_address() << std::endl;
 }
 
-std::string ServerNetworkManager::handle_incoming_message_(
+void ServerNetworkManager::handle_incoming_message_(
     const std::string& message, const sockpp::inet_address& peer_address) {
     // try to parse the message as JSON and create a client request object
     json data;
@@ -104,162 +159,97 @@ std::string ServerNetworkManager::handle_incoming_message_(
     } catch (json::parse_error& e) {
         std::cout << "[ServerNetworkManager] JSON parse error: " << e.what()
                   << std::endl;
-        return ServerResponse(ServerResponseType::RequestResponse,
-                              "Error: Invalid JSON")
-            .to_string();
+        std::cout << "[ServerNetworkManager] Message was: '" << message << "'"
+                  << std::endl;
+
+        // create error response
+        const ServerResponse error_response(
+            ServerResponseType::RequestResponse, "Error: Invalid JSON");
+
+        send_response_to_peer_(error_response, peer_address);
+        return;
     }
 
     ClientRequest* client_request;
     try {
         client_request = new ClientRequest(data);
     } catch (std::exception& e) {
-        std::cout
-            << "[ServerNetworkManager] Message is not a valid ClientRequest.\n"
-               " Error from ClientRequest constructor: "
-            << e.what()
-            << "\nClientRequest was not created and reading the message "
-               "aborted!"
-            << std::endl;
+        std::cout << "[ServerNetworkManager] Message is not a valid "
+                     "ClientRequest.\n"
+                     " Error from ClientRequest constructor: "
+                  << e.what()
+                  << "\nClientRequest was not created and reading the message "
+                     "aborted!"
+                  << std::endl;
 
-        return ServerResponse(ServerResponseType::RequestResponse,
-                              "Error: Message is not a valid ClientRequest")
-            .to_string();
+        const ServerResponse response(
+            ServerResponseType::RequestResponse,
+            "Error: Message is not a valid ClientRequest");
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
 
     // Create a player id for this connection if it is a join request
     // Also add the player to a game
     if (client_request->get_type() == ClientRequestType::ClientJoinRequest) {
-        return handle_join_request_(client_request, peer_address).to_string();
+        std::tuple<Player*, ServerResponse> join_req_tuple =
+            RequestHandler::handle_join_request(*client_request);
+
+        Player* player_ptr      = std::get<0>(join_req_tuple);
+        ServerResponse response = std::get<1>(join_req_tuple);
+
+        if (player_ptr != nullptr) {
+            player_addr_mutex_.lock();
+            // TODO check if player_ptr has ID maybe?
+            player_addresses_.emplace(player_ptr->get_id(), peer_address);
+            player_addr_mutex_.unlock();
+        }
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
 
     // check if this is a message from a known player
     std::string player_id = client_request->get_player_id();
 
-    if (player_addresses_.find(player_id) == player_addresses_.end()) {
+    // look for the IP address for the given player_id in the player_addresses
+    // map
+    auto player_address_it = player_addresses_.find(player_id);
+
+    if (player_address_it == player_addresses_.end()) {
         // This is not a message from a known player
         std::cout << "[ServerNetworkManager] Error: Player with ID '"
                   << player_id << "' is not a known player of this game."
                   << std::endl;
-        return ServerResponse(
-                   ServerResponseType::RequestResponse,
-                   client_request->get_type(), "", player_id,
-                   "Error: Player is not a known player of this game")
-            .to_string();
+
+        // create error response
+        const ServerResponse response(
+            ServerResponseType::RequestResponse, client_request->get_type(),
+            "", player_id, "Error: Player is not a known player of this game");
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
 
-    if (client_request->get_type() == ClientRequestType::ClientReadyRequest) {
-        return handle_ready_request_(client_request, peer_address).to_string();
-    } else if (client_request->get_type() ==
-               ClientRequestType::ClientPreparedRequest) {
-        return handle_prepared_request_(client_request, peer_address)
-            .to_string();
-    } else if (client_request->get_type() ==
-               ClientRequestType::ClientShootRequest) {
-        return handle_shoot_request_(client_request, peer_address).to_string();
-    } else if (client_request->get_type() ==
-               ClientRequestType::ClientGiveUpRequest) {
-        return handle_give_up_request_(client_request, peer_address)
-            .to_string();
-    } else {
-        throw std::runtime_error(
-            "[ServerNetworkManager] Unhandled ClientRequest type");
-    }
-}
-
-ServerResponse ServerNetworkManager::handle_join_request_(
-    const ClientRequest* client_request,
-    const sockpp::inet_address& peer_address) {
-    assert(client_request->get_type() == ClientRequestType::ClientJoinRequest);
-
-    std::cout << "[ServerNetworkManager] Received join request from "
-              << peer_address.to_string() << std::endl;
-
-    // create a player id string by creating a random hash string
-    std::string new_player_id = HelperFunctions::create_random_id();
-
-    mutex_.lock();
-    player_addresses_.emplace(new_player_id, peer_address.to_string());
-    mutex_.unlock();
-
-    std::cout << "[ServerNetworkManager] Created player with ID '"
-              << new_player_id << "' for '" << peer_address << "'"
-              << std::endl;
-
-    // create new player object
-    Player* new_player = new Player(new_player_id);
-    std::cout << "[ServerNetworkManager] (Debug) Created new Player object"
-              << std::endl;
-
-    // add new player to player manager
-    PlayerManager::add_or_get_player(new_player_id);
-    std::cout << "[ServerNetworkManager] (Debug) Added Player object to "
-                 "PlayerManager"
-              << std::endl;
-
-    // add the player to a game
-    GameInstance* game = nullptr;
-    if (GameInstanceManager::add_player_to_any_game(new_player)) {
-        std::cout << "[ServerNetworkManager] Added Player to game with ID '"
-                  << game->get_id() << "'" << std::endl;
-
-        // formulate response
-        return ServerResponse(ServerResponseType::RequestResponse,
-                              ClientRequestType::ClientJoinRequest,
-                              game->get_id(), new_player_id);
-    } else {
-        // Error adding player to a game
-        std::cout << "[ServerNetworkManager] Error: Could not add player to "
-                     "any game!"
+    // check if the player id in the client request matches the one we saved
+    // for the ip
+    if (player_address_it->second != peer_address) {
+        std::cout << "Error! The player ID passed does not match the IP "
+                     "address stored for this player id. "
+                     "Only one player per peer is currently supported!"
                   << std::endl;
-        // TODO add more error messages
 
-        // Formulate error response message
-        return ServerResponse(ServerResponseType::RequestResponse,
-                              ClientRequestType::ClientJoinRequest, "",
-                              new_player_id,
-                              "Error: Could not add player to any game!");
+        const ServerResponse response(
+            ServerResponseType::RequestResponse, client_request->get_type(),
+            "", player_id,
+            "Error! The player ID passed does not match the IP "
+            "address stored for this player id. "
+            "Only one player per peer is currently supported!");
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
-}
 
-ServerResponse ServerNetworkManager::handle_ready_request_(
-    const ClientRequest* client_request,
-    const sockpp::inet_address& peer_address) {
-    assert(client_request->get_type() ==
-           ClientRequestType::ClientReadyRequest);
-
-    std::cout << "[ServerNetworkManager] (Debug) Received ready request from "
-              << peer_address.to_string() << std::endl;
-
-    return ServerResponse(ServerResponseType::RequestResponse,
-                          ClientRequestType::ClientReadyRequest,
-                          client_request->get_game_id(),
-                          client_request->get_player_id());
-}
-
-ServerResponse ServerNetworkManager::handle_prepared_request_(
-    const ClientRequest* client_request,
-    const sockpp::inet_address& peer_address) {
-    assert(client_request->get_type() ==
-           ClientRequestType::ClientPreparedRequest);
-
-    std::cout
-        << "[ServerNetworkManager] (Debug) Received perpared request from "
-        << peer_address.to_string() << std::endl;
-
-    return ServerResponse(ServerResponseType::RequestResponse,
-                          ClientRequestType::ClientPreparedRequest,
-                          client_request->get_game_id(),
-                          client_request->get_player_id());
-}
-
-ServerResponse ServerNetworkManager::handle_shoot_request_(
-    const ClientRequest* client_request,
-    const sockpp::inet_address& peer_address) {
-    throw std::runtime_error("Not implemented yet");
-}
-
-ServerResponse ServerNetworkManager::handle_give_up_request_(
-    const ClientRequest* client_request,
-    const sockpp::inet_address& peer_address) {
-    throw std::runtime_error("Not implemented yet");
+    RequestHandler::handle_request(*client_request);
 }

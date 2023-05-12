@@ -92,14 +92,14 @@ public:
     */
     EnemyBoard get_enemy_board();
 
-    bool place_ship(const std::vector<std::pair<unsigned short, unsigned short>> coords, ShipCategory shiptype);
 
     /**
      * @brief Try to shoot at a given coordinate
-     * @param coord The coordinates of the shot to be placed
+     * @param x The x coordinate
+     * @param y The y coordinate
      * TODO: Send shooting Request to Server and wait for response
     */
-    bool shoot(const std::pair<unsigned short, unsigned short> &coord);
+    bool shoot(const short &x, const short &y);
 
 private:
     std::string id_;
