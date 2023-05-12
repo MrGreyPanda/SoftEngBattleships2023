@@ -13,7 +13,7 @@ int main(int argc, const char** argv) {
         std::cout << "Connected to server!" << std::endl;
 
         ClientNetworkManager::send_request(
-            ClientRequest(ClientRequestType::ClientJoinRequest, "", ""));
+            ClientRequest(ClientRequestType::ClientJoinRequest));
 
         // simulate ready in lobby...
 

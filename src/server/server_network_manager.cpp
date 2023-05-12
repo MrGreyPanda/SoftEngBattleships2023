@@ -126,9 +126,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
                 handle_incoming_message_(message, peer_address);
             }
         } catch (std::exception& err) {
-            std::cerr
-                << "[ServerNetworkManager] Error handling socket message: "
-                << err.what() << std::endl;
+            std::cerr << "[ServerNetworkManager] Error while handling socket "
+                         "message: "
+                      << err.what() << std::endl;
         }
     }
 
@@ -140,8 +140,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_.erase(peer_address.to_string());
     sockets_mutex_.unlock();
 
-    std::cout << "[ServerNetworkManager] (Debug) Removed the socket for peer "
-              << socket.peer_address() << std::endl;
+    std::cout
+        << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
+        << socket.peer_address() << std::endl;
 }
 
 void ServerNetworkManager::handle_incoming_message_(

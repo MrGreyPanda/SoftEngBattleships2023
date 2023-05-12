@@ -3,15 +3,10 @@
 #include "client_network_manager.h"
 
 // #include <nlohmann/json.hpp>
-// #include <thread>
-
-// #include "helper_functions.h"
-// #include "player.h"
-
-// #include "server_response.h"
-// #client request
-
 #include <sockpp/exception.h>
+
+#include <sstream>
+#include <thread>
 
 using json = nlohmann::json;
 
@@ -43,6 +38,9 @@ bool ClientNetworkManager::connect(const std::string& address_string,
         // TODO check for errors
 
         // TODO start listening to this connection
+        std::thread listener(handle_incoming_messages_);
+
+        listener.detach();
 
         ClientNetworkManager::connection_status_ =
             ClientNetworkConnectionStatus::CONNECTED;
@@ -102,4 +100,32 @@ ClientNetworkConnectionStatus ClientNetworkManager::get_connection_status() {
     return ClientNetworkManager::connection_status_;
 }
 
-void ClientNetworkManager::handle_incoming_messages_() {}
+void ClientNetworkManager::handle_incoming_messages_() {
+    unsigned msg_length;
+    char msg_buffer[512];
+
+    while ((msg_length = connection_->read(msg_buffer, sizeof(msg_buffer))) >
+           0) {
+        try {
+            std::stringstream str_stream;
+            str_stream.write(msg_buffer, msg_length);
+            std::string line;
+
+            while (std::getline(str_stream, line, '\0')) {
+                std::string message = line;
+
+                // TODO handle incoming message, for now just print it
+                std::cout << "[ClientNetworkManager] (Debug) recieved "
+                             "message: '"
+                          << message << "'" << std::endl;
+            }
+        } catch (std::exception& err) {
+            std::cerr << "[ClientNetworkManager] Error while handling socket "
+                         "message: "
+                      << err.what() << std::endl;
+        }
+    }
+
+    std::cout << "[ClientNetworkManager] Lost connection to server at "
+              << connection_->peer_address() << std::endl;
+}
