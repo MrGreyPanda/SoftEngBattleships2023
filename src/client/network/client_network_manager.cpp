@@ -20,6 +20,7 @@ bool ClientNetworkManager::connect(const std::string& address_string,
                                    const uint16_t& port) {
     // initialise sockpp framework
     // sockpp::socket_initializer sock_init;
+    sockpp::initialize();
 
     // reset connection status
     ClientNetworkManager::connection_status_ =

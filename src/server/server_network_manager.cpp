@@ -26,6 +26,7 @@ std::unordered_map<std::string, sockpp::tcp_socket>
 
 ServerNetworkManager::ServerNetworkManager(unsigned port) {
     // Create the acceptor
+    sockpp::initialize();
     acceptor_ = sockpp::tcp_acceptor(port);
 
     if (!acceptor_) {
