@@ -30,7 +30,7 @@ void RequestHandler::handle_request(const ClientRequest& request) {
     }
 }
 
-Player* RequestHandler::handle_join_request(
+std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
     const ClientRequest& client_request) {
     assert(client_request.get_type() == ClientRequestType::ClientJoinRequest);
 
@@ -43,7 +43,14 @@ Player* RequestHandler::handle_join_request(
         std::cout
             << "[RequestHandler] Error: Could not add player to PlayerManager"
             << std::endl;
-        return nullptr;
+
+        const ServerResponse response(ServerResponseType::RequestResponse,
+                                      ClientRequestType::ClientJoinRequest, "",
+                                      "",
+                                      "Error: Could not add player to "
+                                      "PlayerManager");
+
+        return std::make_tuple(nullptr, response);
     }
 
     std::cout << "[RequestHandler] (Debug) Added  player with ID '"
@@ -62,9 +69,7 @@ Player* RequestHandler::handle_join_request(
                                       ClientRequestType::ClientJoinRequest,
                                       game_ptr->get_id(), new_player_id);
 
-        ServerNetworkManager::send_response(response, new_player_id);
-
-        return new_player_ptr;
+        return std::make_tuple(new_player_ptr, response);
 
     } else {
         // Error adding player to a game
@@ -79,9 +84,7 @@ Player* RequestHandler::handle_join_request(
             ClientRequestType::ClientJoinRequest, "", new_player_id,
             "Error: Could not add player to any game!");
 
-        ServerNetworkManager::send_response(response, new_player_id);
-
-        return nullptr;
+        return std::make_tuple(nullptr, response);
     }
 }
 

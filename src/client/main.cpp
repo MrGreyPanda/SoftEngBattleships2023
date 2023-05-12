@@ -15,6 +15,8 @@ int main(int argc, const char** argv) {
         ClientNetworkManager::send_request(
             ClientRequest(ClientRequestType::ClientJoinRequest));
 
+        // recieve join response
+
         // simulate ready in lobby...
 
         // ClientNetworkManager::send_request(

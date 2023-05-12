@@ -1,7 +1,10 @@
 #pragma once
 
+#include <tuple>
+
 #include "client_request.h"
 #include "player.h"
+#include "server_response.h"
 
 class RequestHandler {
    public:
@@ -15,7 +18,8 @@ class RequestHandler {
      * @param request The client request object
      * @returns The pointer to the new player object
      */
-    static Player* handle_join_request(const ClientRequest& request);
+    static std::tuple<Player*, ServerResponse> handle_join_request(
+        const ClientRequest& request);
 
    private:
     /**
