@@ -74,17 +74,18 @@ void ServerNetworkManager::send_response_to_peer_(
     auto bytes_sent = socket.write(message.c_str(), message.size());
 
     if (bytes_sent != message.size()) {
-        std::cout << "Failed to send full request to server" << std::endl;
+        std::cout << "[ServerNetworkManager] Error Failed to send full "
+                     "request to server"
+                  << std::endl;
         std::cerr << socket.last_error_str() << std::endl;
     } else {
-        std::cout << "Sent response to client: '" << message << "'"
-                  << std::endl;
+        std::cout
+            << "[ServerNetworkManager] (Debug) Sent response to client: '"
+            << message << "'" << std::endl;
     }
 }
 
 void ServerNetworkManager::start_() {
-    // Start the listener loop
-
     while (true) {
         sockpp::inet_address peer_address;
         sockpp::tcp_socket socket = acceptor_.accept(&peer_address);

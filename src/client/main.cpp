@@ -10,12 +10,13 @@ int main(int argc, const char** argv) {
     // TODO open connection window
 
     if (ClientNetworkManager::connect("localhost", 1337)) {
-        std::cout << "Connected to server!" << std::endl;
-
+        // Send join request when connected
         ClientNetworkManager::send_request(
             ClientRequest(ClientRequestType::ClientJoinRequest));
 
         // recieve join response
+        while (true) {
+        }
 
         // simulate ready in lobby...
 
