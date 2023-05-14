@@ -49,8 +49,10 @@ void ConnectionWindow::render()
             if (!ClientNetworkManager::connect(m_server_address, m_server_port))
                 SDLGui::Text("serverMessageText").updateText(64, "Failed to connect to %s:%hu", m_server_address, m_server_port);
             else {
-                ClientNetworkManager::send_request(ClientRequest(ClientRequestType::ClientJoinRequest));
                 SDLGui::Text("serverMessageText").updateText(64, "Connecting to %s:%hu...", m_server_address, m_server_port);
+                SDLGui::TextButton("serverConnectionButton").disable();
+                SDLGui::TextInput("serverAddressInput").disable();
+                ClientNetworkManager::send_request(ClientRequest(ClientRequestType::ClientJoinRequest));
             }
         }
     }
