@@ -1,7 +1,5 @@
 #include "join_response.h"
 
-JoinResponse::JoinResponse() : Response(MessageType::JoinResponseType) {}
-
 JoinResponse::JoinResponse(const json& data) : Response(data) {}
 
 JoinResponse::JoinResponse(const std::string& game_id,

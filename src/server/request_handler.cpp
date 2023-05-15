@@ -43,8 +43,7 @@ void RequestHandler::handle_request(const MessageType& type,
         case MessageType::ShootRequestType:
             // Parse the ready request
             try {
-                ShootRequest shoot_request;
-                shoot_request = ShootRequest(data);
+                ShootRequest shoot_request(data);
                 handle_shoot_request_(shoot_request);
             } catch (const std::exception& e) {
                 std::cout << "[RequestHandler] Error parsing shoot request: "
@@ -149,7 +148,7 @@ void RequestHandler::handle_ready_request_(const ReadyRequest& ready_request) {
     const ReadyResponse ready_response(ready_request.get_game_id(),
                                        ready_request.get_player_id());
 
-    ServerNetworkManager::send_response(ready_response,
+    ServerNetworkManager::send_response(ready_response.to_string(),
                                         ready_response.get_player_id());
 }
 
@@ -177,12 +176,14 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
     // Check if own players enemy board is already shot at the given coords
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
         // Send error message to client
-        const ShootResponse shoot_response(
-            shoot_request.get_game_id(), shoot_request.get_player_id(),
-            "Error: You already shot at this position!");
 
-        ServerNetworkManager::send_response(shoot_response,
-                                            shoot_response.get_player_id());
+        // TODO
+        // const ShootResponse shoot_response(
+        //     shoot_request.get_game_id(), shoot_request.get_player_id(),
+        //     "Error: You already shot at this position!");
+
+        // ServerNetworkManager::send_response(shoot_response.to_string(),
+        //                                     shoot_response.get_player_id());
         return;
     }
 
@@ -196,12 +197,14 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
 
     if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
         // Send error message to client
-        const ShootResponse shoot_response(
-            shoot_request.get_game_id(), shoot_request.get_player_id(),
-            "Error: This position was already shot at!");
 
-        ServerNetworkManager::send_response(shoot_response,
-                                            shoot_response.get_player_id());
+        // TODO
+        // const ShootResponse shoot_response(
+        //     shoot_request.get_game_id(), shoot_request.get_player_id(),
+        //     "Error: This position was already shot at!");
+
+        // ServerNetworkManager::send_response(shoot_response.to_string(),
+        //                                     shoot_response.get_player_id());
         return;
     }
 
@@ -215,7 +218,7 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
         //                         shoot_request.get_game_id(),
         //                         shoot_request.get_player_id(),
         //                         "Hit!");
-        // ServerNetworkManager::send_response(response,
+        // ServerNetworkManager::send_response(response.to_string(),
         // response.get_player_id());
 
         // // Send hit message to other client
@@ -224,7 +227,7 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
         //                         shoot_request.get_game_id(),
         //                         other_player_id,
         //                         "You got hit!");
-        // ServerNetworkManager::send_response(response,
+        // ServerNetworkManager::send_response(response.to_string(),
         // response.get_player_id());
 
         // Get ship from other players board
@@ -265,7 +268,7 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
             //                     shoot_request.get_game_id(),
             //                     shoot_request.get_player_id(),
             //                     "You won!");
-            // ServerNetworkManager::send_response(response,
+            // ServerNetworkManager::send_response(response.to_string(),
             // response.get_player_id());
 
             // // Send lose message to other client
@@ -275,7 +278,7 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
             //                     shoot_request.get_game_id(),
             //                     other_player_id,
             //                     "You lost!");
-            // ServerNetworkManager::send_response(response,
+            // ServerNetworkManager::send_response(response.to_string(),
             // response.get_player_id());
             game_ptr->set_phase(End);
         }

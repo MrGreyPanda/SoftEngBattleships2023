@@ -154,6 +154,10 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
             std::string line;
 
             while (std::getline(str_stream, line, '\0')) {
+                if (line.empty()) {
+                    continue;
+                }
+
                 std::string message = line;
                 handle_incoming_message_(message, peer_address);
             }
@@ -190,61 +194,43 @@ void ServerNetworkManager::handle_incoming_message_(
                   << std::endl;
 
         // create error response
-        const Response error_response("", "", "Error: Invalid JSON");
+        const Response error_response(MessageType::UnknownType, "", "",
+                                      "Error: Invalid JSON");
 
-        send_response_to_peer_(error_response, peer_address);
+        send_response_to_peer_(error_response.to_string(), peer_address);
         return;
     }
 
     const MessageType request_type =
-        MessageTypeHelpers::make_message_type_from_string(
-            data["message_type"]);
+        MessageTypeHelpers::make_message_type_from_string(data["type"]);
 
-    if (request_type == ClientRequestType::Join) {
+    if (request_type == MessageType::JoinRequestType) {
         // Handle join request
 
-        ClientRequest client_join_request;
+        JoinRequest client_join_request;
 
-        try {
-            client_join_request = ClientRequest(data);
-        } catch (std::exception& e) {
-            std::cout << "[ServerNetworkManager] Error parsing join request: "
-                      << e.what() << std::endl;
-            return;
+        std::tuple<Player*, JoinResponse> join_req_tuple =
+            RequestHandler::handle_join_request(client_join_request);
+
+        Player* player_ptr    = std::get<0>(join_req_tuple);
+        JoinResponse response = std::get<1>(join_req_tuple);
+
+        if (player_ptr != nullptr) {
+            player_addr_mutex_.lock();
+            // TODO check if player_ptr has ID maybe?
+            player_addresses_.emplace(player_ptr->get_id(), peer_address);
+            player_addr_mutex_.unlock();
         }
 
-        // Create a player id for this connection if it is a join request
-        // Also add the player to a game
-        if (client_join_request.get_type() == ClientRequestType::Join) {
-            std::tuple<Player*, ServerResponse> join_req_tuple =
-                RequestHandler::handle_join_request(client_join_request);
-
-            Player* player_ptr      = std::get<0>(join_req_tuple);
-            ServerResponse response = std::get<1>(join_req_tuple);
-
-            if (player_ptr != nullptr) {
-                player_addr_mutex_.lock();
-                // TODO check if player_ptr has ID maybe?
-                player_addresses_.emplace(player_ptr->get_id(), peer_address);
-                player_addr_mutex_.unlock();
-            }
-
-            send_response_to_peer_(response, peer_address);
-            return;
-        }
+        send_response_to_peer_(response.to_string(), peer_address);
+        return;
     } else {
         // Handle other requests than join
-        ClientRequest client_request;
-        try {
-            client_request = ClientRequest(data);
-        } catch (std::exception& e) {
-            std::cout << "[ServerNetworkManager] Error parsing join request: "
-                      << e.what() << std::endl;
-            return;
-        }
 
-        // check if this is a message from a known player
-        std::string player_id = client_request.get_player_id();
+        // get the player id from the message
+        const Message message_obj(data);
+        const std::string player_id    = message_obj.get_player_id();
+        const MessageType request_type = message_obj.get_type();
 
         // look for the IP address for the given player_id in the
         // player_addresses map
@@ -253,16 +239,13 @@ void ServerNetworkManager::handle_incoming_message_(
         if (player_address_it == player_addresses_.end()) {
             // This is not a message from a known player
             std::cout << "[ServerNetworkManager] Error: Player with ID '"
-                      << player_id << "' is not a known player of this game."
-                      << std::endl;
+                      << player_id << "' is not known." << std::endl;
 
             // create error response
-            const ServerResponse response(
-                ServerResponseType::RequestResponse, client_request.get_type(),
-                "", player_id,
-                "Error: Player is not a known player of this game");
+            const Response response(request_type, "", player_id,
+                                    "Error: Unkown player ID.");
 
-            send_response_to_peer_(response, peer_address);
+            send_response_to_peer_(response.to_string(), peer_address);
             return;
         }
 
@@ -274,17 +257,13 @@ void ServerNetworkManager::handle_incoming_message_(
                          "Malicious activity is suspected!"
                       << std::endl;
 
-            const ServerResponse response(
-                ServerResponseType::RequestResponse, client_request.get_type(),
-                "", player_id,
-                "Error! The player ID passed does not match the IP "
-                "address stored for this player id. "
-                "Only one player per peer is currently supported!");
+            const Response response(request_type, "", player_id,
+                                    "Error! Unknown player ID.");
 
-            send_response_to_peer_(response, peer_address);
+            send_response_to_peer_(response.to_string(), peer_address);
             return;
         }
 
-        RequestHandler::handle_request(client_request.get_type(), data);
+        RequestHandler::handle_request(request_type, data);
     }
 }

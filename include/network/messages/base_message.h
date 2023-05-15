@@ -8,6 +8,7 @@ using json = nlohmann::json;
 
 class BaseMessage {
    public:
+    BaseMessage(const json& type);
     BaseMessage(const MessageType& type);
 
     /**
@@ -22,7 +23,7 @@ class BaseMessage {
      *
      * @return json
      */
-    json to_json() const;
+    virtual json to_json() const;
 
     /**
      * @brief Get the JSON string representation of this message

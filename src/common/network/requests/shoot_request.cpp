@@ -1,7 +1,5 @@
 #include "shoot_request.h"
 
-ShootRequest::ShootRequest() : Message() {}
-
 ShootRequest::ShootRequest(const json& data) : Message(data) {
     if (data.contains("x") && data["x"].is_number_integer()) {
         x_ = data["x"].get<unsigned short>();

@@ -18,8 +18,7 @@ std::map<std::string, MessageType> MessageTypeHelpers::message_type_map_ = {
     {"start_game_message", StartGameMessageType},
     {"start_battle_message", StartBattleMessageType},
     {"turn_message", TurnMessageType},
-    {"shot_message", ShotMessageType},
-    {"end_message", EndMessageType},
+    {"game_over_message", GameOverMessageType},
 
     // responses
     {"join_response", JoinResponseType},

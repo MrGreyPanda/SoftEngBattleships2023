@@ -3,10 +3,13 @@
 #include <sstream>
 #include <thread>
 
-#include "client_join_request.h"
-#include "client_prepared_request.h"
-#include "client_ready_request.h"
 #include "gtest/gtest.h"
+#include "join_request.h"
+#include "join_response.h"
+#include "prepared_request.h"
+#include "prepared_response.h"
+#include "ready_request.h"
+#include "ready_response.h"
 #include "server_network_manager.h"
 #include "ship.h"
 #include "sockpp/tcp_connector.h"
@@ -36,7 +39,7 @@ void send_request_to_server(sockpp::tcp_connector& connector,
     ASSERT_TRUE(bytes_sent == message.size());
 }
 
-ServerResponse recieve_response_from_server(sockpp::tcp_connector& connector) {
+json recieve_response_json_from_server(sockpp::tcp_connector& connector) {
     unsigned msg_length;
     char msg_buffer[512];
 
@@ -48,9 +51,8 @@ ServerResponse recieve_response_from_server(sockpp::tcp_connector& connector) {
 
         if (std::getline(str_stream, line, '\0')) {
             const json message_json = json::parse(line);
-            const ServerResponse response(message_json);
 
-            return response;
+            return message_json;
         } else {
             throw std::runtime_error("Failed to parse message");
         }
@@ -82,21 +84,19 @@ TEST(BackendIntegrationTest, Join) {
     // Launch async tasks for sending requests and receiving responses
     auto task1 = std::async(std::launch::async, [&]() {
         send_request_to_server(connector_1, join_request.to_string());
-        return recieve_response_from_server(connector_1);
+        return recieve_response_json_from_server(connector_1);
     });
     auto task2 = std::async(std::launch::async, [&]() {
         send_request_to_server(connector_2, join_request.to_string());
-        return recieve_response_from_server(connector_2);
+        return recieve_response_json_from_server(connector_2);
     });
 
     try {
         // Get the results from the async tasks
-        const ServerResponse join_response_1 = task1.get();
+        const JoinResponse join_response_1(task1.get());
 
         // for player 1
-        EXPECT_EQ(join_response_1.get_type(),
-                  ServerResponseType::RequestResponse);
-        EXPECT_EQ(join_response_1.get_request_type(), ClientRequestType::Join);
+        EXPECT_EQ(join_response_1.get_type(), MessageType::JoinResponseType);
 
         game_id_1 = join_response_1.get_game_id();
         EXPECT_FALSE(game_id_1.empty());
@@ -105,10 +105,8 @@ TEST(BackendIntegrationTest, Join) {
         EXPECT_FALSE(player_id_1.empty());
 
         // for player 2
-        const ServerResponse join_response_2 = task2.get();
-        EXPECT_EQ(join_response_2.get_type(),
-                  ServerResponseType::RequestResponse);
-        EXPECT_EQ(join_response_2.get_request_type(), ClientRequestType::Join);
+        const JoinResponse join_response_2(task2.get());
+        EXPECT_EQ(join_response_2.get_type(), MessageType::JoinResponseType);
 
         game_id_2 = join_response_2.get_game_id();
         EXPECT_FALSE(game_id_2.empty());
@@ -126,12 +124,10 @@ TEST(BackendIntegrationTest, Ready) {
     ReadyRequest ready_request_1(game_id_1, player_id_1);
     send_request_to_server(connector_1, ready_request_1.to_string());
 
-    const ServerResponse ready_response_1 =
-        recieve_response_from_server(connector_1);
+    const ReadyResponse ready_response_1(
+        recieve_response_json_from_server(connector_1));
 
-    EXPECT_EQ(ready_response_1.get_type(),
-              ServerResponseType::RequestResponse);
-    EXPECT_EQ(ready_response_1.get_request_type(), ClientRequestType::Ready);
+    EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
     EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
     EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
 
@@ -139,13 +135,11 @@ TEST(BackendIntegrationTest, Ready) {
     ReadyRequest ready_request_2(game_id_2, player_id_2);
     send_request_to_server(connector_2, ready_request_2.to_string());
 
-    const ServerResponse ready_response_2 =
-        recieve_response_from_server(connector_2);
+    const ReadyResponse ready_response_2(
+        recieve_response_json_from_server(connector_2));
 
     // check if the response is a ready response
-    EXPECT_EQ(ready_response_2.get_type(),
-              ServerResponseType::RequestResponse);
-    EXPECT_EQ(ready_response_2.get_request_type(), ClientRequestType::Ready);
+    EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
     EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
     EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
 }
@@ -164,8 +158,8 @@ TEST(BackendIntegrationTest, Preparation) {
         ShipData(ShipCategory::Destroyer, false, 0, 5),
     };
 
-    const PreparedRequest preparation_request_1(game_id_1, player_id_1,
-                                                ships_data_1);
+    const PreparedRequest prepared_request_1(game_id_1, player_id_1,
+                                             ships_data_1);
 
     // Place ships for player 2
     std::vector<ShipData> ships_data_2 = {
@@ -176,8 +170,8 @@ TEST(BackendIntegrationTest, Preparation) {
         ShipData(ShipCategory::Destroyer, false, 5, 3),
     };
 
-    const PreparedRequest preparation_request_2(game_id_2, player_id_2,
-                                                ships_data_2);
+    const PreparedRequest prepared_request_2(game_id_2, player_id_2,
+                                             ships_data_2);
 }
 
 TEST(BackendIntegrationTest, Shoot) {}

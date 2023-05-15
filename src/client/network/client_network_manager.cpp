@@ -2,13 +2,12 @@
 
 #include "client_network_manager.h"
 
-// #include <nlohmann/json.hpp>
 #include <sockpp/exception.h>
 
 #include <sstream>
 #include <thread>
 
-using json = nlohmann::json;
+#include "join_request.h"
 
 // initialise static members
 sockpp::tcp_connector* ClientNetworkManager::connection_ = nullptr;
@@ -81,7 +80,7 @@ bool ClientNetworkManager::connect_to_host_(const std::string& address_string,
     return true;  // connect worked
 }
 
-void ClientNetworkManager::send_request(const ClientRequest& request) {
+void ClientNetworkManager::send_message(const std::string& message) {
     // 1. check if connected to server
     if (!ClientNetworkManager::connection_->is_connected()) {
         std::cout << "[ClientNetworkManager] Not connected to server"
@@ -90,12 +89,12 @@ void ClientNetworkManager::send_request(const ClientRequest& request) {
     }
 
     // 2. Send the client request to the server as json
-    const std::string message = request.to_string() + '\0';
+    const std::string term_msg = message + '\0';
 
-    auto bytes_sent = ClientNetworkManager::connection_->write(message.c_str(),
-                                                               message.size());
+    auto bytes_sent = ClientNetworkManager::connection_->write(
+        term_msg.c_str(), term_msg.size());
 
-    if (bytes_sent != message.size()) {
+    if (bytes_sent != term_msg.size()) {
         std::cout
             << "[ClientNetworkManager] Failed to send full request to server"
             << std::endl;

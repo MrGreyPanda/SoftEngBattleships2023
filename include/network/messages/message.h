@@ -29,14 +29,7 @@ class Message : public BaseMessage {
      *
      * @return json
      */
-    json to_json() const;
-
-    /**
-     * @brief Get the string representation of this message
-     *
-     * @return std::string
-     */
-    std::string to_string() const;
+    virtual json to_json() const override;
 
    private:
     std::string player_id_;

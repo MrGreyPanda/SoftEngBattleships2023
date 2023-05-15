@@ -20,8 +20,7 @@ enum MessageType {
     StartGameMessageType,
     StartBattleMessageType,
     TurnMessageType,
-    ShotMessageType,
-    EndMessageType,
+    GameOverMessageType,
 
     // responses
     JoinResponseType,
@@ -35,6 +34,7 @@ enum MessageType {
 };
 
 class MessageTypeHelpers {
+   public:
     /*
      * @brief Converts a string to a message type
      *
