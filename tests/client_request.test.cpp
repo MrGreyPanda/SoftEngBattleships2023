@@ -47,8 +47,7 @@ TEST(ClientRequestTest, CreateClientJoinRequestFromJSON) {
         FAIL();
     }
 
-    EXPECT_EQ(client_request_ptr->get_type(),
-              ClientRequestType::ClientJoinRequest);
+    EXPECT_EQ(client_request_ptr->get_type(), ClientRequestType::Join);
     EXPECT_EQ(client_request_ptr->get_game_id(), "");
     EXPECT_EQ(client_request_ptr->get_player_id(), "");
 
@@ -64,37 +63,36 @@ TEST(ClientRequestTest, CreateClientReadyRequestFromJSON) {
         FAIL();
     }
 
-    EXPECT_EQ(client_request_ptr->get_type(),
-              ClientRequestType::ClientReadyRequest);
+    EXPECT_EQ(client_request_ptr->get_type(), ClientRequestType::Ready);
     EXPECT_EQ(client_request_ptr->get_game_id(),
               json_data["game_id"].get<std::string>());
     EXPECT_EQ(client_request_ptr->get_player_id(),
               json_data["player_id"].get<std::string>());
-              
+
     delete std::get<1>(parsed_info_tuple);
 }
 
 TEST(ClientRequestTest, GetClientRequestTypeFromMesssageTypeString) {
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "join"),
-              ClientRequestType::ClientJoinRequest);
+              ClientRequestType::Join);
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "ready"),
-              ClientRequestType::ClientReadyRequest);
+              ClientRequestType::Ready);
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "prepared"),
-              ClientRequestType::ClientPreparedRequest);
+              ClientRequestType::Prepared);
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "shoot"),
-              ClientRequestType::ClientShootRequest);
+              ClientRequestType::Shoot);
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "give_up"),
-              ClientRequestType::ClientGiveUpRequest);
+              ClientRequestType::GiveUp);
 
     // unknown message type string
     EXPECT_EQ(ClientRequest::get_client_request_type_from_message_type_string(
                   "whatever"),
-              ClientRequestType::ClientUnknownRequest);
+              ClientRequestType::Unknown);
 }
 
 TEST(ClientRequestTest, ClientRequestToJSON) {

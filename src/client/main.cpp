@@ -12,7 +12,7 @@ int main(int argc, const char** argv) {
     if (ClientNetworkManager::connect("localhost", 1337)) {
         // Send join request when connected
         ClientNetworkManager::send_request(
-            ClientRequest(ClientRequestType::ClientJoinRequest));
+            ClientRequest(ClientRequestType::Join));
 
         // recieve join response
         while (true) {
@@ -21,7 +21,7 @@ int main(int argc, const char** argv) {
         // simulate ready in lobby...
 
         // ClientNetworkManager::send_request(
-        //     ClientRequest(ClientRequestType::ClientReadyRequest, "", ""));
+        //     ClientRequest(ClientRequestType::Ready, "", ""));
     }
 
     return 0;

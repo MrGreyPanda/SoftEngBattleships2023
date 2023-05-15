@@ -8,7 +8,8 @@
 
 class RequestHandler {
    public:
-    static void handle_request(const ClientRequest& request);
+    static void handle_request(const ClientRequestType& type,
+                               const json& data);
 
     /**
      * @brief Handle a join request. Creates a new player and returns a pointer
