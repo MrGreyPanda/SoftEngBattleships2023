@@ -18,11 +18,7 @@ TEST(ShipTest, ShootAtShip) {
     EXPECT_EQ(2, Submarine);
     EXPECT_EQ(3, category_to_size(sub));
     EXPECT_EQ(3, category_to_size(my_ship.get_name()));
-    EXPECT_EQ(3, my_ship.get_damage());
-    EXPECT_EQ(3, my_ship.get_length());
-    EXPECT_EQ(false, my_ship.get_is_sunk());
-    my_ship.shot_at();
-    EXPECT_EQ(2, my_ship.get_damage());
+    EXPECT_EQ(0, my_ship.get_damage());
     EXPECT_EQ(3, my_ship.get_length());
     EXPECT_EQ(false, my_ship.get_is_sunk());
     my_ship.shot_at();
@@ -30,7 +26,11 @@ TEST(ShipTest, ShootAtShip) {
     EXPECT_EQ(3, my_ship.get_length());
     EXPECT_EQ(false, my_ship.get_is_sunk());
     my_ship.shot_at();
-    EXPECT_EQ(0, my_ship.get_damage());
+    EXPECT_EQ(2, my_ship.get_damage());
+    EXPECT_EQ(3, my_ship.get_length());
+    EXPECT_EQ(false, my_ship.get_is_sunk());
+    my_ship.shot_at();
+    EXPECT_EQ(3, my_ship.get_damage());
     EXPECT_EQ(3, my_ship.get_length());
     EXPECT_EQ(true, my_ship.get_is_sunk());
 }

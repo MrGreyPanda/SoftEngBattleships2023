@@ -63,7 +63,7 @@ unsigned short get_num_ships();
  * @brief Get the ships_ on the board
  * @return The ships_ on the board
 */
-std::shared_ptr<std::vector<std::shared_ptr<Ship>>> get_ship_vec();
+std::vector<Ship*>* get_ship_vec();
 
 /**
  * @brief Get the is_shot_ value at a given coordinate
@@ -87,7 +87,7 @@ private:
     unsigned short grid_size_ = 10;
     std::vector<std::vector<unsigned short>> grid_ = std::vector<std::vector<unsigned short>>(grid_size_, std::vector<unsigned short>(grid_size_, 0));
     std::vector<std::vector<bool>> is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
-    std::vector<std::shared_ptr<Ship>> ships_;
+    std::vector<Ship*> ships_;
 };
 
 /*
@@ -106,7 +106,7 @@ public:
 // OwnBoard();
 using Board::Board;
 
-~OwnBoard();
+// ~OwnBoard();
 
 // /**
 //  * @brief Construct a new Own Board object
@@ -145,7 +145,7 @@ bool rotate_ship(Ship &ship);
  * @return The ship at the given coordinate
  * TODO: throw an error if no ship at given coordinate
 */
-std::shared_ptr<Ship> get_ship(const short &x, const short &y);
+Ship* get_ship(const short &x, const short &y);
 
 /**
  * @brief Check if all the ships on this board have been destroyed
@@ -176,7 +176,7 @@ public:
 // EnemyBoard();
 using Board::Board;
 
-~EnemyBoard();
+// ~EnemyBoard();
 
 // /**
 //  * @brief Construct a new Enemy Board object

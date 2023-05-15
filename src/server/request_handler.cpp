@@ -172,7 +172,7 @@ void RequestHandler::handle_shoot_request_(
         // ServerNetworkManager::send_response(response, response.get_player_id());
 
         // Get ship from other players board
-        std::shared_ptr<Ship> ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
+        Ship* ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
 
         // Update the ships health
         other_player_ptr->get_own_board().update_ship(x, y);

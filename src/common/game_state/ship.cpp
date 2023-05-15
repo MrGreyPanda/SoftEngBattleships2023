@@ -39,7 +39,6 @@ Ship::Ship(ShipCategory name_) : name_(name_), is_sunk_(false), is_placed_(false
     length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
-    damage_ = length_;
 }
 
 Ship::Ship() : name_(Destroyer), is_sunk_(false), length_(2), damage_(0), is_placed_(false), is_horizontal_(false){}

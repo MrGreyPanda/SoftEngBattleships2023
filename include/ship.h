@@ -133,7 +133,7 @@ private:
 
     unsigned short length_;
     bool is_sunk_;
-    unsigned short damage_;
+    unsigned short damage_ = 0;
     ShipCategory name_;
     bool is_horizontal_;
     bool is_placed_;
