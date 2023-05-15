@@ -59,6 +59,13 @@ void set_grid_value(const short &x, const short &y, int value);
 */
 bool get_is_shot(const short &x, const short &y);
 
+/**
+ * @brief Set the is_shot_ value at a given coordinate
+ * @param x, y The coordinates
+ * @param value The value to set the is_shot_ value to
+*/
+void set_is_shot(const short &x, const short &y, bool value);
+
 
 private:
     /**
@@ -67,7 +74,7 @@ private:
     unsigned short grid_size_ = 10;
     std::vector<std::vector<unsigned short>> grid_ = std::vector<std::vector<unsigned short>>(grid_size_, std::vector<unsigned short>(grid_size_, 0));
     std::vector<std::vector<bool>> is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
-    std::vector<Ship> ships_;
+    std::vector<Ship*> ships_;
 };
 
 /*
@@ -118,6 +125,25 @@ bool place_ship(const short &x, const short &y, Ship &ship);
 */
 bool rotate_ship(Ship &ship);
 
+
+/**
+ * @brief Get the ship at a given coordinate
+ * @param x, y The coordinates
+ * @return The ship at the given coordinate
+ * TODO: throw an error if no ship at given coordinate
+*/
+Ship* get_ship(const short &x, const short &y);
+
+/**
+ * @brief Check if all the ships on this board have been destroyed
+*/
+bool all_ships_sunk();
+
+/**
+ * @brief update the ship at a given coordinate
+*/
+void update_ship(const short &x, const short &y);
+
 private:
 
 };
@@ -150,6 +176,8 @@ using Board::Board;
  * @param x, y The coordinates of the shot to be placed
 */
 bool is_valid_shot(const short &x, const short &y);
+
+void update_ship_vec(ShipCategory ship);
 
 private:
 

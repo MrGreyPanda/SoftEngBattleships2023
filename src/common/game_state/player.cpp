@@ -45,4 +45,6 @@ bool Player::shoot(const short &x, const short &y) {
     return false;
 }
 
+bool Player::has_lost() { return own_board_.all_ships_sunk(); }
+
 Player::~Player() {}

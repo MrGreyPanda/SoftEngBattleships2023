@@ -109,6 +109,11 @@ class GameState {
      */
     std::vector<Ship> get_ships();
 
+
+    bool start_game(); // Let's see if this is needed
+
+    std::string get_other_player_id(std::string id);
+
    private:
     std::string id_;
     std::vector<Player*> players_;

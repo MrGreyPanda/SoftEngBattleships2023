@@ -49,12 +49,12 @@ Ship::~Ship() {
 }
 
 void Ship::shot_at() {
-    if (damage_ <= 0 || is_sunk_) {
+    if (damage_ <= 0 || is_sunk_ || damage_ > length_) {
         // throw std::exception("This ship is already sunk and therefore can't
         // be shot at. Invalid shot.");
     }
-    --damage_;
-    if (damage_ == 0) {
+    ++damage_;
+    if (damage_ == length_) {
         is_sunk_ = true;
         // std::cout << "Your " << name_ << " has been sunk!\n";
     }
@@ -67,6 +67,8 @@ unsigned short Ship::get_damage() const { return damage_; }
 ShipCategory Ship::get_name() const { return name_; }
 
 bool Ship::get_is_sunk() const { return is_sunk_; }
+
+void Ship::set_is_sunk(bool is_sunk){ is_sunk_ = is_sunk;}
 
 bool Ship::get_is_horizontal() const{
     return is_horizontal_;

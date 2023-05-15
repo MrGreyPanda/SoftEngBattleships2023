@@ -20,7 +20,12 @@ Board::Board() : grid_size_(10) {
 //     is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
 // }
 
-Board::~Board() {}
+Board::~Board() {
+    for (int i = 0; i < ships_.size(); i++) {
+        delete ships_[i];
+    }
+    ships_.clear();
+}
 
 unsigned short Board::get_grid_size() { return grid_size_; }
 
@@ -44,9 +49,16 @@ bool Board::get_is_shot(const short &x, const short &y) {
     return is_shot_[y][x];
 }
 
+void Board::set_is_shot(const short &x, const short &y, bool value) {
+    is_shot_[y][x] = value;
+}
+
 // OwnBoard::OwnBoard() : Board() {}
 
 // OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
+
+
+// ------------ OwnBoard ------------- //
 
 OwnBoard::~OwnBoard() {}
 
@@ -156,6 +168,31 @@ bool OwnBoard::rotate_ship(Ship &ship) {
     }
 }
 
+Ship* OwnBoard::get_ship(const short &x, const short &y){
+    ShipCategory shiptype = (ShipCategory) get_grid_value(x, y);
+    for(int i = 0; i < ships_.size(); i++){
+        if(ships_[i].get_name() == shiptype) return &ships_[i];
+    }
+
+    // TODO Throw exception here unexpected behaviour
+    return nullptr;
+}
+
+bool OwnBoard::all_ships_sunk(){
+    for(int i = 0; i < ships_.size(); i++){
+        if(ships_[i].get_is_sunk() == false) return false;
+    }
+    return true;
+}
+
+void OwnBoard::update_ship(const short &x, const short &y){
+    Ship* ship = get_ship(x, y);
+    if(ship == nullptr) return; //maybe throw exception here
+    ship->shot_at();
+}
+
+
+// ------------ EnemyBoard ------------- //
 EnemyBoard::~EnemyBoard() {}
 
 bool EnemyBoard::is_valid_shot(
@@ -165,4 +202,14 @@ bool EnemyBoard::is_valid_shot(
     if (y < 0 || y > grid_size_) return false;
     if (this->get_is_shot(x, y)) return false;
     return true;
+}
+
+
+void update_ship_vec(ShipCategory ship){
+    for(int i = 0; i < ships_.size(); i++){
+        if(ships_[i].get_name() == ship){
+            ships_[i].set_is_sunk(true)
+            return true;
+        }
+    }
 }
