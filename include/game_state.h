@@ -16,7 +16,7 @@ the index of the player in the players array whose turn it is.
 */
 
 // Enum describing the different phases of the game
-enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3 };
+enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3};
 
 class GameState {
    public:
@@ -63,6 +63,13 @@ class GameState {
     std::vector<Player*> get_players();
 
     /**
+     * @brief Get player by id_
+     * @param id_ The id_ of the player
+     * @return The player with the given id_
+     */
+    Player* get_player_by_id(std::string id_);
+
+    /**
      * @brief Adds player to the game
      * 
      * @return true 
@@ -101,6 +108,11 @@ class GameState {
      * @return The ships_ in the game
      */
     std::vector<Ship> get_ships();
+
+
+    bool start_game(); // Let's see if this is needed
+
+    std::string get_other_player_id(std::string id);
 
    private:
     std::string id_;

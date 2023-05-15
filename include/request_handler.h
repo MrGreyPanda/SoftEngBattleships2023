@@ -44,6 +44,8 @@ class RequestHandler {
      * send_response function of the ServerNetworkManager
      *
      * @param request
+     * 
+     * TODO: Check if the hit ship is sunk, and if so, send a message to the players, and update the game state/boards
      */
     static void handle_shoot_request_(const ClientRequest& request);
 

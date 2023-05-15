@@ -1,39 +1,38 @@
 #include "board.h"
 
 Board::Board() : grid_size_(10) {
-    // ships_.resize(5);
-    ships_ = {Ship(Carrier),
-    Ship(Battleship),
-    Ship(Cruiser),
-    Ship(Submarine),
-    Ship(Destroyer)};
+    ships_ = {new Ship(Carrier), new Ship(Battleship), new Ship(Cruiser), new Ship(Destroyer), new Ship(Submarine)};
 }
 
-// Board::Board(unsigned short grid_size) : grid_size_(grid_size) {
-//     ships_.resize(5);
-//     ships_[Carrier]    = Ship(Carrier);
-//     ships_[Battleship] = Ship(Battleship);
-//     ships_[Cruiser]    = Ship(Cruiser);
-//     ships_[Submarine]  = Ship(Submarine);
-//     ships_[Destroyer]  = Ship(Destroyer);
-//     grid_ = std::vector<std::vector<int>>(grid_size_, std::vector<int>(grid_size_, 0));
-//     is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
-// }
 
-Board::~Board() {}
+
+// I should need to use delete here, but I don't know why it doesn't work
+Board::~Board() {
+    // for (int i = 0; i < ships_.size(); i++) {
+    //     if(ships_[i] != nullptr) delete ships_[i];
+    // }
+    // ships_.clear();
+}
 
 unsigned short Board::get_grid_size() { return grid_size_; }
 
-unsigned short Board::get_num_active_ships() {
-    unsigned short num_active_ships = 0;
-    for (int i = 0; i < ships_.size(); i++) {
-        if (!ships_[i].get_is_sunk()) num_active_ships++;
-    }
-    return num_active_ships;
-}
+// unsigned short Board::get_num_active_ships() {
+//     unsigned short num_active_ships = 0;
+//     for (int i = 0; i < ships_.size(); i++) {
+//         if (!ships_[i]->get_is_sunk()) num_active_ships++;
+//     }
+//     return num_active_ships;
+// }
 
 unsigned short Board::get_grid_value(const short &x, const short &y) {
     return grid_[y][x];
+}
+
+unsigned short Board::get_num_ships() {
+    return ships_.size();
+}
+std::vector<Ship*>* Board::get_ship_vec() {
+    return &ships_;
 }
 
 void Board::set_grid_value(const short &x, const short &y, int value) {
@@ -44,11 +43,24 @@ bool Board::get_is_shot(const short &x, const short &y) {
     return is_shot_[y][x];
 }
 
+void Board::set_is_shot(const short &x, const short &y, bool value) {
+    is_shot_[y][x] = value;
+}
+
 // OwnBoard::OwnBoard() : Board() {}
 
 // OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
 
-OwnBoard::~OwnBoard() {}
+
+// ------------ OwnBoard ------------- //
+
+// OwnBoard::~OwnBoard() {
+//     auto ships_vec = *this->get_ship_vec();
+//     for (int i = 0; i < ships_vec.size(); i++) {
+//         delete ships_vec[i];
+//     }
+//     ships_vec.clear();
+// }
 
 bool OwnBoard::is_valid_placement(const short &x, const short &y, const Ship &ship) {
     int grid_size_ = this->get_grid_size();
@@ -155,8 +167,44 @@ bool OwnBoard::rotate_ship(Ship &ship) {
         return true;
     }
 }
+Ship* OwnBoard::get_ship(const short &x, const short &y){
+    ShipCategory shiptype = (ShipCategory) get_grid_value(x, y);
+    int num_ships = this->get_num_ships();
+    auto ships_vec = *this->get_ship_vec();
+    for(int i = 0; i < num_ships; i++){
+        if(ships_vec[i]->get_name() == shiptype) return ships_vec[i];
+    }
 
-EnemyBoard::~EnemyBoard() {}
+    // TODO Throw exception here unexpected behaviour
+    return nullptr;
+}
+
+
+
+bool OwnBoard::all_ships_sunk(){
+    int num_ships = this->get_num_ships();
+    auto ships_vec = *this->get_ship_vec();
+    for(int i = 0; i < num_ships; i++){
+        if(ships_vec[i]->get_is_sunk() == false) return false;
+    }
+    return true;
+}
+
+void OwnBoard::update_ship(const short &x, const short &y){
+   Ship* ship = get_ship(x, y);
+    if(ship == nullptr) return; //maybe throw exception here
+    ship->shot_at();
+}
+
+
+// ------------ EnemyBoard ------------- //
+// EnemyBoard::~EnemyBoard() {
+//     auto ship_vec = *this->get_ship_vec();
+//     for (auto ship : ship_vec) {
+//         delete ship;
+//     }
+//     ship_vec.clear();
+// }
 
 bool EnemyBoard::is_valid_shot(
     const short &x, const short &y) {
@@ -165,4 +213,16 @@ bool EnemyBoard::is_valid_shot(
     if (y < 0 || y > grid_size_) return false;
     if (this->get_is_shot(x, y)) return false;
     return true;
+}
+
+
+void EnemyBoard::update_ship_vec(ShipCategory ship){
+    int num_ships = this->get_num_ships();
+    auto ship_vec = *this->get_ship_vec();
+    for(int i = 0; i < num_ships; i++){
+        if(ship_vec[i]->get_name() == ship){
+            ship_vec[i]->set_is_sunk(true);
+            return;
+        }
+    }
 }
