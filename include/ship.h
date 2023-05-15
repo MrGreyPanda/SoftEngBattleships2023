@@ -24,6 +24,21 @@ enum ShipCategory {
 };
 
 /**
+ * @brief Struct to hold the data of a ship
+ * Used for efficient communication between the server and the client
+ */
+struct ShipData {
+    ShipData() = default;
+    ShipData(const ShipCategory &name, const bool &is_horizontal,
+             const short &x, const short &y);
+
+    ShipCategory name;
+    bool is_horizontal;
+    short x;
+    short y;
+};
+
+/**
  * @brief Converts a ShipCategory to the size of the ship
  * @param type The ShipCategory to be converted
  */
@@ -52,7 +67,7 @@ class Ship {
      *
      * @param data
      */
-    Ship(ShipData data);
+    Ship(const ShipData &data);
 
     /**
      * @brief Destroy the Ship object
@@ -159,11 +174,4 @@ class Ship {
      */
     short x_;
     short y_;
-};
-
-struct ShipData {
-    ShipCategory name;
-    bool is_horizontal;
-    short x;
-    short y;
 };

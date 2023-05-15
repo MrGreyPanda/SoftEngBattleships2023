@@ -4,7 +4,6 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 #include <thread>
-#include <sstream>
 
 #include "request_handler.h"
 
@@ -272,7 +271,7 @@ void ServerNetworkManager::handle_incoming_message_(
         if (player_address_it->second != peer_address) {
             std::cout << "Error! The player ID passed does not match the IP "
                          "address stored for this player id. "
-                         "Only one player per peer is currently supported!"
+                         "Malicious activity is suspected!"
                       << std::endl;
 
             const ServerResponse response(

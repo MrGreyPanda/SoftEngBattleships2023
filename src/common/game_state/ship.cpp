@@ -42,7 +42,7 @@ Ship::Ship(ShipCategory name_)
     // ShipCategory"));
 }
 
-Ship::Ship(ShipData data)
+Ship::Ship(const ShipData &data)
     : name_(data.name),
       is_sunk_(false),
       is_placed_(true),
@@ -118,3 +118,7 @@ ShipData Ship::get_data() const {
 
     return ship_data;
 }
+
+ShipData::ShipData(const ShipCategory &name, const bool &is_horizontal,
+                   const short &x, const short &y)
+    : name(name), is_horizontal(is_horizontal), x(x), y(x) {}
