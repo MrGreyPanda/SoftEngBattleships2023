@@ -52,7 +52,7 @@ void ConnectionWindow::render()
                 SDLGui::Text("serverMessageText").updateText(64, "Connecting to %s:%hu...", m_server_address, m_server_port);
                 SDLGui::TextButton("serverConnectionButton").disable();
                 SDLGui::TextInput("serverAddressInput").disable();
-                ClientNetworkManager::send_request(ClientRequest(ClientRequestType::ClientJoinRequest));
+                ClientNetworkManager::send_request(ClientRequest(ClientRequestType::Join));
             }
         }
     }
