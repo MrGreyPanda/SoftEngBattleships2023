@@ -164,8 +164,8 @@ TEST(BackendIntegrationTest, Preparation) {
         ShipData(ShipCategory::Destroyer, false, 0, 5),
     };
 
-    const ClientPreparedRequest preparation_request_1(game_id_1, player_id_1,
-                                                      ships_data_1);
+    const PreparedRequest preparation_request_1(game_id_1, player_id_1,
+                                                ships_data_1);
 
     // Place ships for player 2
     std::vector<ShipData> ships_data_2 = {
@@ -176,8 +176,8 @@ TEST(BackendIntegrationTest, Preparation) {
         ShipData(ShipCategory::Destroyer, false, 5, 3),
     };
 
-    const ClientPreparedRequest preparation_request_2(game_id_2, player_id_2,
-                                                      ships_data_2);
+    const PreparedRequest preparation_request_2(game_id_2, player_id_2,
+                                                ships_data_2);
 }
 
 TEST(BackendIntegrationTest, Shoot) {}

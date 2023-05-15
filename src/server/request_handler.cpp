@@ -1,21 +1,17 @@
 
 #include "request_handler.h"
 
-#include "client_ready_request.h"
-#include "client_shoot_request.h"
 #include "game_instance.h"
 #include "game_instance_manager.h"
 #include "helper_functions.h"
+#include "join_message.h"
 #include "player_manager.h"
 #include "server_network_manager.h"
-#include "server_response.h"
-// #include "client_prepared_request.h"
-// #include "client_give_up_request.h"
 
-void RequestHandler::handle_request(const ClientRequestType& type,
+void RequestHandler::handle_request(const MessageType& type,
                                     const json& data) {
     switch (type) {
-        case ClientRequestType::Ready:
+        case MessageType::ReadyRequestType:
             // Parse the ready request
             try {
                 ReadyRequest ready_request;
@@ -32,8 +28,8 @@ void RequestHandler::handle_request(const ClientRequestType& type,
             // case ClientRequestType::Prepared:
             //     // Parse the ready request
             //     try {
-            //         ClientPreparedRequest prepared_request;
-            //         prepared_request = ClientPreparedRequest(data);
+            //         PreparedRequest prepared_request;
+            //         prepared_request = PreparedRequest(data);
             //         handle_prepared_request_(prepared_request);
             //     } catch (const std::exception& e) {
             //         std::cout << "[RequestHandler] Error parsing prepared
@@ -44,11 +40,11 @@ void RequestHandler::handle_request(const ClientRequestType& type,
 
             //     break;
 
-        case ClientRequestType::Shoot:
+        case MessageType::ShootRequestType:
             // Parse the ready request
             try {
-                ClientShootRequest shoot_request;
-                shoot_request = ClientShootRequest(data);
+                ShootRequest shoot_request;
+                shoot_request = ShootRequest(data);
                 handle_shoot_request_(shoot_request);
             } catch (const std::exception& e) {
                 std::cout << "[RequestHandler] Error parsing shoot request: "
@@ -73,7 +69,7 @@ void RequestHandler::handle_request(const ClientRequestType& type,
 
             //     break;
 
-        case ClientRequestType::Join:
+        case MessageType::JoinRequestType:
             throw std::runtime_error(
                 "[RequestHandler] Please call handle_join_request() instead "
                 "of handle_request. This is a special case because the "
@@ -88,9 +84,9 @@ void RequestHandler::handle_request(const ClientRequestType& type,
     }
 }
 
-std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
-    const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::Join);
+std::tuple<Player*, JoinResponse> RequestHandler::handle_join_request(
+    const JoinRequest& join_request) {
+    assert(join_request.get_type() == MessageType::JoinRequestType);
 
     // create a player id string by creating a random hash string
     std::string new_player_id = HelperFunctions::create_random_id();
@@ -102,12 +98,11 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
             << "[RequestHandler] Error: Could not add player to PlayerManager"
             << std::endl;
 
-        const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::Join, "", "",
-                                      "Error: Could not add player to "
-                                      "PlayerManager");
+        const JoinResponse join_response("", "",
+                                         "Error: Could not add player to "
+                                         "PlayerManager");
 
-        return std::make_tuple(nullptr, response);
+        return std::make_tuple(nullptr, join_response);
     }
 
     std::cout << "[RequestHandler] (Debug) Added new player with ID '"
@@ -122,12 +117,16 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
                   << "'to a game with ID '" << game_ptr->get_id() << "'"
                   << std::endl;
 
-        // formulate response
-        const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::Join,
-                                      game_ptr->get_id(), new_player_id);
+        // Player successfully joined the game
 
-        return std::make_tuple(new_player_ptr, response);
+        // formulate response
+        const JoinResponse join_response(game_ptr->get_id(), new_player_id);
+
+        // notify the other player that a player joined
+        // create join message
+        // const JoinMessage join_message;
+
+        return std::make_tuple(new_player_ptr, join_response);
 
     } else {
         // Error adding player to a game
@@ -137,56 +136,53 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
         // TODO add more error messages
 
         // Formulate error response message
-        const ServerResponse response(
-            ServerResponseType::RequestResponse, ClientRequestType::Join, "",
-            new_player_id, "Error: Could not add player to any game!");
+        const JoinResponse response(
+            "", new_player_id, "Error: Could not add player to any game!");
 
         return std::make_tuple(nullptr, response);
     }
 }
 
-void RequestHandler::handle_ready_request_(
-    const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::Ready);
+void RequestHandler::handle_ready_request_(const ReadyRequest& ready_request) {
+    assert(ready_request.get_type() == MessageType::ReadyRequestType);
 
-    const ServerResponse response(
-        ServerResponseType::RequestResponse, ClientRequestType::Ready,
-        client_request.get_game_id(), client_request.get_player_id());
+    const ReadyResponse ready_response(ready_request.get_game_id(),
+                                       ready_request.get_player_id());
 
-    ServerNetworkManager::send_response(response, response.get_player_id());
+    ServerNetworkManager::send_response(ready_response,
+                                        ready_response.get_player_id());
 }
 
 void RequestHandler::handle_prepared_request_(
-    const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::Prepared);
+    const PreparedRequest& prepared_request) {
+    assert(prepared_request.get_type() == MessageType::PreparedRequestType);
 
     throw std::runtime_error("Not implemented yet");
 }
 
-void RequestHandler::handle_shoot_request_(
-    const ClientRequest& client_request) {
+void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
     GameState* game_ptr =
-        GameInstanceManager::get_game_instance(client_request.get_game_id())
+        GameInstanceManager::get_game_instance(shoot_request.get_game_id())
             ->get_game_state();
 
     // Get coords from client request, needs to be coded -> Check up with Lukas
-    // short x = client_request.get_x();
-    // short y = client_request.get_y();
+    // short x = shoot_request.get_x();
+    // short y = shoot_request.get_y();
     short x = 0;  // DUMMY VALUES
     short y = 0;  // DUMMY VALUES
     // Get player from player manager
     Player* player_ptr =
-        PlayerManager::try_get_player(client_request.get_player_id());
+        PlayerManager::try_get_player(shoot_request.get_player_id());
 
     // Check if own players enemy board is already shot at the given coords
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
         // Send error message to client
-        const ServerResponse response(
-            ServerResponseType::RequestResponse, ClientRequestType::Shoot,
-            client_request.get_game_id(), client_request.get_player_id(),
+        const ShootResponse shoot_response(
+            shoot_request.get_game_id(), shoot_request.get_player_id(),
             "Error: You already shot at this position!");
-        ServerNetworkManager::send_response(response,
-                                            response.get_player_id());
+
+        ServerNetworkManager::send_response(shoot_response,
+                                            shoot_response.get_player_id());
         return;
     }
 
@@ -200,12 +196,12 @@ void RequestHandler::handle_shoot_request_(
 
     if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
         // Send error message to client
-        const ServerResponse response(
-            ServerResponseType::RequestResponse, ClientRequestType::Shoot,
-            client_request.get_game_id(), client_request.get_player_id(),
+        const ShootResponse shoot_response(
+            shoot_request.get_game_id(), shoot_request.get_player_id(),
             "Error: This position was already shot at!");
-        ServerNetworkManager::send_response(response,
-                                            response.get_player_id());
+
+        ServerNetworkManager::send_response(shoot_response,
+                                            shoot_response.get_player_id());
         return;
     }
 
@@ -216,16 +212,16 @@ void RequestHandler::handle_shoot_request_(
         // Send hit message to client
         // const ServerResponse response(ServerResponseType::RequestResponse,
         //                         ClientRequestType::Shoot,
-        //                         client_request.get_game_id(),
-        //                         client_request.get_player_id(),
+        //                         shoot_request.get_game_id(),
+        //                         shoot_request.get_player_id(),
         //                         "Hit!");
         // ServerNetworkManager::send_response(response,
         // response.get_player_id());
 
         // // Send hit message to other client
         // const ServerResponse response(ServerResponseType::RequestResponse,
-        //                         ClientRequestType::ClientShootRequest,
-        //                         client_request.get_game_id(),
+        //                         ClientRequestType::ShootRequest,
+        //                         shoot_request.get_game_id(),
         //                         other_player_id,
         //                         "You got hit!");
         // ServerNetworkManager::send_response(response,
@@ -243,15 +239,15 @@ void RequestHandler::handle_shoot_request_(
             // const ServerResponse
             // response(ServerResponseType::RequestResponse,
             //                     ClientRequestType::Shoot,
-            //                     client_request.get_game_id(),
-            //                     client_request.get_player_id(),
+            //                     shoot_request.get_game_id(),
+            //                     shoot_request.get_player_id(),
             //                     "You destroyed a ship!");
 
             // // Send ship destroyed message to other client
             // const ServerResponse
             // response(ServerResponseType::RequestResponse,
             //                     ClientRequestType::Shoot,
-            //                     client_request.get_game_id(),
+            //                     shoot_request.get_game_id(),
             //                     other_player_id,
             //                     "One of your ships was destroyed!");
 
@@ -266,8 +262,8 @@ void RequestHandler::handle_shoot_request_(
             // const ServerResponse
             // response(ServerResponseType::RequestResponse,
             //                     ClientRequestType::Shoot,
-            //                     client_request.get_game_id(),
-            //                     client_request.get_player_id(),
+            //                     shoot_request.get_game_id(),
+            //                     shoot_request.get_player_id(),
             //                     "You won!");
             // ServerNetworkManager::send_response(response,
             // response.get_player_id());
@@ -276,7 +272,7 @@ void RequestHandler::handle_shoot_request_(
             // const ServerResponse
             // response(ServerResponseType::RequestResponse,
             //                     ClientRequestType::Shoot,
-            //                     client_request.get_game_id(),
+            //                     shoot_request.get_game_id(),
             //                     other_player_id,
             //                     "You lost!");
             // ServerNetworkManager::send_response(response,
@@ -292,6 +288,6 @@ void RequestHandler::handle_shoot_request_(
 }
 
 void RequestHandler::handle_give_up_request_(
-    const ClientRequest& client_request) {
+    const GiveUpRequest& give_up_request) {
     throw std::runtime_error("Not implemented yet");
 }

@@ -1,9 +1,9 @@
-#include "client_prepared_request.h"
+#include "prepared_request.h"
 
-ClientPreparedRequest::ClientPreparedRequest() : ClientRequest() {}
+PreparedRequest::PreparedRequest()
+    : Message(MessageType::PreparedRequestType) {}
 
-ClientPreparedRequest::ClientPreparedRequest(const json& data)
-    : ClientRequest(data) {
+PreparedRequest::PreparedRequest(const json& data) : Message(data) {
     // parse ship data
 
     // create empty ship data vector
@@ -19,10 +19,10 @@ ClientPreparedRequest::ClientPreparedRequest(const json& data)
     }
 }
 
-ClientPreparedRequest::ClientPreparedRequest(const std::string& game_id,
-                                             const std::string& player_id,
-                                             const std::vector<Ship>& ships)
-    : ClientRequest(ClientRequestType::Prepared, game_id, player_id) {
+PreparedRequest::PreparedRequest(const std::string& game_id,
+                                 const std::string& player_id,
+                                 const std::vector<Ship>& ships)
+    : Message(MessageType::PreparedRequestType, game_id, player_id) {
     // convert ships to ship data
     ships_ = std::vector<ShipData>(0);
     for (const Ship& ship : ships) {
@@ -30,14 +30,14 @@ ClientPreparedRequest::ClientPreparedRequest(const std::string& game_id,
     }
 }
 
-ClientPreparedRequest::ClientPreparedRequest(
-    const std::string& game_id, const std::string& player_id,
-    const std::vector<ShipData>& ship_data)
-    : ClientRequest(ClientRequestType::Prepared, game_id, player_id),
+PreparedRequest::PreparedRequest(const std::string& game_id,
+                                 const std::string& player_id,
+                                 const std::vector<ShipData>& ship_data)
+    : Message(MessageType::PreparedRequestType, game_id, player_id),
       ships_(ship_data) {}
 
-json ClientPreparedRequest::to_json() const {
-    json data = ClientRequest::to_json();
+json PreparedRequest::to_json() const {
+    json data = Message::to_json();
 
     // convert ship data to json
     json ships_json = json::array();

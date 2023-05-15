@@ -1,18 +1,16 @@
+#pragma once
 
-
-#include "client_request.h"
+#include "message.h"
 #include "ship.h"
 
-class ClientPreparedRequest : public ClientRequest {
+class PreparedRequest : public Message {
    public:
-    ClientPreparedRequest();
-    ClientPreparedRequest(const json& data);
-    ClientPreparedRequest(const std::string& game_id,
-                          const std::string& player_id,
-                          const std::vector<Ship>& ships);
-    ClientPreparedRequest(const std::string& game_id,
-                          const std::string& player_id,
-                          const std::vector<ShipData>& ship_data);
+    PreparedRequest();
+    PreparedRequest(const json& data);
+    PreparedRequest(const std::string& game_id, const std::string& player_id,
+                    const std::vector<Ship>& ships);
+    PreparedRequest(const std::string& game_id, const std::string& player_id,
+                    const std::vector<ShipData>& ship_data);
 
     json to_json() const;
 

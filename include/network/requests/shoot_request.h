@@ -1,14 +1,13 @@
 #pragma once
 
-#include "client_request.h"
+#include "message.h"
 
-class ClientShootRequest : public ClientRequest {
+class ShootRequest : public Message {
    public:
-    ClientShootRequest();
-    ClientShootRequest(const json& data);
-    ClientShootRequest(std::string game_id, std::string player_id,
-                       unsigned short x_coordinate,
-                       unsigned short y_coordinate);
+    ShootRequest();
+    ShootRequest(const json& data);
+    ShootRequest(std::string game_id, std::string player_id, unsigned short x,
+                 unsigned short y);
 
     unsigned short get_x() const;
     unsigned short get_y() const;

@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "request_handler.h"
+#include "response.h"
 
 using json = nlohmann::json;
 
@@ -90,7 +91,7 @@ void ServerNetworkManager::stop() {
     std::cout << "[ServerNetworkManager] Server stopped" << std::endl;
 }
 
-void ServerNetworkManager::send_response(const ServerResponse& response,
+void ServerNetworkManager::send_response(const std::string& response_str,
                                          const std::string& player_id) {
     // Get the IP address of the player
     auto player_address_it = player_addresses_.find(player_id);
@@ -102,11 +103,11 @@ void ServerNetworkManager::send_response(const ServerResponse& response,
         return;
     }
 
-    send_response_to_peer_(response, player_address_it->second);
+    send_response_to_peer_(response_str, player_address_it->second);
 }
 
 void ServerNetworkManager::send_response_to_peer_(
-    const ServerResponse& response, const sockpp::inet_address& address) {
+    const std::string& response_str, const sockpp::inet_address& address) {
     // Get the socket for the IP address
     auto socket_it = sockets_.find(address.to_string());
 
@@ -118,7 +119,7 @@ void ServerNetworkManager::send_response_to_peer_(
     }
 
     // Send the response
-    std::string message        = response.to_string() + '\0';
+    std::string message        = response_str + '\0';
     sockpp::tcp_socket& socket = socket_it->second;
 
     auto bytes_sent = socket.write(message.c_str(), message.size());
@@ -189,15 +190,14 @@ void ServerNetworkManager::handle_incoming_message_(
                   << std::endl;
 
         // create error response
-        const ServerResponse error_response(
-            ServerResponseType::RequestResponse, "Error: Invalid JSON");
+        const Response error_response("", "", "Error: Invalid JSON");
 
         send_response_to_peer_(error_response, peer_address);
         return;
     }
 
-    const ClientRequestType request_type =
-        ClientRequest::get_client_request_type_from_message_type_string(
+    const MessageType request_type =
+        MessageTypeHelpers::make_message_type_from_string(
             data["message_type"]);
 
     if (request_type == ClientRequestType::Join) {

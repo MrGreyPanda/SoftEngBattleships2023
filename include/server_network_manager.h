@@ -4,8 +4,6 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-#include "client_request.h"
-#include "server_response.h"
 #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_socket.h"
 
@@ -27,7 +25,7 @@ class ServerNetworkManager {
      * @param response The ServerResponse object with the information to send
      * @param player_id The id of the player to send the response to
      */
-    static void send_response(const ServerResponse& response,
+    static void send_response(const std::string& response_str,
                               const std::string& player_id);
 
    private:
@@ -54,7 +52,7 @@ class ServerNetworkManager {
      * @param peer_address The address of the peer to send the response to
      */
     static void send_response_to_peer_(
-        const ServerResponse& response,
+        const std::string& response_str,
         const sockpp::inet_address& peer_address);
 
     /**
