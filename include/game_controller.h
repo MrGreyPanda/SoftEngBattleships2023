@@ -3,13 +3,13 @@
 #include <cassert>
 
 #include "SDLGui.hpp"
-
-#include "GameWindow.h"
+#include "game_window.h"
 
 class GameController {
-public:
+   public:
     static void init();
     static void run();
-private:
+
+   private:
     static void render();
 };

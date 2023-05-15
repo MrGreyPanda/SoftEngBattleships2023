@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <cstdio>
 
-#include "GameController.h"
 #include "client_network_manager.h"
+#include "game_controller.h"
 
 int main(int argc, const char** argv) {
     GameController::init();

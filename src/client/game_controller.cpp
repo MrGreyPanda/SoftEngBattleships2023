@@ -1,4 +1,4 @@
-#include "GameController.h"
+#include "game_controller.h"
 
 void GameController::init() {
     SDLGui::init("Battleships", SDL_WINDOWPOS_UNDEFINED,
