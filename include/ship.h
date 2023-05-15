@@ -61,6 +61,8 @@ class Ship {
 
     /**
      * @brief update the damage_ and check if the ship is sunk
+     * TODO: Add except/assertion to make it safer
+     * TODO: Add a player message or something like that
      */
     void shot_at();
 
@@ -89,6 +91,11 @@ class Ship {
      * TODO: Add a player message or something like that
      */
     bool get_is_sunk() const;
+
+    /**
+     * @brief Set the is_sunk_ of the ship
+     */
+    void set_is_sunk(bool is_sunk);
 
     /**
      * @brief Get the is_horizontal_ of the ship
@@ -135,7 +142,7 @@ class Ship {
    private:
     unsigned short length_;
     bool is_sunk_;
-    unsigned short damage_;
+    unsigned short damage_ = 0;
     ShipCategory name_;
     bool is_horizontal_;
     bool is_placed_;

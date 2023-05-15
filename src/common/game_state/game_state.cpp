@@ -27,6 +27,15 @@ Phase GameState::get_phase() { return phase_; }
 
 std::vector<Player*> GameState::get_players() {return players_;}
 
+Player* GameState::get_player_by_id(std::string id_) {
+    for(auto player : players_) {
+        if(player->get_id() == id_) {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
 bool GameState::add_player(Player* player) {
     if(!is_full()){
         for(auto player_ : players_) {
@@ -67,3 +76,30 @@ void GameState::change_turn_player_index() {
 }
 
 std::vector<Ship> GameState::get_ships() { return ships_; }
+
+bool GameState::start_game(){
+    if(players_.size() < 2) {
+        return false;
+    }
+    phase_ = Preparation;
+    return true;
+}
+
+std::string GameState::get_other_player_id(std::string id) {
+    bool is_found = false;
+    for(auto player : players_) {
+        if(player->get_id() == id_) {
+            is_found = true;
+        }
+    }
+    if(is_found) { 
+        for(auto player : players_) {
+            if(player->get_id() != id_) {
+                return player->get_id();
+            }
+        }
+    }
+
+    return "";
+}
+
