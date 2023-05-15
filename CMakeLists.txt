@@ -32,7 +32,7 @@ add_subdirectory(dependencies/googletest)
 add_subdirectory(dependencies/sdlgui)
 
 # Include header files
-include_directories(include include/network/messages include/network/requests include/network/responses)
+include_directories(include include/network include/network/messages include/network/requests include/network/responses)
 
 # find source files
 file(GLOB_RECURSE COMMON_SOURCES src/common/*.cpp)
