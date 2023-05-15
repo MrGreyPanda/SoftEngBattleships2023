@@ -27,6 +27,15 @@ Phase GameState::get_phase() { return phase_; }
 
 std::vector<Player*> GameState::get_players() {return players_;}
 
+Player* GameState::get_player_by_id(std::string id_) {
+    for(auto player : players_) {
+        if(player->get_id() == id_) {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
 bool GameState::add_player(Player* player) {
     if(!is_full()){
         for(auto player_ : players_) {

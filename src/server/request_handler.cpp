@@ -108,7 +108,7 @@ void RequestHandler::handle_prepared_request_(
 void RequestHandler::handle_shoot_request_(
     const ClientRequest& client_request) {
 
-        // GameInstance* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id());
+        GameInstance* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id());
 
         
 

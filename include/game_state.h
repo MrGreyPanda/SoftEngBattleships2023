@@ -63,6 +63,13 @@ class GameState {
     std::vector<Player*> get_players();
 
     /**
+     * @brief Get player by id_
+     * @param id_ The id_ of the player
+     * @return The player with the given id_
+     */
+    Player* get_player_by_id(std::string id_);
+
+    /**
      * @brief Adds player to the game
      * 
      * @return true 
