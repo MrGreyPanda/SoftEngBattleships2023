@@ -22,16 +22,13 @@ TEST(GameInstanceManagerTest, AddPlayerToAnyGame) {
     Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
     GameInstance *added_game = game_manager->add_player_to_any_game(player1);
-    EXPECT_TRUE(added_game == nullptr);
-    GameInstance *game = game_manager->create_new_game_();
-    added_game         = game_manager->add_player_to_any_game(player1);
     EXPECT_TRUE(added_game != nullptr);
     Player *player2 = player_manager->add_or_get_player("Lukas");
     added_game      = game_manager->add_player_to_any_game(player2);
     EXPECT_TRUE(added_game != nullptr);
     Player *player3 = player_manager->add_or_get_player("Simon");
     added_game      = game_manager->add_player_to_any_game(player3);
-    EXPECT_TRUE(added_game == nullptr);
+    EXPECT_TRUE(added_game != nullptr);
     delete game_manager;
     delete player_manager;
 }
