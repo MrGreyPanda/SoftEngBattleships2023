@@ -1,12 +1,13 @@
 #include "board.h"
 
 Board::Board() : grid_size_(10) {
-    // ships_.resize(5);
-    ships_ = {new Ship(Carrier),
-    new Ship(Battleship),
-    new Ship(Cruiser),
-    new Ship(Submarine),
-    new Ship(Destroyer)};
+    std::shared_ptr<Ship> carrier(new Ship(Carrier));
+    std::shared_ptr<Ship> battleship(new Ship(Battleship));
+    std::shared_ptr<Ship> cruiser(new Ship(Cruiser));
+    std::shared_ptr<Ship> submarine(new Ship(Submarine));
+    std::shared_ptr<Ship> destroyer(new Ship(Destroyer));
+
+    ships_ = {std::move(carrier), std::move(battleship), std::move(cruiser), std::move(submarine), std::move(destroyer)};
 }
 
 // Board::Board(unsigned short grid_size) : grid_size_(grid_size) {
@@ -21,10 +22,10 @@ Board::Board() : grid_size_(10) {
 // }
 
 Board::~Board() {
-    for (int i = 0; i < ships_.size(); i++) {
-        delete ships_[i];
-    }
-    ships_.clear();
+    // for (int i = 0; i < ships_.size(); i++) {
+    //     delete ships_[i];
+    // }
+    // ships_.clear();
 }
 
 unsigned short Board::get_grid_size() { return grid_size_; }
@@ -45,8 +46,8 @@ unsigned short Board::get_num_ships() {
     return ships_.size();
 }
 
-std::vector<Ship*> Board::get_ship_vec() {
-    return ships_;
+std::shared_ptr<std::vector<std::shared_ptr<Ship>>> Board::get_ship_vec() {
+    return std::make_shared<std::vector<std::shared_ptr<Ship>>>(ships_);
 }
 
 void Board::set_grid_value(const short &x, const short &y, int value) {
@@ -68,7 +69,13 @@ void Board::set_is_shot(const short &x, const short &y, bool value) {
 
 // ------------ OwnBoard ------------- //
 
-OwnBoard::~OwnBoard() {}
+OwnBoard::~OwnBoard() {
+    // auto ships_vec = this->get_ship_vec();
+    // for (int i = 0; i < ships_vec.size(); i++) {
+    //     delete ships_vec[i];
+    // }
+    // ships_vec.clear();
+}
 
 bool OwnBoard::is_valid_placement(const short &x, const short &y, const Ship &ship) {
     int grid_size_ = this->get_grid_size();
@@ -176,21 +183,24 @@ bool OwnBoard::rotate_ship(Ship &ship) {
     }
 }
 
-Ship* OwnBoard::get_ship(const short &x, const short &y){
+std::shared_ptr<Ship> OwnBoard::get_ship(const short &x, const short &y){
     ShipCategory shiptype = (ShipCategory) get_grid_value(x, y);
     int num_ships = this->get_num_ships();
-    auto ships_vec = this->get_ship_vec();
+    auto ships_vec = *this->get_ship_vec();
     for(int i = 0; i < num_ships; i++){
-        if(ships_vec[i]->get_name() == shiptype) return ships_vec[i];
+        ShipCategory shipname = (ShipCategory)(ships_vec[i])->get_name();
+        if(shipname == shiptype) return ships_vec[i];
     }
 
     // TODO Throw exception here unexpected behaviour
     return nullptr;
 }
 
+
+
 bool OwnBoard::all_ships_sunk(){
     int num_ships = this->get_num_ships();
-    auto ships_vec = this->get_ship_vec();
+    auto ships_vec = *this->get_ship_vec();
     for(int i = 0; i < num_ships; i++){
         if(ships_vec[i]->get_is_sunk() == false) return false;
     }
@@ -198,14 +208,20 @@ bool OwnBoard::all_ships_sunk(){
 }
 
 void OwnBoard::update_ship(const short &x, const short &y){
-    Ship* ship = get_ship(x, y);
+    std::shared_ptr<Ship> ship = get_ship(x, y);
     if(ship == nullptr) return; //maybe throw exception here
     ship->shot_at();
 }
 
 
 // ------------ EnemyBoard ------------- //
-EnemyBoard::~EnemyBoard() {}
+EnemyBoard::~EnemyBoard() {
+    // auto ship_vec = this->get_ship_vec();
+    // for (auto ship : ship_vec) {
+    //     delete ship;
+    // }
+    // ship_vec.clear();
+}
 
 bool EnemyBoard::is_valid_shot(
     const short &x, const short &y) {
@@ -219,7 +235,7 @@ bool EnemyBoard::is_valid_shot(
 
 void EnemyBoard::update_ship_vec(ShipCategory ship){
     int num_ships = this->get_num_ships();
-    auto ship_vec = this->get_ship_vec();
+    auto ship_vec = *this->get_ship_vec();
     for(int i = 0; i < num_ships; i++){
         if(ship_vec[i]->get_name() == ship){
             ship_vec[i]->set_is_sunk(true);

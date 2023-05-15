@@ -16,7 +16,7 @@ the index of the player in the players array whose turn it is.
 */
 
 // Enum describing the different phases of the game
-enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3 };
+enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3};
 
 class GameState {
    public:

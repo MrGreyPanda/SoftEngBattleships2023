@@ -47,4 +47,7 @@ bool Player::shoot(const short &x, const short &y) {
 
 bool Player::has_lost() { return own_board_.all_ships_sunk(); }
 
-Player::~Player() {}
+Player::~Player() {
+    own_board_.~OwnBoard();
+    enemy_board_.~EnemyBoard();
+}

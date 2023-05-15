@@ -156,65 +156,65 @@ void RequestHandler::handle_shoot_request_(
     // Check if other players board has a ship at the given coords
     if(other_player_ptr->get_own_board().get_grid_value(x, y) != 0){
         // Send hit message to client
-        const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                client_request.get_player_id(),
-                                "Hit!");
-        ServerNetworkManager::send_response(response, response.get_player_id());
+        // const ServerResponse response(ServerResponseType::RequestResponse,
+        //                         ClientRequestType::ClientShootRequest,
+        //                         client_request.get_game_id(),
+        //                         client_request.get_player_id(),
+        //                         "Hit!");
+        // ServerNetworkManager::send_response(response, response.get_player_id());
 
-        // Send hit message to other client
-        const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                other_player_id,
-                                "You got hit!");
-        ServerNetworkManager::send_response(response, response.get_player_id());
+        // // Send hit message to other client
+        // const ServerResponse response(ServerResponseType::RequestResponse,
+        //                         ClientRequestType::ClientShootRequest,
+        //                         client_request.get_game_id(),
+        //                         other_player_id,
+        //                         "You got hit!");
+        // ServerNetworkManager::send_response(response, response.get_player_id());
 
         // Get ship from other players board
-        Ship* ship_ptr = other_player_ptr->own_board().get_ship(x, y);
+        std::shared_ptr<Ship> ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
 
         // Update the ships health
-        other_player_ptr->own_board().update_ship(x, y);
+        other_player_ptr->get_own_board().update_ship(x, y);
 
         // Check if ship is destroyed
         if(ship_ptr->get_is_sunk()){
             // Send ship destroyed message to client
-            const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                client_request.get_player_id(),
-                                "You destroyed a ship!");
+            // const ServerResponse response(ServerResponseType::RequestResponse,
+            //                     ClientRequestType::ClientShootRequest,
+            //                     client_request.get_game_id(),
+            //                     client_request.get_player_id(),
+            //                     "You destroyed a ship!");
 
-            // Send ship destroyed message to other client
-            const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                other_player_id,
-                                "One of your ships was destroyed!");
+            // // Send ship destroyed message to other client
+            // const ServerResponse response(ServerResponseType::RequestResponse,
+            //                     ClientRequestType::ClientShootRequest,
+            //                     client_request.get_game_id(),
+            //                     other_player_id,
+            //                     "One of your ships was destroyed!");
             
             // update enemy boards ship vector
-            player_ptr->enemy_board().update_ship_vec(ship_ptr->get_name());
+            player_ptr->get_enemy_board().update_ship_vec(ship_ptr->get_name());
         }
 
         // Check if other player has lost
-        if(other_player_ptr->own_board().has_lost()){
+        if(other_player_ptr->has_lost()){
             // Send win message to client
-            const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                client_request.get_player_id(),
-                                "You won!");
-            ServerNetworkManager::send_response(response, response.get_player_id());
+            // const ServerResponse response(ServerResponseType::RequestResponse,
+            //                     ClientRequestType::ClientShootRequest,
+            //                     client_request.get_game_id(),
+            //                     client_request.get_player_id(),
+            //                     "You won!");
+            // ServerNetworkManager::send_response(response, response.get_player_id());
 
-            // Send lose message to other client
-            const ServerResponse response(ServerResponseType::RequestResponse,
-                                ClientRequestType::ClientShootRequest,
-                                client_request.get_game_id(),
-                                other_player_id,
-                                "You lost!");
-            ServerNetworkManager::send_response(response, response.get_player_id());
-
+            // // Send lose message to other client
+            // const ServerResponse response(ServerResponseType::RequestResponse,
+            //                     ClientRequestType::ClientShootRequest,
+            //                     client_request.get_game_id(),
+            //                     other_player_id,
+            //                     "You lost!");
+            // ServerNetworkManager::send_response(response, response.get_player_id());
+            game_ptr->set_phase(End); 
 
         }
 
