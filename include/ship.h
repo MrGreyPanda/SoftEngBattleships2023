@@ -139,6 +139,13 @@ class Ship {
      */
     void set_xy(const short &x, const short &y);
 
+    /**
+     * @brief Get the data object
+     *
+     * @return ShipData
+     */
+    ShipData get_data() const;
+
    private:
     unsigned short length_;
     bool is_sunk_;

@@ -108,3 +108,13 @@ void Ship::set_xy(const short &x, const short &y) {
     y_ = y;
     set_is_placed(true);
 }
+
+ShipData Ship::get_data() const {
+    ShipData ship_data;
+    ship_data.name          = name_;
+    ship_data.is_horizontal = is_horizontal_;
+    ship_data.x             = x_;
+    ship_data.y             = y_;
+
+    return ship_data;
+}
