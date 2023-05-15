@@ -68,16 +68,15 @@ TEST(BackendIntegrationTest, Join) {
         const ServerResponse join_response = recieve_response_from_server();
 
         // check if the response is a join response
-        EXPECT_TRUE(join_response.get_type() ==
-                    ServerResponseType::RequestResponse);
-        EXPECT_TRUE(join_response.get_request_type() ==
-                    ClientRequestType::Join);
+        EXPECT_EQ(join_response.get_type(),
+                  ServerResponseType::RequestResponse);
+        EXPECT_EQ(join_response.get_request_type(), ClientRequestType::Join);
 
         game_id = join_response.get_game_id();
-        EXPECT_TRUE(!game_id.empty());
+        EXPECT_FALSE(game_id.empty());
 
         player_id = join_response.get_player_id();
-        EXPECT_TRUE(!player_id.empty());
+        EXPECT_FALSE(player_id.empty());
 
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
@@ -92,11 +91,10 @@ TEST(BackendIntegrationTest, Ready) {
     const ServerResponse ready_response = recieve_response_from_server();
 
     // check if the response is a ready response
-    EXPECT_TRUE(ready_response.get_type() ==
-                ServerResponseType::RequestResponse);
-    EXPECT_TRUE(ready_response.get_request_type() == ClientRequestType::Ready);
-    EXPECT_TRUE(ready_response.get_game_id() == game_id);
-    EXPECT_TRUE(ready_response.get_player_id() == player_id);
+    EXPECT_EQ(ready_response.get_type(), ServerResponseType::RequestResponse);
+    EXPECT_EQ(ready_response.get_request_type(), ClientRequestType::Ready);
+    EXPECT_EQ(ready_response.get_game_id(), game_id);
+    EXPECT_EQ(ready_response.get_player_id(), player_id);
 }
 
 TEST(BackendIntegrationTest, Preparation) {}
