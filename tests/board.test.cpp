@@ -5,7 +5,7 @@
 TEST(BoardTest, CreateBoard) {
     Board board;
     EXPECT_EQ(10, board.get_grid_size());
-    EXPECT_EQ(5, board.get_num_active_ships());
+    EXPECT_EQ(5, board.get_num_ships());
     EXPECT_EQ(0, board.get_grid_value(0, 0));
     EXPECT_EQ(0, board.get_grid_value(9, 9));
     EXPECT_FALSE(board.get_is_shot(0, 0));
@@ -16,7 +16,7 @@ TEST(BoardTest, CreateBoard) {
 TEST(OwnBoardTest, CreateOwnBoard) {
     OwnBoard own_board;
     EXPECT_EQ(10, own_board.get_grid_size());
-    EXPECT_EQ(5, own_board.get_num_active_ships());
+    EXPECT_EQ(5, own_board.get_num_ships());
     EXPECT_EQ(0, own_board.get_grid_value(0, 0));
     EXPECT_EQ(0, own_board.get_grid_value(9, 9));
     EXPECT_FALSE(own_board.get_is_shot(0, 0));
@@ -77,7 +77,7 @@ TEST(OwnBoardTest, RotateShip){
 TEST(EnemyBoardTest, CreateEnemyBoard){
     EnemyBoard enemy_board;
     EXPECT_EQ(10, enemy_board.get_grid_size());
-    EXPECT_EQ(5, enemy_board.get_num_active_ships());
+    EXPECT_EQ(5, enemy_board.get_num_ships());
     EXPECT_EQ(0, enemy_board.get_grid_value(0, 0));
     EXPECT_EQ(0, enemy_board.get_grid_value(9, 9));
     EXPECT_FALSE(enemy_board.get_is_shot(0, 0));

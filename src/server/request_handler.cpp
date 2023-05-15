@@ -111,17 +111,18 @@ void RequestHandler::handle_prepared_request_(
 void RequestHandler::handle_shoot_request_(
     const ClientRequest& client_request) {
 
-    GameInstance* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id());
+    GameState* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id())->get_game_state();
 
     // Get coords from client request, needs to be coded -> Check up with Lukas
-    short x = client_request->get_x();
-    short y = client_request->get_y();
-
+    // short x = client_request.get_x();
+    // short y = client_request.get_y();
+    short x = 0;    // DUMMY VALUES
+    short y = 0;    // DUMMY VALUES
     // Get player from player manager
     Player* player_ptr = PlayerManager::try_get_player(client_request.get_player_id());
 
     // Check if own players enemy board is already shot at the given coords
-    if(player_ptr->enemy_board().get_is_shot(x, y)){
+    if(player_ptr->get_enemy_board().get_is_shot(x, y)){
         // Send error message to client
         const ServerResponse response(ServerResponseType::RequestResponse,
                                 ClientRequestType::ClientShootRequest,
@@ -139,7 +140,7 @@ void RequestHandler::handle_shoot_request_(
     // Get other player from player manager
     Player* other_player_ptr = PlayerManager::try_get_player(other_player_id);
 
-    if(other_player_ptr->own_board().get_is_shot(x, y)){
+    if(other_player_ptr->get_own_board().get_is_shot(x, y)){
         // Send error message to client
         const ServerResponse response(ServerResponseType::RequestResponse,
                                 ClientRequestType::ClientShootRequest,
@@ -150,10 +151,10 @@ void RequestHandler::handle_shoot_request_(
         return;
     }
 
-    other_player_ptr->own_board().set_is_shot(x, y, true);
-    player_ptr->enemy_board().set_is_shot(x, y, true);
+    other_player_ptr->get_own_board().set_is_shot(x, y, true);
+    player_ptr->get_enemy_board().set_is_shot(x, y, true);
     // Check if other players board has a ship at the given coords
-    if(other_player_ptr->own_board().get_grid_value(x, y) != 0){
+    if(other_player_ptr->get_own_board().get_grid_value(x, y) != 0){
         // Send hit message to client
         const ServerResponse response(ServerResponseType::RequestResponse,
                                 ClientRequestType::ClientShootRequest,

@@ -32,11 +32,11 @@ Board();
 */
 unsigned short get_grid_size();
 
-/**
- * @brief Get the ships_ that are not sunk on the board
- * @return The ships_ on the board
-*/
-unsigned short get_num_active_ships();
+// /**
+//  * @brief Get the ships_ that are not sunk on the board
+//  * @return The ships_ on the board
+// */
+// unsigned short get_num_active_ships();
 
 /**
  * @brief Get the grid value at a given coordinate
@@ -51,6 +51,18 @@ unsigned short get_grid_value(const short &x, const short &y);
  * @param value The value to set the grid value to
 */
 void set_grid_value(const short &x, const short &y, int value);
+
+
+/**
+ * @brief Get number of ships_ on the board
+*/
+unsigned short get_num_ships();
+
+/**
+ * @brief Get the ships_ on the board
+ * @return The ships_ on the board
+*/
+std::vector<Ship*> get_ship_vec();
 
 /**
  * @brief Get the is_shot_ value at a given coordinate

@@ -85,7 +85,7 @@ bool GameState::start_game(){
     return true;
 }
 
-std::string GameState::get_other_player_id(std::string id_) {
+std::string GameState::get_other_player_id(std::string id) {
     bool is_found = false;
     for(auto player : players_) {
         if(player->get_id() == id_) {
