@@ -14,6 +14,8 @@ using json = nlohmann::json;
 
 sockpp::tcp_acceptor ServerNetworkManager::acceptor_;
 
+std::thread listener_thread_;
+
 std::shared_mutex ServerNetworkManager::player_addr_mutex_;
 
 std::unordered_map<std::string, sockpp::inet_address>
@@ -24,20 +26,69 @@ std::shared_mutex ServerNetworkManager::sockets_mutex_;
 std::unordered_map<std::string, sockpp::tcp_socket>
     ServerNetworkManager::sockets_;
 
-ServerNetworkManager::ServerNetworkManager(unsigned port) {
-    // Create the acceptor
-    acceptor_ = sockpp::tcp_acceptor(port);
+// ServerNetworkManager methods
 
-    if (!acceptor_) {
-        std::cerr << "[ServerNetworkManager] Error creating acceptor: "
-                  << acceptor_.last_error_str() << std::endl;
+void ServerNetworkManager::start(unsigned port) {
+    if (acceptor_ && acceptor_.is_open()) {
+        std::cerr << "[ServerNetworkManager] (Debug) acceptor already open"
+                  << std::endl;
         return;
+    } else {
+        // Create the acceptor
+        acceptor_ = sockpp::tcp_acceptor(port);
+
+        if (!acceptor_) {
+            std::cerr << "[ServerNetworkManager] Error creating acceptor: "
+                      << acceptor_.last_error_str() << std::endl;
+            return;
+        }
     }
 
     // Start the listener loop
     std::cout << "[ServerNetworkManager] Listening on port " << port
               << std::endl;
-    start_();
+
+    while (acceptor_.is_open()) {
+        sockpp::inet_address peer_address;
+        sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
+        std::cout << "[ServerNetworkManager] Received connection from "
+                  << peer_address.to_string() << std::endl;
+
+        if (!socket) {
+            if (!acceptor_.is_open()) {
+                // the acceptor was closed, exit the loop
+                break;
+            } else {
+                std::cerr
+                    << "[ServerNetworkManager] Error accepting connection: "
+                    << socket.last_error_str() << std::endl;
+                continue;
+            }
+        } else {
+            // the received conncection is valid
+            // try and listen to messages from this connection
+
+            // create thread to handle incoming messages
+            std::thread listener(handle_socket_, std::move(socket));
+
+            // Detach the thread so it can run in the background
+            listener.detach();
+        }
+    }
+}
+
+void ServerNetworkManager::stop() {
+    std::cout << "[ServerNetworkManager] Stopping server..." << std::endl;
+
+    // Close all sockets
+    for (auto& socket_pair : sockets_) {
+        socket_pair.second.close();
+    }
+
+    // Close the acceptor
+    acceptor_.close();
+
+    std::cout << "[ServerNetworkManager] Server stopped" << std::endl;
 }
 
 void ServerNetworkManager::send_response(const ServerResponse& response,
@@ -47,7 +98,8 @@ void ServerNetworkManager::send_response(const ServerResponse& response,
 
     if (player_address_it == player_addresses_.end()) {
         std::cerr << "[ServerNetworkManager] Error sending response: "
-                  << "Player " << player_id << " not found!" << std::endl;
+                  << "Player with ID '" << player_id << "' not found!"
+                  << std::endl;
         return;
     }
 
@@ -73,34 +125,14 @@ void ServerNetworkManager::send_response_to_peer_(
     auto bytes_sent = socket.write(message.c_str(), message.size());
 
     if (bytes_sent != message.size()) {
-        std::cout << "Failed to send full request to server" << std::endl;
+        std::cout << "[ServerNetworkManager] Error Failed to send full "
+                     "request to server"
+                  << std::endl;
         std::cerr << socket.last_error_str() << std::endl;
-    }
-}
-
-void ServerNetworkManager::start_() {
-    // Start the listener loop
-
-    while (true) {
-        sockpp::inet_address peer_address;
-        sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
-        std::cout << "[ServerNetworkManager] Received connection from "
-                  << peer_address.to_string() << std::endl;
-
-        if (!socket) {
-            std::cerr << "[ServerNetworkManager] Error accepting connection: "
-                      << socket.last_error_str() << std::endl;
-            continue;
-        } else {
-            // the received conncection is valid
-            // try and listen to messages from this connection
-
-            // create thread to handle incoming messages
-            std::thread listener(handle_socket_, std::move(socket));
-
-            // Detach the thread so it can run in the background
-            listener.detach();
-        }
+    } else {
+        std::cout
+            << "[ServerNetworkManager] (Debug) Sent response to client: '"
+            << message << "'" << std::endl;
     }
 }
 
@@ -126,9 +158,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
                 handle_incoming_message_(message, peer_address);
             }
         } catch (std::exception& err) {
-            std::cerr
-                << "[ServerNetworkManager] Error handling socket message: "
-                << err.what() << std::endl;
+            std::cerr << "[ServerNetworkManager] Error while handling socket "
+                         "message: "
+                      << err.what() << std::endl;
         }
     }
 
@@ -140,8 +172,9 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_.erase(peer_address.to_string());
     sockets_mutex_.unlock();
 
-    std::cout << "[ServerNetworkManager] (Debug) Removed the socket for peer "
-              << socket.peer_address() << std::endl;
+    std::cout
+        << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
+        << socket.peer_address() << std::endl;
 }
 
 void ServerNetworkManager::handle_incoming_message_(
@@ -160,7 +193,7 @@ void ServerNetworkManager::handle_incoming_message_(
         const ServerResponse error_response(
             ServerResponseType::RequestResponse, "Error: Invalid JSON");
 
-        send_response(error_response, peer_address.to_string());
+        send_response_to_peer_(error_response, peer_address);
         return;
     }
 
@@ -180,15 +213,18 @@ void ServerNetworkManager::handle_incoming_message_(
             ServerResponseType::RequestResponse,
             "Error: Message is not a valid ClientRequest");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 
     // Create a player id for this connection if it is a join request
     // Also add the player to a game
     if (client_request->get_type() == ClientRequestType::ClientJoinRequest) {
-        Player* player_ptr =
+        std::tuple<Player*, ServerResponse> join_req_tuple =
             RequestHandler::handle_join_request(*client_request);
+
+        Player* player_ptr      = std::get<0>(join_req_tuple);
+        ServerResponse response = std::get<1>(join_req_tuple);
 
         if (player_ptr != nullptr) {
             player_addr_mutex_.lock();
@@ -196,6 +232,9 @@ void ServerNetworkManager::handle_incoming_message_(
             player_addresses_.emplace(player_ptr->get_id(), peer_address);
             player_addr_mutex_.unlock();
         }
+
+        send_response_to_peer_(response, peer_address);
+        return;
     }
 
     // check if this is a message from a known player
@@ -216,7 +255,7 @@ void ServerNetworkManager::handle_incoming_message_(
             ServerResponseType::RequestResponse, client_request->get_type(),
             "", player_id, "Error: Player is not a known player of this game");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 
@@ -235,7 +274,7 @@ void ServerNetworkManager::handle_incoming_message_(
             "address stored for this player id. "
             "Only one player per peer is currently supported!");
 
-        send_response(response, peer_address.to_string());
+        send_response_to_peer_(response, peer_address);
         return;
     }
 
