@@ -4,16 +4,6 @@ Board::Board() : grid_size_(10) {
     ships_ = {new Ship(Carrier), new Ship(Battleship), new Ship(Cruiser), new Ship(Destroyer), new Ship(Submarine)};
 }
 
-// Board::Board(unsigned short grid_size) : grid_size_(grid_size) {
-//     ships_.resize(5);
-//     ships_[Carrier]    = Ship(Carrier);
-//     ships_[Battleship] = Ship(Battleship);
-//     ships_[Cruiser]    = Ship(Cruiser);
-//     ships_[Submarine]  = Ship(Submarine);
-//     ships_[Destroyer]  = Ship(Destroyer);
-//     grid_ = std::vector<std::vector<int>>(grid_size_, std::vector<int>(grid_size_, 0));
-//     is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
-// }
 
 
 // I should need to use delete here, but I don't know why it doesn't work
