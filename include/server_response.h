@@ -5,7 +5,7 @@ using json = nlohmann::json;
 
 #include "client_request.h"
 
-enum ServerResponseType { Unknown, RequestResponse, FullStateMessage };
+enum ServerResponseType { UnknownResponse, RequestResponse, FullStateMessage };
 
 class ServerResponse {
    public:

@@ -1,38 +1,96 @@
 
 #include "request_handler.h"
 
+#include "client_ready_request.h"
+#include "client_shoot_request.h"
 #include "game_instance.h"
 #include "game_instance_manager.h"
 #include "helper_functions.h"
 #include "player_manager.h"
 #include "server_network_manager.h"
 #include "server_response.h"
+// #include "client_prepared_request.h"
+// #include "client_give_up_request.h"
 
-void RequestHandler::handle_request(const ClientRequest& request) {
-    if (request.get_type() == ClientRequestType::ClientReadyRequest) {
-        handle_ready_request_(request);
-    } else if (request.get_type() ==
-               ClientRequestType::ClientPreparedRequest) {
-        handle_prepared_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientShootRequest) {
-        handle_shoot_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientGiveUpRequest) {
-        handle_give_up_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientJoinRequest) {
-        throw std::runtime_error(
-            "[RequestHandler] Please call handle_join_request() instead of "
-            "handle_request. This is a special case because the "
-            "ServerNetworkManager needs the player_id from the newly created "
-            "player if the join request is successful.");
-    } else {
-        throw std::runtime_error(
-            "[RequestHandler] Unhandled ClientRequest type");
+void RequestHandler::handle_request(const ClientRequestType& type,
+                                    const json& data) {
+    switch (type) {
+        case ClientRequestType::Ready:
+            // Parse the ready request
+            try {
+                ClientReadyRequest ready_request;
+                ready_request = ClientReadyRequest(data);
+                handle_ready_request_(ready_request);
+            } catch (const std::exception& e) {
+                std::cout << "[RequestHandler] Error parsing ready request: "
+                          << e.what() << std::endl;
+                return;
+            }
+
+            break;
+
+            // case ClientRequestType::Prepared:
+            //     // Parse the ready request
+            //     try {
+            //         ClientPreparedRequest prepared_request;
+            //         prepared_request = ClientPreparedRequest(data);
+            //         handle_prepared_request_(prepared_request);
+            //     } catch (const std::exception& e) {
+            //         std::cout << "[RequestHandler] Error parsing prepared
+            //         request: "
+            //                   << e.what() << std::endl;
+            //         return;
+            //     }
+
+            //     break;
+
+        case ClientRequestType::Shoot:
+            // Parse the ready request
+            try {
+                ClientShootRequest shoot_request;
+                shoot_request = ClientShootRequest(data);
+                handle_shoot_request_(shoot_request);
+            } catch (const std::exception& e) {
+                std::cout << "[RequestHandler] Error parsing shoot request: "
+                          << e.what() << std::endl;
+                return;
+            }
+
+            break;
+
+            // case ClientRequestType::GiveUp:
+            //     // Parse the ready request
+            //     try {
+            //         ClientGiveUpRequest give_up_request;
+            //         give_up_request = ClientGiveUpRequest(data);
+            //         handle_give_up_request_(give_up_request);
+            //     } catch (const std::exception& e) {
+            //         std::cout << "[RequestHandler] Error parsing give up
+            //         request: "
+            //                   << e.what() << std::endl;
+            //         return;
+            //     }
+
+            //     break;
+
+        case ClientRequestType::Join:
+            throw std::runtime_error(
+                "[RequestHandler] Please call handle_join_request() instead "
+                "of handle_request. This is a special case because the "
+                "ServerNetworkManager needs the player_id from the newly "
+                "created player if the join request is successful.");
+            return;
+
+        default:
+            throw std::runtime_error(
+                "[RequestHandler] Unhandled ClientRequest type");
+            return;
     }
 }
 
 std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
     const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::ClientJoinRequest);
+    assert(client_request.get_type() == ClientRequestType::Join);
 
     // create a player id string by creating a random hash string
     std::string new_player_id = HelperFunctions::create_random_id();
@@ -45,8 +103,7 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
             << std::endl;
 
         const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::ClientJoinRequest, "",
-                                      "",
+                                      ClientRequestType::Join, "", "",
                                       "Error: Could not add player to "
                                       "PlayerManager");
 
@@ -66,7 +123,7 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
 
         // formulate response
         const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::ClientJoinRequest,
+                                      ClientRequestType::Join,
                                       game_ptr->get_id(), new_player_id);
 
         return std::make_tuple(new_player_ptr, response);
@@ -80,9 +137,8 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
 
         // Formulate error response message
         const ServerResponse response(
-            ServerResponseType::RequestResponse,
-            ClientRequestType::ClientJoinRequest, "", new_player_id,
-            "Error: Could not add player to any game!");
+            ServerResponseType::RequestResponse, ClientRequestType::Join, "",
+            new_player_id, "Error: Could not add player to any game!");
 
         return std::make_tuple(nullptr, response);
     }
@@ -90,20 +146,18 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
 
 void RequestHandler::handle_ready_request_(
     const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::ClientReadyRequest);
+    assert(client_request.get_type() == ClientRequestType::Ready);
 
-    const ServerResponse response(ServerResponseType::RequestResponse,
-                                  ClientRequestType::ClientReadyRequest,
-                                  client_request.get_game_id(),
-                                  client_request.get_player_id());
+    const ServerResponse response(
+        ServerResponseType::RequestResponse, ClientRequestType::Ready,
+        client_request.get_game_id(), client_request.get_player_id());
 
     ServerNetworkManager::send_response(response, response.get_player_id());
 }
 
 void RequestHandler::handle_prepared_request_(
     const ClientRequest& client_request) {
-    assert(client_request.get_type() ==
-           ClientRequestType::ClientPreparedRequest);
+    assert(client_request.get_type() == ClientRequestType::Prepared);
 
     throw std::runtime_error("Not implemented yet");
 }

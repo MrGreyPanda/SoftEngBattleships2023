@@ -12,12 +12,15 @@
 class ServerNetworkManager {
    public:
     /**
-     * @brief Constructs a new ServerNetworkManager
-     *
-     * @param port The port to listen on
+     * @brief Starts the server listener loop
      */
-    ServerNetworkManager(unsigned port = 1337);
-    // TODO check if we need a destructor
+    static void start(unsigned port = 1337);
+
+    /**
+     * @brief Stops the server listener loop
+     * Stops all sockets and threads and close the acceptor
+     */
+    static void stop();
 
     /**
      * @brief Sends a response to a player
@@ -28,11 +31,6 @@ class ServerNetworkManager {
                               const std::string& player_id);
 
    private:
-    /**
-     * @brief Starts the server listener loop
-     */
-    static void start_();
-
     /**
      * @brief Handle the messages of a new thread
      *

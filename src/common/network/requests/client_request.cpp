@@ -2,12 +2,11 @@
 #include "client_request.h"
 
 std::map<std::string, ClientRequestType>
-    ClientRequest::client_request_type_map = {
-        {"join", ClientJoinRequest},
-        {"ready", ClientReadyRequest},
-        {"prepared", ClientPreparedRequest},
-        {"shoot", ClientShootRequest},
-        {"give_up", ClientGiveUpRequest}};
+    ClientRequest::client_request_type_map = {{"join", Join},
+                                              {"ready", Ready},
+                                              {"prepared", Prepared},
+                                              {"shoot", Shoot},
+                                              {"give_up", GiveUp}};
 
 ClientRequestType
 ClientRequest::get_client_request_type_from_message_type_string(
@@ -16,8 +15,11 @@ ClientRequest::get_client_request_type_from_message_type_string(
     if (it != client_request_type_map.end()) {
         return it->second;
     }
-    return ClientRequestType::ClientUnknownRequest;
+    return ClientRequestType::Unknown;
 }
+
+ClientRequest::ClientRequest()
+    : type_(Unknown), player_id_(""), game_id_("") {}
 
 ClientRequest::ClientRequest(const json& data) {
     // Use the JSON data to initialize the member variables
@@ -28,7 +30,7 @@ ClientRequest::ClientRequest(const json& data) {
         type_ = get_client_request_type_from_message_type_string(message_type);
 
         // a player join request doesn't need a player_id or game_id
-        if (type_ == ClientJoinRequest) {
+        if (type_ == Join) {
             return;
         }
 
@@ -48,18 +50,15 @@ ClientRequest::ClientRequest(const json& data) {
     }
 }
 
-ClientRequest::ClientRequest(ClientRequestType type)
-    : type_(type), player_id_(""), game_id_("") {}
-
-ClientRequest::ClientRequest(ClientRequestType type, std::string player_id,
-                             std::string game_id)
+ClientRequest::ClientRequest(ClientRequestType type, std::string game_id,
+                             std::string player_id)
     : type_(type), player_id_(player_id), game_id_(game_id) {}
 
 ClientRequestType ClientRequest::get_type() const { return type_; }
 
-std::string ClientRequest::get_player_id() const { return player_id_; }
-
 std::string ClientRequest::get_game_id() const { return game_id_; }
+
+std::string ClientRequest::get_player_id() const { return player_id_; }
 
 json ClientRequest::to_json() const {
     json data;

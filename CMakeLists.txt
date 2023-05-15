@@ -32,7 +32,7 @@ add_subdirectory(dependencies/googletest)
 add_subdirectory(dependencies/sdlgui)
 
 # Include header files
-include_directories(include)
+include_directories(include include/requests)
 
 # find source files
 file(GLOB_RECURSE COMMON_SOURCES src/common/*.cpp)
@@ -40,10 +40,10 @@ file(GLOB_RECURSE COMMON_SOURCES src/common/*.cpp)
 file(GLOB_RECURSE CLIENT_SOURCES src/client/*.cpp)
 list(FILTER CLIENT_SOURCES EXCLUDE REGEX ".*src/client/main\\.cpp$")
 
-file(GLOB SERVER_SOURCES src/server/*.cpp)
+file(GLOB_RECURSE SERVER_SOURCES src/server/*.cpp)
 list(FILTER SERVER_SOURCES EXCLUDE REGEX ".*src/server/main\\.cpp$")
 
-file(GLOB TEST_SOURCES tests/*.test.cpp)
+file(GLOB_RECURSE TEST_SOURCES tests/*.test.cpp)
 
 # build client
 add_executable(Battleships ${COMMON_SOURCES} src/client/main.cpp ${CLIENT_SOURCES})

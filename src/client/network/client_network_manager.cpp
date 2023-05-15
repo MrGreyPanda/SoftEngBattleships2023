@@ -123,7 +123,7 @@ void ClientNetworkManager::handle_incoming_messages_() {
             std::string line;
 
             while (std::getline(str_stream, line, '\0')) {
-                std::string message = line;
+                const std::string message = line;
 
                 // TODO handle incoming message, for now just print it
                 std::cout << "[ClientNetworkManager] (Debug) recieved "
