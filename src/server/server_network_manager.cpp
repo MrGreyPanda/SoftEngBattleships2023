@@ -14,6 +14,8 @@ using json = nlohmann::json;
 
 sockpp::tcp_acceptor ServerNetworkManager::acceptor_;
 
+std::thread listener_thread_;
+
 std::shared_mutex ServerNetworkManager::player_addr_mutex_;
 
 std::unordered_map<std::string, sockpp::inet_address>
@@ -24,20 +26,69 @@ std::shared_mutex ServerNetworkManager::sockets_mutex_;
 std::unordered_map<std::string, sockpp::tcp_socket>
     ServerNetworkManager::sockets_;
 
-ServerNetworkManager::ServerNetworkManager(unsigned port) {
-    // Create the acceptor
-    acceptor_ = sockpp::tcp_acceptor(port);
+// ServerNetworkManager methods
 
-    if (!acceptor_) {
-        std::cerr << "[ServerNetworkManager] Error creating acceptor: "
-                  << acceptor_.last_error_str() << std::endl;
+void ServerNetworkManager::start(unsigned port) {
+    if (acceptor_ && acceptor_.is_open()) {
+        std::cerr << "[ServerNetworkManager] (Debug) acceptor already open"
+                  << std::endl;
         return;
+    } else {
+        // Create the acceptor
+        acceptor_ = sockpp::tcp_acceptor(port);
+
+        if (!acceptor_) {
+            std::cerr << "[ServerNetworkManager] Error creating acceptor: "
+                      << acceptor_.last_error_str() << std::endl;
+            return;
+        }
     }
 
     // Start the listener loop
     std::cout << "[ServerNetworkManager] Listening on port " << port
               << std::endl;
-    start_();
+
+    while (acceptor_.is_open()) {
+        sockpp::inet_address peer_address;
+        sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
+        std::cout << "[ServerNetworkManager] Received connection from "
+                  << peer_address.to_string() << std::endl;
+
+        if (!socket) {
+            if (!acceptor_.is_open()) {
+                // the acceptor was closed, exit the loop
+                break;
+            } else {
+                std::cerr
+                    << "[ServerNetworkManager] Error accepting connection: "
+                    << socket.last_error_str() << std::endl;
+                continue;
+            }
+        } else {
+            // the received conncection is valid
+            // try and listen to messages from this connection
+
+            // create thread to handle incoming messages
+            std::thread listener(handle_socket_, std::move(socket));
+
+            // Detach the thread so it can run in the background
+            listener.detach();
+        }
+    }
+}
+
+void ServerNetworkManager::stop() {
+    std::cout << "[ServerNetworkManager] Stopping server..." << std::endl;
+
+    // Close all sockets
+    for (auto& socket_pair : sockets_) {
+        socket_pair.second.close();
+    }
+
+    // Close the acceptor
+    acceptor_.close();
+
+    std::cout << "[ServerNetworkManager] Server stopped" << std::endl;
 }
 
 void ServerNetworkManager::send_response(const ServerResponse& response,
@@ -82,30 +133,6 @@ void ServerNetworkManager::send_response_to_peer_(
         std::cout
             << "[ServerNetworkManager] (Debug) Sent response to client: '"
             << message << "'" << std::endl;
-    }
-}
-
-void ServerNetworkManager::start_() {
-    while (true) {
-        sockpp::inet_address peer_address;
-        sockpp::tcp_socket socket = acceptor_.accept(&peer_address);
-        std::cout << "[ServerNetworkManager] Received connection from "
-                  << peer_address.to_string() << std::endl;
-
-        if (!socket) {
-            std::cerr << "[ServerNetworkManager] Error accepting connection: "
-                      << socket.last_error_str() << std::endl;
-            continue;
-        } else {
-            // the received conncection is valid
-            // try and listen to messages from this connection
-
-            // create thread to handle incoming messages
-            std::thread listener(handle_socket_, std::move(socket));
-
-            // Detach the thread so it can run in the background
-            listener.detach();
-        }
     }
 }
 
