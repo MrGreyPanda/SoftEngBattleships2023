@@ -77,7 +77,7 @@ TEST(BackendIntegrationTest, Connect) {
 }
 
 TEST(BackendIntegrationTest, Join) {
-    ClientJoinRequest join_request;
+    JoinRequest join_request;
 
     // Launch async tasks for sending requests and receiving responses
     auto task1 = std::async(std::launch::async, [&]() {
@@ -123,7 +123,7 @@ TEST(BackendIntegrationTest, Join) {
 
 TEST(BackendIntegrationTest, Ready) {
     // send ready request player 1
-    ClientReadyRequest ready_request_1(game_id_1, player_id_1);
+    ReadyRequest ready_request_1(game_id_1, player_id_1);
     send_request_to_server(connector_1, ready_request_1.to_string());
 
     const ServerResponse ready_response_1 =
@@ -136,7 +136,7 @@ TEST(BackendIntegrationTest, Ready) {
     EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
 
     // send ready request player 2
-    ClientReadyRequest ready_request_2(game_id_2, player_id_2);
+    ReadyRequest ready_request_2(game_id_2, player_id_2);
     send_request_to_server(connector_2, ready_request_2.to_string());
 
     const ServerResponse ready_response_2 =

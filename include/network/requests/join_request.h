@@ -1,8 +1,8 @@
 #pragma once
 
-#include "client_request.h"
+#include "base_message.h"
 
-class ClientJoinRequest : public ClientRequest {
+class JoinRequest : public BaseMessage {
    public:
-    ClientJoinRequest();
+    JoinRequest();
 };

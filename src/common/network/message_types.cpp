@@ -34,8 +34,8 @@ std::map<std::string, MessageType> MessageTypeHelpers::message_type_map_ = {
 
 MessageType MessageTypeHelpers::make_message_type_from_string(
     const std::string &string) {
-    auto it = message_type_map.find(string);
-    if (it != message_type_map.end()) {
+    auto it = message_type_map_.find(string);
+    if (it != message_type_map_.end()) {
         return it->second;
     }
     return MessageType::UnknownType;
@@ -43,7 +43,7 @@ MessageType MessageTypeHelpers::make_message_type_from_string(
 
 std::string MessageTypeHelpers::make_string_from_message_type(
     const MessageType &type) {
-    for (auto &it : message_type_map) {
+    for (auto &it : message_type_map_) {
         if (it.second == type) {
             return it.first;
         }

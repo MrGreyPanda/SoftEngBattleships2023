@@ -8,6 +8,8 @@ using json = nlohmann::json;
 
 class BaseMessage {
    public:
+    BaseMessage(const MessageType& type);
+
     /**
      * @brief Get the type of this message
      *

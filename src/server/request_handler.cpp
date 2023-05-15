@@ -18,8 +18,8 @@ void RequestHandler::handle_request(const ClientRequestType& type,
         case ClientRequestType::Ready:
             // Parse the ready request
             try {
-                ClientReadyRequest ready_request;
-                ready_request = ClientReadyRequest(data);
+                ReadyRequest ready_request;
+                ready_request = ReadyRequest(data);
                 handle_ready_request_(ready_request);
             } catch (const std::exception& e) {
                 std::cout << "[RequestHandler] Error parsing ready request: "

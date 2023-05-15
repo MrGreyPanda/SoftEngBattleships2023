@@ -1,12 +1,10 @@
 #pragma once
 
-#include "client_request.h"
+#include "message.h"
 
-class ClientReadyRequest : public ClientRequest {
+class ReadyRequest : public Message {
    public:
-    ClientReadyRequest();
-    ClientReadyRequest(const json& data);
-    ClientReadyRequest(std::string game_id, std::string player_id);
-
-    json to_json() const;
+    ReadyRequest();
+    ReadyRequest(const json& data);
+    ReadyRequest(std::string game_id, std::string player_id);
 };
