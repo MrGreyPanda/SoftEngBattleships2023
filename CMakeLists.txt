@@ -31,7 +31,7 @@ add_subdirectory(dependencies/json)
 add_subdirectory(dependencies/googletest)
 
 # Include header files
-include_directories(include)
+include_directories(include include/requests)
 
 # find source files
 file(GLOB_RECURSE COMMON_SOURCES src/common/*.cpp)

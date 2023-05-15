@@ -1,5 +1,7 @@
 #include "client_shoot_request.h"
 
+ClientShootRequest::ClientShootRequest() : ClientRequest() {}
+
 ClientShootRequest::ClientShootRequest(const json& data)
     : ClientRequest(data) {
     if (data.contains("x") && data["x"].is_number_integer()) {

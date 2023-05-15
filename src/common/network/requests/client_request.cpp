@@ -18,6 +18,9 @@ ClientRequest::get_client_request_type_from_message_type_string(
     return ClientRequestType::Unknown;
 }
 
+ClientRequest::ClientRequest()
+    : type_(Unknown), player_id_(""), game_id_("") {}
+
 ClientRequest::ClientRequest(const json& data) {
     // Use the JSON data to initialize the member variables
 
@@ -46,9 +49,6 @@ ClientRequest::ClientRequest(const json& data) {
         throw std::runtime_error("Invalid message_type");
     }
 }
-
-ClientRequest::ClientRequest(ClientRequestType type)
-    : type_(type), player_id_(""), game_id_("") {}
 
 ClientRequest::ClientRequest(ClientRequestType type, std::string game_id,
                              std::string player_id)

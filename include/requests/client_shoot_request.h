@@ -1,13 +1,10 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
-
 #include "client_request.h"
-
-using json = nlohmann::json;
 
 class ClientShootRequest : public ClientRequest {
    public:
+    ClientShootRequest();
     ClientShootRequest(const json& data);
     ClientShootRequest(std::string game_id, std::string player_id,
                        unsigned short x_coordinate,
