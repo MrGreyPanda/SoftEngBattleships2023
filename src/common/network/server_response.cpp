@@ -13,7 +13,7 @@ ServerResponse::get_server_request_type_from_message_type_string(
     if (it != server_response_type_map.end()) {
         return it->second;
     }
-    return ServerResponseType::Unknown;
+    return ServerResponseType::UnknownResponse;
 }
 
 ServerResponse::ServerResponse(const json& data) {
@@ -53,7 +53,7 @@ ServerResponse::ServerResponse(const json& data) {
 ServerResponse::ServerResponse(const ServerResponseType& type,
                                const std::string& error_message)
     : type_(type),
-      request_type_(ClientRequestType::ClientUnknownRequest),
+      request_type_(ClientRequestType::Unknown),
       error_message_(error_message) {}
 
 ServerResponse::ServerResponse(const ServerResponseType& type,

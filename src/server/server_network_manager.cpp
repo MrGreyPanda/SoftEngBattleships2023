@@ -219,7 +219,7 @@ void ServerNetworkManager::handle_incoming_message_(
 
     // Create a player id for this connection if it is a join request
     // Also add the player to a game
-    if (client_request->get_type() == ClientRequestType::ClientJoinRequest) {
+    if (client_request->get_type() == ClientRequestType::Join) {
         std::tuple<Player*, ServerResponse> join_req_tuple =
             RequestHandler::handle_join_request(*client_request);
 
@@ -279,4 +279,6 @@ void ServerNetworkManager::handle_incoming_message_(
     }
 
     RequestHandler::handle_request(*client_request);
+
+    delete client_request;
 }

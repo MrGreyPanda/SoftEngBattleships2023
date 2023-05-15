@@ -9,16 +9,16 @@
 #include "server_response.h"
 
 void RequestHandler::handle_request(const ClientRequest& request) {
-    if (request.get_type() == ClientRequestType::ClientReadyRequest) {
+    if (request.get_type() == ClientRequestType::Ready) {
         handle_ready_request_(request);
     } else if (request.get_type() ==
-               ClientRequestType::ClientPreparedRequest) {
+               ClientRequestType::Prepared) {
         handle_prepared_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientShootRequest) {
+    } else if (request.get_type() == ClientRequestType::Shoot) {
         handle_shoot_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientGiveUpRequest) {
+    } else if (request.get_type() == ClientRequestType::GiveUp) {
         handle_give_up_request_(request);
-    } else if (request.get_type() == ClientRequestType::ClientJoinRequest) {
+    } else if (request.get_type() == ClientRequestType::Join) {
         throw std::runtime_error(
             "[RequestHandler] Please call handle_join_request() instead of "
             "handle_request. This is a special case because the "
@@ -32,7 +32,7 @@ void RequestHandler::handle_request(const ClientRequest& request) {
 
 std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
     const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::ClientJoinRequest);
+    assert(client_request.get_type() == ClientRequestType::Join);
 
     // create a player id string by creating a random hash string
     std::string new_player_id = HelperFunctions::create_random_id();
@@ -45,7 +45,7 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
             << std::endl;
 
         const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::ClientJoinRequest, "",
+                                      ClientRequestType::Join, "",
                                       "",
                                       "Error: Could not add player to "
                                       "PlayerManager");
@@ -66,7 +66,7 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
 
         // formulate response
         const ServerResponse response(ServerResponseType::RequestResponse,
-                                      ClientRequestType::ClientJoinRequest,
+                                      ClientRequestType::Join,
                                       game_ptr->get_id(), new_player_id);
 
         return std::make_tuple(new_player_ptr, response);
@@ -81,7 +81,7 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
         // Formulate error response message
         const ServerResponse response(
             ServerResponseType::RequestResponse,
-            ClientRequestType::ClientJoinRequest, "", new_player_id,
+            ClientRequestType::Join, "", new_player_id,
             "Error: Could not add player to any game!");
 
         return std::make_tuple(nullptr, response);
@@ -90,10 +90,10 @@ std::tuple<Player*, ServerResponse> RequestHandler::handle_join_request(
 
 void RequestHandler::handle_ready_request_(
     const ClientRequest& client_request) {
-    assert(client_request.get_type() == ClientRequestType::ClientReadyRequest);
+    assert(client_request.get_type() == ClientRequestType::Ready);
 
     const ServerResponse response(ServerResponseType::RequestResponse,
-                                  ClientRequestType::ClientReadyRequest,
+                                  ClientRequestType::Ready,
                                   client_request.get_game_id(),
                                   client_request.get_player_id());
 
@@ -103,7 +103,7 @@ void RequestHandler::handle_ready_request_(
 void RequestHandler::handle_prepared_request_(
     const ClientRequest& client_request) {
     assert(client_request.get_type() ==
-           ClientRequestType::ClientPreparedRequest);
+           ClientRequestType::Prepared);
 
     throw std::runtime_error("Not implemented yet");
 }

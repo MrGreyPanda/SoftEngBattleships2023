@@ -3,14 +3,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-enum ClientRequestType {
-    ClientUnknownRequest,
-    ClientJoinRequest,
-    ClientReadyRequest,
-    ClientPreparedRequest,
-    ClientShootRequest,
-    ClientGiveUpRequest
-};
+enum ClientRequestType { Unknown, Join, Ready, Prepared, Shoot, GiveUp };
 
 class ClientRequest {
    public:
@@ -28,12 +21,12 @@ class ClientRequest {
      * @param player_id
      * @param game_id
      */
-    ClientRequest(ClientRequestType type, std::string player_id,
-                  std::string game_id);
+    ClientRequest(ClientRequestType type, std::string game_id,
+                  std::string player_id);
 
     /**
      * @brief Construct a new Client Request object
-     * NOTE: This constructor is only used for ClientJoinRequest. It will set
+     * NOTE: This constructor is only used for Join. It will set
      * the game_id_ and player_id_ to empty strings.
      *
      * @param type
