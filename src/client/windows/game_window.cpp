@@ -1,12 +1,10 @@
 #include "game_window.h"
 
-char ConnectionWindow::m_server_address_input[33];
-char ConnectionWindow::m_server_address[33];
-uint16_t ConnectionWindow::m_server_port = 0;
+std::string ConnectionWindow::server_address_input_;
+std::string ConnectionWindow::server_address_;
+uint16_t ConnectionWindow::server_port_ = 0;
 
 void ConnectionWindow::init() {
-    memset(m_server_address_input, '\0', 33 * sizeof(char));
-    memset(m_server_address, '\0', 33 * sizeof(char));
     SDLGui::SDLGuiContext* connectionWindowContext =
         new SDLGui::SDLGuiContext("connectionWindow");
 
@@ -23,7 +21,7 @@ void ConnectionWindow::init() {
 
     SDLGui::TextInputWidget* serverAddressTextInput =
         new SDLGui::TextInputWidget(
-            "serverAddressInput", m_server_address_input, 32, .55f, .4f, .4f,
+            server_address_input_, "serverAddressInput", 32, .55f, .4f, .4f,
             .06f, 0., SDLGui::TextInputFlagsExt_CenterText);
     connectionWindowContext->addWidget(serverAddressTextInput);
 
@@ -47,19 +45,18 @@ void ConnectionWindow::render() {
 
     if (SDLGui::TextButton("serverConnectionButton")) {
         if (check_server_address()) {
-            if (!ClientNetworkManager::connect(m_server_address,
-                                               m_server_port))
+            if (!ClientNetworkManager::connect(server_address_,
+                                               server_port_))
                 SDLGui::Text("serverMessageText")
                     .updateText(64, "Failed to connect to %s:%hu",
-                                m_server_address, m_server_port);
+                                server_address_.c_str(), server_port_);
             else {
                 SDLGui::Text("serverMessageText")
                     .updateText(64, "Connecting to %s:%hu...",
-                                m_server_address, m_server_port);
+                                server_address_.c_str(), server_port_);
                 SDLGui::TextButton("serverConnectionButton").disable();
                 SDLGui::TextInput("serverAddressInput").disable();
-                ClientNetworkManager::send_request(
-                    ClientRequest(ClientRequestType::Join));
+                ClientNetworkManager::send_request(ClientJoinRequest());
             }
         }
     }
@@ -67,34 +64,27 @@ void ConnectionWindow::render() {
     if (ClientNetworkManager::get_connection_status() ==
         ClientNetworkConnectionStatus::CONNECTED)
         SDLGui::Text("serverMessageText")
-            .updateText(64, "Connected to %s:%hu", m_server_address,
-                        m_server_port);
+            .updateText(64, "Connected to %s:%hu", server_address_.c_str(),
+                        server_port_);
 
     SDLGui::end();
 }
 
 bool ConnectionWindow::check_server_address() {
-    size_t address_size = strlen(m_server_address_input);
-    uint32_t dots_found = 0;
-    char buffer[16];
-    uint32_t buffer_index = 0;
-    size_t i              = 0;
-    for (i = 0; i < address_size; ++i) {
-        if (m_server_address_input[i] == ':') break;
-        m_server_address[i] = m_server_address_input[i];
-        if (m_server_address_input[i] == '.') {
-            dots_found++;
-            continue;
-        }
-        if (m_server_address_input[i] < '0' || m_server_address_input[i] > '9')
-            return false;
+    std::regex ipv4_regex("(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\:[0-9]+");
+    std::smatch ipv4_regex_match;
+    if (std::regex_match(server_address_input_, ipv4_regex_match, ipv4_regex)) {
+        /* REGEX_MATCH SHOULD BE ABLE TO SPLIT THE STRING INTO COMPONENTS (to be replaced if someone know how to make it work) */
+        /*printf("%llu\n", ipv4_regex_match.size());
+        for (uint32_t i = 0; i < ipv4_regex_match.size(); ++i) {
+            printf("%s\n", ipv4_regex_match[i].str().c_str());
+        }*/
+        std::string::size_type n = server_address_input_.find(':');
+        server_address_ = server_address_input_.substr(0, n);
+        std::string port_substring = server_address_input_.substr(n + 1, server_address_input_.size() - n - 1);
+        server_port_ = (uint16_t)std::stoi(port_substring);
+        return true;
     }
-    if (i == address_size - 1) return false;  // No ':' found
-    i++;
-    for (; i < address_size; ++i) {
-        buffer[buffer_index++] = m_server_address_input[i];
-    }
-    m_server_port = (uint16_t)atoi(buffer);
 
-    return true;
+    return false;
 }

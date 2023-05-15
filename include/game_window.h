@@ -1,8 +1,12 @@
 #pragma once
 
+#include <string>
+#include <regex>
+
 #include "SDLGui.hpp"
 
 #include "client_network_manager.h"
+#include "requests/client_join_request.h"
 
 class ConnectionWindow {
 public:
@@ -15,7 +19,7 @@ private:
     /// @brief Checks the validity of the given server address
     static bool check_server_address();
 private:
-    static char m_server_address_input[33];
-    static char m_server_address[33];
-    static uint16_t m_server_port;
+    static std::string server_address_input_;
+    static std::string server_address_;
+    static uint16_t server_port_;
 };
