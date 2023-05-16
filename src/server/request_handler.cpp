@@ -168,10 +168,10 @@ void RequestHandler::handle_shoot_request_(
     GameState* game_ptr = GameInstanceManager::get_game_instance(client_request.get_game_id())->get_game_state();
 
     // Get coords from client request, needs to be coded -> Check up with Lukas
-    short x = client_request.get_x();
-    short y = client_request.get_y();
-    // short x = 0;    // DUMMY VALUES
-    // short y = 0;    // DUMMY VALUES
+    // short x = client_request.get_x();
+    // short y = client_request.get_y();
+    short x = 0;    // DUMMY VALUES
+    short y = 0;    // DUMMY VALUES
     // // Get player from player manager
     Player* player_ptr = PlayerManager::try_get_player(client_request.get_player_id());
 
@@ -182,7 +182,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 client_request.get_player_id(),
-                                "Error: You already shot at this position!");
+                                "Error: You already shot at this position!");    // This is not how it works, here should go an Error message
         ServerNetworkManager::send_response(response, response.get_player_id());
         return;
     }
@@ -200,7 +200,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 client_request.get_player_id(),
-                                "Error: This position was already shot at!");
+                                "Error: This position was already shot at!");    // This is not how it works, here should go an Error message
         ServerNetworkManager::send_response(response, response.get_player_id());
         return;
     }
@@ -214,7 +214,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 client_request.get_player_id(),
-                                "Hit!");
+                                "Hit!");            // This is not how it works, here should go an Error message
         ServerNetworkManager::send_response(hit_response, hit_response.get_player_id());
 
         // Send hit message to other client
@@ -222,7 +222,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 other_player_id,
-                                "You got hit!");
+                                "You got hit!");     // This is not how it works, here should go an Error message
         ServerNetworkManager::send_response(got_hit_response, got_hit_response.get_player_id());
 
         // Get ship from other players board
@@ -238,7 +238,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 client_request.get_player_id(),
-                                "You destroyed a ship!");
+                                "You destroyed a ship!");            // This is not how it works, here should go an Error message
             ServerNetworkManager::send_response(destroyer_response, destroyer_response.get_player_id());
 
             // Send ship destroyed message to other client
@@ -246,7 +246,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 other_player_id,
-                                "One of your ships was destroyed!");
+                                "One of your ships was destroyed!");     // This is not how it works, here should go an Error message
             ServerNetworkManager::send_response(destroyed_response, destroyed_response.get_player_id());
             
             // update enemy boards ship vector
@@ -260,7 +260,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 client_request.get_player_id(),
-                                "You won!");
+                                "You won!");         // This is not how it works, here should go an Error message
             ServerNetworkManager::send_response(won_response, won_response.get_player_id());
 
             // Send lose message to other client
@@ -268,7 +268,7 @@ void RequestHandler::handle_shoot_request_(
                                 ClientRequestType::Shoot,
                                 client_request.get_game_id(),
                                 other_player_id,
-                                "You lost!");
+                                "You lost!");            // This is not how it works, here should go an Error message
             ServerNetworkManager::send_response(lost_response, lost_response.get_player_id());
             game_ptr->set_phase(End); 
 

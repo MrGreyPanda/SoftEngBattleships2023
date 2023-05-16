@@ -111,6 +111,8 @@ class GameInstance {
      */
     bool has_player(std::string player_id);
 
+    std::string try_get_other_player_id(std::string player_id);
+
    private:
     GameState* game_state_;
     inline static std::mutex lock_;  // TODO why static? Why inline?
