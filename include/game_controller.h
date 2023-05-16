@@ -6,6 +6,7 @@
 #include "game_state.h"
 #include "connection_panel.h"
 #include "preparation_panel.h"
+#include "end_panel.h"
 
 class GameController {
    public:

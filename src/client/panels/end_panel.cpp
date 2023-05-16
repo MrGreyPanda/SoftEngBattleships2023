@@ -1,5 +1,7 @@
 #include "end_panel.h"
 
+GameState* EndPanel::game_state_ = nullptr;
+
 void EndPanel::init(){
     SDLGui::SDLGuiContext* end_window_context =
     new SDLGui::SDLGuiContext("endWindow");
@@ -24,7 +26,5 @@ void EndPanel::init(){
 
 void EndPanel::render() {
     SDLGui::begin("endWindow");
-
-
 
 }

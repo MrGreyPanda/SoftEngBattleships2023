@@ -15,6 +15,9 @@ void GameController::init() {
     PreparationPanel::set_game_state(&game_state_);
     PreparationPanel::init();
 
+    EndPanel::set_game_state(&game_state_);
+    EndPanel::init();
+
     game_state_.set_phase(Lobby);
 }
 
@@ -28,6 +31,7 @@ void GameController::render() {
     while (SDLGui::isRunning()) {
         SDLGui::newFrame();
 
+        if(game_state_.get_phase() == End) EndPanel::render();
         if (game_state_.get_phase() == Preparation) PreparationPanel::render();
         if (game_state_.get_phase() == Lobby) ConnectionPanel::render();
 
