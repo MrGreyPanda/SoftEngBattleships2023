@@ -121,7 +121,16 @@ std::tuple<Player*, JoinResponse> RequestHandler::handle_join_request(
 
         // notify the other player that a player joined
         // create join message
-        // const JoinMessage join_message;
+        const std::string other_player_id =
+            game_ptr->get_other_player_id(new_player_id)->get_id();
+
+        if (!other_player_id.empty()) {
+            const JoinMessage join_message(game_ptr->get_id(),
+                                           other_player_id);
+
+            ServerNetworkManager::send_response(join_message.to_string(),
+                                                join_message.get_player_id());
+        }
 
         return std::make_tuple(new_player_ptr, join_response);
 
