@@ -47,6 +47,13 @@ void Board::set_is_shot(const short &x, const short &y, bool value) {
     is_shot_[y][x] = value;
 }
 
+Ship* Board::get_ship_by_name(const ShipCategory &type){
+    for(int i = 0; i < ships_.size(); i++){
+        if(ships_[i]->get_name() == type) return ships_[i];
+    }
+    return nullptr;
+}
+
 // OwnBoard::OwnBoard() : Board() {}
 
 // OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
@@ -169,7 +176,7 @@ bool OwnBoard::rotate_ship(Ship &ship) {
     else {
         ship.set_is_horizontal(!is_horizontal);
 
-        //// NEED TO UPDATE THE SHIP IN THE VECTOR HERE
+        *this->get_ship_by_name(ship.get_name()) = ship;
         return true;
     }
 }
@@ -228,13 +235,12 @@ bool OwnBoard::is_valid_configuration(){
 }
 
 bool OwnBoard::is_ultimate_configuration(){
-    if(is_valid_configuration() == false) return false;
     auto ship_vec = *this->get_ship_vec();
     if(ship_vec[0]->get_is_horizontal() != true || ship_vec[0]->get_x() != 6 || ship_vec[0]->get_y() != 7) return false;
     if(ship_vec[1]->get_is_horizontal() != true || ship_vec[1]->get_x() != 2 || ship_vec[1]->get_y() != 7) return false;
-    if(ship_vec[2]->get_is_horizontal() != true || ship_vec[2]->get_x() != 4 || ship_vec[2]->get_y() != 5) return false;
-    if(ship_vec[3]->get_is_horizontal() != false || ship_vec[3]->get_x() != 7 || ship_vec[3]->get_y() != 2) return false;
-    if(ship_vec[1]->get_is_horizontal() != true || ship_vec[1]->get_x() != 3 || ship_vec[1]->get_y() != 6) return false;
+    if(ship_vec[2]->get_is_horizontal() != true || ship_vec[2]->get_x() != 4 || ship_vec[2]->get_y() != 5)  return false; 
+    if(ship_vec[3]->get_is_horizontal() != false || ship_vec[3]->get_x() != 7 || ship_vec[3]->get_y() != 2) return false; 
+    if(ship_vec[4]->get_is_horizontal() != true || ship_vec[4]->get_x() != 3 || ship_vec[4]->get_y() != 6) return false;
     return true;
 }
 

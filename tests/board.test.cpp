@@ -89,6 +89,26 @@ TEST(OwnBoardTest, RotateShip){
     EXPECT_EQ(2, own_board.get_grid_value(2, 3));
 }
 
+TEST(OwnBoardTest, UltimateConfiguration){
+    OwnBoard own_board;
+    Ship carrier(Carrier);
+    Ship battleship(Battleship);
+    Ship cruiser(Cruiser);
+    Ship submarine(Submarine);
+    Ship destroyer(Destroyer);
+    EXPECT_TRUE(own_board.rotate_ship(destroyer));
+    EXPECT_TRUE(own_board.place_ship(6, 7, destroyer));
+    EXPECT_TRUE(own_board.rotate_ship(submarine));
+    EXPECT_TRUE(own_board.place_ship(2, 7, submarine));
+    EXPECT_TRUE(own_board.rotate_ship(cruiser));
+    EXPECT_TRUE(own_board.place_ship(4, 5, cruiser));
+    EXPECT_TRUE(own_board.place_ship(7, 2, battleship));
+    EXPECT_TRUE(own_board.rotate_ship(carrier));
+    EXPECT_TRUE(own_board.place_ship(3, 6, carrier));
+    EXPECT_TRUE(own_board.is_valid_configuration());
+    EXPECT_TRUE(own_board.is_ultimate_configuration());
+}
+
 TEST(EnemyBoardTest, CreateEnemyBoard){
     EnemyBoard enemy_board;
     EXPECT_EQ(10, enemy_board.get_grid_size());
