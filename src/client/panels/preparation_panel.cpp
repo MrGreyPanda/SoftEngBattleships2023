@@ -21,12 +21,13 @@ void PreparationPanel::init()
     SDLGui::TextButtonWidget* ready_button = 
         new SDLGui::TextButtonWidget("readyButton", "Ready", .0f, .9f, .3f, .08f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText | SDLGui::TextButtonFlagsExt_CenterHorizontal);
+    preparation_panel_context->addWidget(ready_button);
 
     SDLGui::DraggableImageWidget* carrier_ship = 
         new SDLGui::DraggableImageWidget("carrier_ship", "../../assets/carrier.bmp",
         .6f, .2f, .3f, .12f, 0., 5, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
-        preparation_panel_context->addWidget(carrier_ship);
+    preparation_panel_context->addWidget(carrier_ship);
     
     SDLGui::DraggableImageWidget* battleship_ship = 
         new SDLGui::DraggableImageWidget("battleship_ship", "../../assets/battleship.bmp",
