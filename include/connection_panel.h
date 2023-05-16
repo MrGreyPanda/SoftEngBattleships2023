@@ -7,7 +7,10 @@
 
 #include "client_network_manager.h"
 #include "join_request.h"
+<<<<<<< HEAD
 #include "game_state.h"
+=======
+>>>>>>> be59a823f179c0e83cccf06fc0595f86d43fafad
 
 class ConnectionPanel {
 public:
