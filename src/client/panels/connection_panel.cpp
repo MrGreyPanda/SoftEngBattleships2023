@@ -59,7 +59,8 @@ void ConnectionPanel::render() {
                 ClientNetworkManager::send_request(ClientJoinRequest());
             }
         }
-        SDLGui::Text("serverMessageText").updateText(64, "Invalid address %s", server_address_input_.c_str());
+        else
+            SDLGui::Text("serverMessageText").updateText(64, "Invalid address %s", server_address_input_.c_str());
     }
 
     if (ClientNetworkManager::get_connection_status() ==
