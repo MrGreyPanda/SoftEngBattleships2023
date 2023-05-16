@@ -9,3 +9,4 @@
 - Rotation just in one direction (R)
 - Return x, y Grid coords in DragableObject when released, also set Ship.is_placed_ = true
 - when taken of grid (reset position) set Ship.is_placed_ = false
+- Assets loading into Ship or assigning each ship a unique identifier (same as DragableObject)

@@ -73,6 +73,20 @@ Ship::Ship(const Ship &ship)
       x_(ship.x_),
       y_(ship.y_) {}
 
+Ship &Ship::operator=(const Ship &ship) {
+    if (this != &ship) {
+        name_ = ship.name_;
+        is_sunk_ = ship.is_sunk_;
+        length_ = ship.length_;
+        damage_ = ship.damage_;
+        is_placed_ = ship.is_placed_;
+        is_horizontal_ = ship.is_horizontal_;
+        x_ = ship.x_;
+        y_ = ship.y_;
+    }
+    return *this;
+}
+
 Ship::~Ship() {
     // Nothing to do here
 }

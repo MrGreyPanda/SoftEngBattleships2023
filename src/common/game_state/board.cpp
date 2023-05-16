@@ -112,6 +112,7 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
             set_grid_value(x + i, y, shiptype);
         }
         ship.set_xy(x, y);
+        *(this->get_ship(x, y)) = ship;
         return true;
     }
     else if(!is_horizontal){
@@ -126,6 +127,7 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
             set_grid_value(x, y + i, shiptype);
         }
         ship.set_xy(x, y);
+        *(this->get_ship(x, y)) = ship;
         return true;
     }
     else return false; // Throw exception here, unexpected behaviour
@@ -150,6 +152,7 @@ bool OwnBoard::rotate_ship(Ship &ship) {
                 set_grid_value(x + i, y, 0);
                 set_grid_value(x, y + i, shiptype);
             }
+            *(this->get_ship(x, y)) = ship;
             return true;
         }
         else if(!is_horizontal){
@@ -158,12 +161,15 @@ bool OwnBoard::rotate_ship(Ship &ship) {
                 set_grid_value(x, y + i, 0);
                 set_grid_value(x + i, y, shiptype);
             }
+            *(this->get_ship(x, y)) = ship;
             return true;
         }
         else return false; // Throw exception here unexpected behaviour
     }
     else {
         ship.set_is_horizontal(!is_horizontal);
+
+        //// NEED TO UPDATE THE SHIP IN THE VECTOR HERE
         return true;
     }
 }
