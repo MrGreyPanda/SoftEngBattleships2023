@@ -15,5 +15,5 @@ class GameController {
    private:
     static void render();
 
-    static GameState game_state;
+    static GameState game_state_;
 };

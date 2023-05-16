@@ -4,6 +4,8 @@ std::string ConnectionPanel::server_address_input_;
 std::string ConnectionPanel::server_address_;
 uint16_t ConnectionPanel::server_port_ = 0;
 
+GameState* ConnectionPanel::game_state_ = nullptr;
+
 void ConnectionPanel::init() {
     SDLGui::SDLGuiContext* connectionWindowContext =
         new SDLGui::SDLGuiContext("connectionWindow");
@@ -56,7 +58,7 @@ void ConnectionPanel::render() {
                                 server_address_.c_str(), server_port_);
                 SDLGui::TextButton("serverConnectionButton").disable();
                 SDLGui::TextInput("serverAddressInput").disable();
-                ClientNetworkManager::send_request(ClientJoinRequest());
+                //ClientNetworkManager::send_request(JoinRequest());
             }
         }
         else
@@ -64,10 +66,12 @@ void ConnectionPanel::render() {
     }
 
     if (ClientNetworkManager::get_connection_status() ==
-        ClientNetworkConnectionStatus::CONNECTED)
+        ClientNetworkConnectionStatus::CONNECTED) {
         SDLGui::Text("serverMessageText")
             .updateText(64, "Connected to %s:%hu", server_address_.c_str(),
                         server_port_);
+        game_state_->set_phase(Phase::Preparation);
+    }
 
     SDLGui::end();
 }

@@ -1,6 +1,6 @@
 #include "game_controller.h"
 
-GameState GameController::game_state = GameState();
+GameState GameController::game_state_ = GameState();
 
 void GameController::init() {
     SDLGui::init("Battleships", SDL_WINDOWPOS_UNDEFINED,
@@ -9,7 +9,13 @@ void GameController::init() {
                  SDL_RENDERER_ACCELERATED);
     assert(SDLGui::SDLGuiCore::isInitialized() && "SDLGui is not initialized");
 
+    ConnectionPanel::set_game_state(&game_state_);
     ConnectionPanel::init();
+
+    PreparationPanel::set_game_state(&game_state_);
+    PreparationPanel::init();
+
+    game_state_.set_phase(Lobby);
 }
 
 void GameController::run() {
@@ -22,7 +28,8 @@ void GameController::render() {
     while (SDLGui::isRunning()) {
         SDLGui::newFrame();
 
-        if (game_state.get_phase() == Phase::Lobby) ConnectionPanel::render();
+        if (game_state_.get_phase() == Preparation) PreparationPanel::render();
+        if (game_state_.get_phase() == Lobby) ConnectionPanel::render();
 
         SDLGui::renderFrame();
     }
