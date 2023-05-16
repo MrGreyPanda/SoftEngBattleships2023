@@ -7,7 +7,7 @@ void GameController::init() {
                  SDL_RENDERER_ACCELERATED);
     assert(SDLGui::SDLGuiCore::isInitialized() && "SDLGui is not initialized");
 
-    ConnectionWindow::init();
+    ConnectionPanel::init();
 }
 
 void GameController::run() {
@@ -20,7 +20,7 @@ void GameController::render() {
     while (SDLGui::isRunning()) {
         SDLGui::newFrame();
 
-        ConnectionWindow::render();
+        ConnectionPanel::render();
 
         SDLGui::renderFrame();
     }

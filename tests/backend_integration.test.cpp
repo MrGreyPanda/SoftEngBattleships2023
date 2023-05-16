@@ -10,6 +10,8 @@
 
 using json = nlohmann::json;
 
+//sockpp::initialize();
+
 const unsigned port = 1337;
 const sockpp::inet_address host_address("localhost", port);
 

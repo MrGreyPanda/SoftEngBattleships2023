@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "SDLGui.hpp"
-#include "game_window.h"
+#include "connection_panel.h"
 
 class GameController {
    public:
