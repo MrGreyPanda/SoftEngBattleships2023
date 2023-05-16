@@ -44,6 +44,7 @@ class RequestHandler {
      * send_response function of the ServerNetworkManager
      *
      * @param request
+     * 
      */
     static void handle_shoot_request_(const ClientRequest& request);
 

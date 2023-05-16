@@ -101,6 +101,11 @@ public:
     */
     bool shoot(const short &x, const short &y);
 
+    /**
+     * @brief Check if this player has lost
+    */
+    bool has_lost();
+
 private:
     std::string id_;
     bool is_ready_;

@@ -2,6 +2,7 @@
 #include "ship.h"
 #include <utility>
 #include <vector>
+#include <memory>
 
 
 class Board {
@@ -32,11 +33,11 @@ Board();
 */
 unsigned short get_grid_size();
 
-/**
- * @brief Get the ships_ that are not sunk on the board
- * @return The ships_ on the board
-*/
-unsigned short get_num_active_ships();
+// /**
+//  * @brief Get the ships_ that are not sunk on the board
+//  * @return The ships_ on the board
+// */
+// unsigned short get_num_active_ships();
 
 /**
  * @brief Get the grid value at a given coordinate
@@ -52,12 +53,31 @@ unsigned short get_grid_value(const short &x, const short &y);
 */
 void set_grid_value(const short &x, const short &y, int value);
 
+
+/**
+ * @brief Get number of ships_ on the board
+*/
+unsigned short get_num_ships();
+
+/**
+ * @brief Get the ships_ on the board
+ * @return The ships_ on the board
+*/
+std::vector<Ship*>* get_ship_vec();
+
 /**
  * @brief Get the is_shot_ value at a given coordinate
  * @param x, y The coordinates
  * @return The is_shot_ value at the given coordinate
 */
 bool get_is_shot(const short &x, const short &y);
+
+/**
+ * @brief Set the is_shot_ value at a given coordinate
+ * @param x, y The coordinates
+ * @param value The value to set the is_shot_ value to
+*/
+void set_is_shot(const short &x, const short &y, bool value);
 
 
 private:
@@ -67,7 +87,7 @@ private:
     unsigned short grid_size_ = 10;
     std::vector<std::vector<unsigned short>> grid_ = std::vector<std::vector<unsigned short>>(grid_size_, std::vector<unsigned short>(grid_size_, 0));
     std::vector<std::vector<bool>> is_shot_ = std::vector<std::vector<bool>>(grid_size_, std::vector<bool>(grid_size_, false));
-    std::vector<Ship> ships_;
+    std::vector<Ship*> ships_;
 };
 
 /*
@@ -86,7 +106,7 @@ public:
 // OwnBoard();
 using Board::Board;
 
-~OwnBoard();
+// ~OwnBoard();
 
 // /**
 //  * @brief Construct a new Own Board object
@@ -118,6 +138,25 @@ bool place_ship(const short &x, const short &y, Ship &ship);
 */
 bool rotate_ship(Ship &ship);
 
+
+/**
+ * @brief Get the ship at a given coordinate
+ * @param x, y The coordinates
+ * @return The ship at the given coordinate
+ * TODO: throw an error if no ship at given coordinate
+*/
+Ship* get_ship(const short &x, const short &y);
+
+/**
+ * @brief Check if all the ships on this board have been destroyed
+*/
+bool all_ships_sunk();
+
+/**
+ * @brief update the ship at a given coordinate
+*/
+void update_ship(const short &x, const short &y);
+
 private:
 
 };
@@ -137,7 +176,7 @@ public:
 // EnemyBoard();
 using Board::Board;
 
-~EnemyBoard();
+// ~EnemyBoard();
 
 // /**
 //  * @brief Construct a new Enemy Board object
@@ -150,6 +189,8 @@ using Board::Board;
  * @param x, y The coordinates of the shot to be placed
 */
 bool is_valid_shot(const short &x, const short &y);
+
+void update_ship_vec(ShipCategory ship);
 
 private:
 
