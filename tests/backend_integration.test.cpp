@@ -168,7 +168,10 @@ TEST(BackendIntegrationTest, Ready) {
     try {
         const ReadyResponse ready_response_1(task1.get());
 
-        EXPECT_TRUE(ready_response_1.get_error().empty());
+        if (!ready_response_1.get_error().empty()) {
+            FAIL() << "Ready response 1 has error: "
+                   << ready_response_1.get_error();
+        }
         EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
         EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
         EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
@@ -176,7 +179,10 @@ TEST(BackendIntegrationTest, Ready) {
         const ReadyResponse ready_response_2(task2.get());
 
         // check if the response is a ready response
-        EXPECT_TRUE(ready_response_2.get_error().empty());
+        if (!ready_response_2.get_error().empty()) {
+            FAIL() << "Ready response 2 has error: "
+                   << ready_response_2.get_error();
+        }
         EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
         EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
         EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
@@ -240,9 +246,9 @@ TEST(BackendIntegrationTest, Preparation) {
     }
 }
 
-TEST(BackendIntegrationTest, Shoot) {}
+TEST(BackendIntegrationTest, Shoot) { FAIL() << "Not implemented"; }
 
-TEST(BackendIntegrationTest, GiveUp) {}
+TEST(BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
 
 TEST(BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();

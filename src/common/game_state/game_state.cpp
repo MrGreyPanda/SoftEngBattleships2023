@@ -25,11 +25,11 @@ void GameState::set_phase(Phase phase) { this->phase_ = phase; }
 
 Phase GameState::get_phase() { return phase_; }
 
-std::vector<Player*> GameState::get_players() {return players_;}
+std::vector<Player*> GameState::get_players() { return players_; }
 
 Player* GameState::get_player_by_id(std::string id_) {
-    for(auto player : players_) {
-        if(player->get_id() == id_) {
+    for (auto player : players_) {
+        if (player->get_id() == id_) {
             return player;
         }
     }
@@ -37,9 +37,9 @@ Player* GameState::get_player_by_id(std::string id_) {
 }
 
 bool GameState::add_player(Player* player) {
-    if(!is_full()){
-        for(auto player_ : players_) {
-            if(player_->get_id() == player->get_id()) {
+    if (!is_full()) {
+        for (auto player_ : players_) {
+            if (player_->get_id() == player->get_id()) {
                 return false;
             }
         }
@@ -50,11 +50,11 @@ bool GameState::add_player(Player* player) {
 }
 
 bool GameState::remove_player(Player* player) {
-    if(players_.size() == 0) {
+    if (players_.size() == 0) {
         return false;
     }
-    for(auto it = players_.begin(); it != players_.end(); it++){
-        if(*it == player){
+    for (auto it = players_.begin(); it != players_.end(); it++) {
+        if (*it == player) {
             players_.erase(it);
             return true;
         }
@@ -63,13 +63,24 @@ bool GameState::remove_player(Player* player) {
 }
 
 bool GameState::is_full() {
-    if(players_.size() >= 2) {
+    if (players_.size() >= 2) {
         return true;
     }
     return false;
 }
 
-unsigned short GameState::get_turn_player_index() { return turn_player_index_; }
+bool GameState::set_player_ready(std::string player_id) {
+    Player* player = get_player_by_id(player_id);
+    if (player == nullptr) {
+        return false;
+    }
+    player->set_ready();
+    return true;
+}
+
+unsigned short GameState::get_turn_player_index() {
+    return turn_player_index_;
+}
 
 void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
@@ -77,8 +88,8 @@ void GameState::change_turn_player_index() {
 
 std::vector<Ship> GameState::get_ships() { return ships_; }
 
-bool GameState::start_game(){
-    if(players_.size() < 2) {
+bool GameState::start_game() {
+    if (players_.size() < 2) {
         return false;
     }
     phase_ = Preparation;
@@ -87,14 +98,14 @@ bool GameState::start_game(){
 
 std::string GameState::get_other_player_id(std::string id) {
     bool is_found = false;
-    for(auto player : players_) {
-        if(player->get_id() == id_) {
+    for (auto player : players_) {
+        if (player->get_id() == id_) {
             is_found = true;
         }
     }
-    if(is_found) { 
-        for(auto player : players_) {
-            if(player->get_id() != id_) {
+    if (is_found) {
+        for (auto player : players_) {
+            if (player->get_id() != id_) {
                 return player->get_id();
             }
         }
@@ -102,4 +113,3 @@ std::string GameState::get_other_player_id(std::string id) {
 
     return "";
 }
-

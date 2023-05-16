@@ -12,9 +12,7 @@ bool GameInstance::has_started() {
     return game_state_->get_phase() == Preparation;
 }
 
-bool GameInstance::has_ended() {
-    return game_state_->get_phase() == End;
-}
+bool GameInstance::has_ended() { return game_state_->get_phase() == End; }
 
 bool GameInstance::start_game() {
     Phase phase = Preparation;
@@ -45,8 +43,15 @@ bool GameInstance::try_add_player(Player *new_player) {
     return false;
 }
 
-std::string GameInstance::try_get_other_player_id(std::string player_id){
+std::string GameInstance::try_get_other_player_id(std::string player_id) {
     return game_state_->get_other_player_id(player_id);
+}
+
+bool GameInstance::player_ready(std::string player_id) {
+    lock_.lock();
+    const bool is_success = game_state_->set_player_ready(player_id);
+    lock_.unlock();
+    return is_success;
 }
 
 bool GameInstance::shoot() {

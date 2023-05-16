@@ -70,6 +70,15 @@ class GameInstance {
      * @return false else
      */
     bool try_add_player(Player* new_player);
+
+    /**
+     * @brief Store that the player with the given ID is ready to go from the
+     * lobby to the preparation phase.
+     *
+     * @param player_id
+     */
+    bool player_ready(std::string player_id);
+
     /**
      * @brief Removes player from game if possible
      *
@@ -100,7 +109,7 @@ class GameInstance {
      * @return true
      * @return false
      */
-    bool player_prepared();
+    bool player_prepared();  // FIXME this can't be right
 
     /**
      * @brief Checks for a player with the given id
