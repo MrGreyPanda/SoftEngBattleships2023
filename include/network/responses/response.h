@@ -12,6 +12,8 @@ class Response : public Message {
 
     std::string get_error() const;
 
+    json to_json() const override;
+
    private:
     std::string error_;
 };

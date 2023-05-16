@@ -50,11 +50,15 @@ json recieve_response_json_from_server(sockpp::tcp_connector& connector) {
         std::string line;
 
         if (std::getline(str_stream, line, '\0')) {
-            const json message_json = json::parse(line);
+            try {
+                const json message_json = json::parse(line);
 
-            return message_json;
-        } else {
-            throw std::runtime_error("Failed to parse message");
+                return message_json;
+            } catch (const std::exception& e) {
+                std::cout << "Failed to parse message: " << e.what()
+                          << std::endl;
+                throw std::runtime_error("Failed to parse message");
+            }
         }
     }
     throw std::runtime_error("Failed to recieve message");

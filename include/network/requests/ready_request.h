@@ -4,7 +4,6 @@
 
 class ReadyRequest : public Message {
    public:
-    ReadyRequest();
     ReadyRequest(const json& data);
     ReadyRequest(std::string game_id, std::string player_id);
 };
