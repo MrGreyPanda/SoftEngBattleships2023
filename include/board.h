@@ -121,6 +121,7 @@ using Board::Board;
  * @param x, y The coordinates of the ship to be placed
  * @param ship The ship to be checked
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
+ * !TODO: Update the ship in the ship vector
 */
 bool is_valid_placement(const short &x, const short &y, const Ship &ship);
 
@@ -137,6 +138,7 @@ bool place_ship(const short &x, const short &y, Ship &ship);
  * @brief If not, it returns false. If it can, it rotates the ship and returns true. If not on board, it returns rotates it and returns true.  
  * @param ship The ship to be rotated
  * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
+ * !TODO: Update the ship in the ship vector
 */
 bool rotate_ship(Ship &ship);
 
@@ -160,6 +162,8 @@ bool all_ships_sunk();
 void update_ship(const short &x, const short &y);
 
 bool is_valid_configuration();
+
+bool is_ultimate_configuration();
 
 private:
 

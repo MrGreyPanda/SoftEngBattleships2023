@@ -49,6 +49,21 @@ TEST(OwnBoardTest, PlaceShip){
     EXPECT_EQ(2, own_board.get_grid_value(2, 3));
 }
 
+TEST(OwnBoardTest, ValidConfiguration){
+    OwnBoard own_board;
+    Ship carrier(Carrier);
+    Ship battleship(Battleship);
+    Ship cruiser(Cruiser);
+    Ship submarine(Submarine);
+    Ship destroyer(Destroyer);
+    EXPECT_TRUE(own_board.place_ship(0, 0, carrier));
+    EXPECT_TRUE(own_board.place_ship(1, 0, battleship));
+    EXPECT_TRUE(own_board.place_ship(2, 0, cruiser));
+    EXPECT_TRUE(own_board.place_ship(3, 0, submarine));
+    EXPECT_TRUE(own_board.place_ship(4, 0, destroyer));
+    EXPECT_TRUE(own_board.is_valid_configuration());
+}
+
 TEST(OwnBoardTest, RotateShip){
     OwnBoard own_board;
     Ship ship(Carrier);

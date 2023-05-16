@@ -1,7 +1,7 @@
 #include "board.h"
 
 Board::Board() : grid_size_(10) {
-    ships_ = {new Ship(Carrier), new Ship(Battleship), new Ship(Cruiser), new Ship(Destroyer), new Ship(Submarine)};
+    ships_ = {new Ship(Destroyer), new Ship(Submarine), new Ship(Cruiser), new Ship(Battleship), new Ship(Carrier)};
 }
 
 
@@ -179,8 +179,6 @@ Ship* OwnBoard::get_ship(const short &x, const short &y){
     return nullptr;
 }
 
-
-
 bool OwnBoard::all_ships_sunk(){
     int num_ships = this->get_num_ships();
     auto ships_vec = *this->get_ship_vec();
@@ -195,6 +193,7 @@ void OwnBoard::update_ship(const short &x, const short &y){
     if(ship == nullptr) return; //maybe throw exception here
     ship->shot_at();
 }
+
 bool OwnBoard::is_valid_configuration(){
     int num_ships = this->get_num_ships();
     auto ships_vec = *this->get_ship_vec();
@@ -219,6 +218,17 @@ bool OwnBoard::is_valid_configuration(){
         }
     }
     
+    return true;
+}
+
+bool OwnBoard::is_ultimate_configuration(){
+    if(is_valid_configuration() == false) return false;
+    auto ship_vec = *this->get_ship_vec();
+    if(ship_vec[0]->get_is_horizontal() != true || ship_vec[0]->get_x() != 6 || ship_vec[0]->get_y() != 7) return false;
+    if(ship_vec[1]->get_is_horizontal() != true || ship_vec[1]->get_x() != 2 || ship_vec[1]->get_y() != 7) return false;
+    if(ship_vec[2]->get_is_horizontal() != true || ship_vec[2]->get_x() != 4 || ship_vec[2]->get_y() != 5) return false;
+    if(ship_vec[3]->get_is_horizontal() != false || ship_vec[3]->get_x() != 7 || ship_vec[3]->get_y() != 2) return false;
+    if(ship_vec[1]->get_is_horizontal() != true || ship_vec[1]->get_x() != 3 || ship_vec[1]->get_y() != 6) return false;
     return true;
 }
 
