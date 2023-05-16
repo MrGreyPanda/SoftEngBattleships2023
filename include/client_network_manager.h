@@ -4,8 +4,6 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-#include "client_request.h"
-// #include "server_response.h"
 // #include "sockpp/tcp_acceptor.h"
 #include "sockpp/tcp_connector.h"
 // #include "sockpp/tcp_socket.h"
@@ -33,13 +31,7 @@ class ClientNetworkManager {
      * @brief client sends a request to connected host
      * @param request the request to be sent
      */
-    static void send_request(const ClientRequest& request);
-
-    /**
-     * @brief parses a received response from the server for further processing
-     * @param message the string of the message
-     */
-    static void parse_response(const std::string& message);
+    static void send_message(const std::string& message);
 
     /**
      * @brief Get the connection status object
