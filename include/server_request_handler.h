@@ -19,7 +19,7 @@
 #include "shoot_response.h"
 #include "shot_message.h"
 
-class RequestHandler {
+class ServerRequestHandler {
    public:
     static void handle_request(const MessageType& type, const json& data);
 

@@ -210,7 +210,7 @@ void ServerNetworkManager::handle_incoming_message_(
         JoinRequest client_join_request;
 
         std::tuple<Player*, JoinResponse> join_req_tuple =
-            RequestHandler::handle_join_request(client_join_request);
+            ServerRequestHandler::handle_join_request(client_join_request);
 
         Player* player_ptr    = std::get<0>(join_req_tuple);
         JoinResponse response = std::get<1>(join_req_tuple);
@@ -264,6 +264,6 @@ void ServerNetworkManager::handle_incoming_message_(
             return;
         }
 
-        RequestHandler::handle_request(request_type, data);
+        ServerRequestHandler::handle_request(request_type, data);
     }
 }
