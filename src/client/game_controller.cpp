@@ -18,7 +18,7 @@ void GameController::init() {
     EndPanel::set_game_state(&game_state_);
     EndPanel::init();
 
-    game_state_.set_phase(Lobby);
+    game_state_.set_phase(End);
 }
 
 void GameController::run() {

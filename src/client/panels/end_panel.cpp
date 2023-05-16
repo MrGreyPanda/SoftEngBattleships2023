@@ -22,9 +22,13 @@ void EndPanel::init(){
     SDLGui::TextButtonFlagsExt_CenterText);
     end_window_context->addWidget(play_again_button);
 
+    SDLGui::SDLGuiEnvironment::pushContext(end_window_context);
+
 }
 
 void EndPanel::render() {
     SDLGui::begin("endWindow");
 
+
+    SDLGui::end();
 }
