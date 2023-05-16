@@ -6,7 +6,7 @@
 #include "SDLGui.hpp"
 
 #include "client_network_manager.h"
-#include "requests/client_join_request.h"
+#include "join_request.h"
 
 class ConnectionPanel {
 public:

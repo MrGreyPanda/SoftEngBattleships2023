@@ -56,7 +56,7 @@ void ConnectionPanel::render() {
                                 server_address_.c_str(), server_port_);
                 SDLGui::TextButton("serverConnectionButton").disable();
                 SDLGui::TextInput("serverAddressInput").disable();
-                ClientNetworkManager::send_request(ClientJoinRequest());
+                // ClientNetworkManager::send_request(ClientJoinRequest());
             }
         }
         else
