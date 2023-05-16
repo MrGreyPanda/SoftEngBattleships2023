@@ -1,5 +1,6 @@
 #pragma once
 
+#include "join_request.h"
 #include "response.h"
 
 class JoinResponse : public Response {

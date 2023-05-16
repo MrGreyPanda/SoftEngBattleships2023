@@ -31,6 +31,8 @@ std::string player_id_2;
 std::vector<Ship> ships_1;
 std::vector<Ship> ships_2;
 
+std::chrono::milliseconds timeout(100);
+
 void send_request_to_server(sockpp::tcp_connector& connector,
                             const std::string& request_string) {
     const std::string message = request_string + '\0';
@@ -64,6 +66,13 @@ json recieve_response_json_from_server(sockpp::tcp_connector& connector) {
     throw std::runtime_error("Failed to recieve message");
 }
 
+void stop() {
+    connector_1.close();
+    connector_2.close();
+
+    ServerNetworkManager::stop();
+}
+
 TEST(BackendIntegrationTest, StartServer) {
     std::thread server_thread(ServerNetworkManager::start, port);
     server_thread.detach();
@@ -95,9 +104,17 @@ TEST(BackendIntegrationTest, Join) {
         return recieve_response_json_from_server(connector_2);
     });
 
+    if (task1.wait_for(timeout) == std::future_status::timeout ||
+        task2.wait_for(timeout) == std::future_status::timeout) {
+        FAIL() << "Timed out waiting for response from server";
+        return;
+    }
+
+    // the tasks did not time out
     try {
         // Get the results from the async tasks
         const JoinResponse join_response_1(task1.get());
+        EXPECT_TRUE(join_response_1.get_error().empty());
 
         // for player 1
         EXPECT_EQ(join_response_1.get_type(), MessageType::JoinResponseType);
@@ -110,6 +127,8 @@ TEST(BackendIntegrationTest, Join) {
 
         // for player 2
         const JoinResponse join_response_2(task2.get());
+        EXPECT_TRUE(join_response_2.get_error().empty());
+
         EXPECT_EQ(join_response_2.get_type(), MessageType::JoinResponseType);
 
         game_id_2 = join_response_2.get_game_id();
@@ -126,26 +145,44 @@ TEST(BackendIntegrationTest, Join) {
 TEST(BackendIntegrationTest, Ready) {
     // send ready request player 1
     ReadyRequest ready_request_1(game_id_1, player_id_1);
-    send_request_to_server(connector_1, ready_request_1.to_string());
 
-    const ReadyResponse ready_response_1(
-        recieve_response_json_from_server(connector_1));
-
-    EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
-    EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
-    EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
+    auto task1 = std::async(std::launch::async, [&]() {
+        send_request_to_server(connector_1, ready_request_1.to_string());
+        return recieve_response_json_from_server(connector_1);
+    });
 
     // send ready request player 2
     ReadyRequest ready_request_2(game_id_2, player_id_2);
-    send_request_to_server(connector_2, ready_request_2.to_string());
 
-    const ReadyResponse ready_response_2(
-        recieve_response_json_from_server(connector_2));
+    auto task2 = std::async(std::launch::async, [&]() {
+        send_request_to_server(connector_2, ready_request_2.to_string());
+        return recieve_response_json_from_server(connector_2);
+    });
 
-    // check if the response is a ready response
-    EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
-    EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
-    EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
+    if (task1.wait_for(timeout) == std::future_status::timeout ||
+        task2.wait_for(timeout) == std::future_status::timeout) {
+        FAIL() << "Timed out waiting for response from server";
+        return;
+    }
+
+    try {
+        const ReadyResponse ready_response_1(task1.get());
+
+        EXPECT_TRUE(ready_response_1.get_error().empty());
+        EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
+        EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
+        EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
+
+        const ReadyResponse ready_response_2(task2.get());
+
+        // check if the response is a ready response
+        EXPECT_TRUE(ready_response_2.get_error().empty());
+        EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
+        EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
+        EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
 }
 
 /**
@@ -165,6 +202,11 @@ TEST(BackendIntegrationTest, Preparation) {
     const PreparedRequest prepared_request_1(game_id_1, player_id_1,
                                              ships_data_1);
 
+    auto task1 = std::async(std::launch::async, [&]() {
+        send_request_to_server(connector_1, prepared_request_1.to_string());
+        return recieve_response_json_from_server(connector_1);
+    });
+
     // Place ships for player 2
     std::vector<ShipData> ships_data_2 = {
         ShipData(ShipCategory::Carrier, false, 0, 0),
@@ -176,6 +218,26 @@ TEST(BackendIntegrationTest, Preparation) {
 
     const PreparedRequest prepared_request_2(game_id_2, player_id_2,
                                              ships_data_2);
+
+    send_request_to_server(connector_2, prepared_request_2.to_string());
+
+    auto task2 = std::async(std::launch::async, [&]() {
+        send_request_to_server(connector_2, prepared_request_2.to_string());
+        return recieve_response_json_from_server(connector_2);
+    });
+
+    try {
+        const PreparedResponse prepared_response_1(task1.get());
+
+        EXPECT_TRUE(prepared_response_1.get_error().empty());
+
+        const PreparedResponse prepared_response_2(task2.get());
+
+        EXPECT_TRUE(prepared_response_2.get_error().empty());
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
 }
 
 TEST(BackendIntegrationTest, Shoot) {}
@@ -183,11 +245,8 @@ TEST(BackendIntegrationTest, Shoot) {}
 TEST(BackendIntegrationTest, GiveUp) {}
 
 TEST(BackendIntegrationTest, DisconnectAndShutdownServer) {
-    connector_1.close();
-    connector_2.close();
+    stop();
 
     EXPECT_FALSE(connector_1.is_open());
     EXPECT_FALSE(connector_2.is_open());
-
-    ServerNetworkManager::stop();
 }

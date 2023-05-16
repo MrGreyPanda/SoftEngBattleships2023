@@ -12,7 +12,7 @@ class PreparedRequest : public Message {
     PreparedRequest(const std::string& game_id, const std::string& player_id,
                     const std::vector<ShipData>& ship_data);
 
-    json to_json() const override;
+    virtual json to_json() const override;
 
     const std::vector<Ship>& get_ships() const;
     const std::vector<ShipData>& get_ship_data() const;

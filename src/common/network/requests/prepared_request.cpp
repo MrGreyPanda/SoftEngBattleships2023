@@ -55,3 +55,15 @@ json PreparedRequest::to_json() const {
 
     return data;
 }
+
+const std::vector<ShipData>& PreparedRequest::get_ship_data() const {
+    return ships_;
+}
+
+const std::vector<Ship>& PreparedRequest::get_ships() const {
+    std::vector<Ship> ships(0);
+    for (const ShipData& ship_data : ships_) {
+        ships.push_back(Ship(ship_data));
+    }
+    return ships;
+}

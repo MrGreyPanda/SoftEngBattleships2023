@@ -24,20 +24,19 @@ void RequestHandler::handle_request(const MessageType& type,
 
             break;
 
-            // case ClientRequestType::Prepared:
-            //     // Parse the ready request
-            //     try {
-            //         PreparedRequest prepared_request;
-            //         prepared_request = PreparedRequest(data);
-            //         handle_prepared_request_(prepared_request);
-            //     } catch (const std::exception& e) {
-            //         std::cout << "[RequestHandler] Error parsing prepared
-            //         request: "
-            //                   << e.what() << std::endl;
-            //         return;
-            //     }
+        case MessageType::PreparedRequestType:
+            // Parse the ready request
+            try {
+                PreparedRequest prepared_request(data);
+                handle_prepared_request_(prepared_request);
+            } catch (const std::exception& e) {
+                std::cout
+                    << "[RequestHandler] Error parsing prepared request: "
+                    << e.what() << std::endl;
+                return;
+            }
 
-            //     break;
+            break;
 
         case MessageType::ShootRequestType:
             // Parse the ready request
@@ -77,7 +76,7 @@ void RequestHandler::handle_request(const MessageType& type,
 
         default:
             throw std::runtime_error(
-                "[RequestHandler] Unhandled ClientRequest type");
+                "[RequestHandler] Unhandled request type");
             return;
     }
 }
@@ -155,7 +154,12 @@ void RequestHandler::handle_prepared_request_(
     const PreparedRequest& prepared_request) {
     assert(prepared_request.get_type() == MessageType::PreparedRequestType);
 
-    throw std::runtime_error("Not implemented yet");
+    const PreparedResponse prepared_response(
+        prepared_request.get_game_id(), prepared_request.get_player_id(),
+        prepared_request.get_ship_data(), "Not implemented yet!");
+
+    ServerNetworkManager::send_response(prepared_response.to_string(),
+                                        prepared_response.get_player_id());
 }
 
 void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {

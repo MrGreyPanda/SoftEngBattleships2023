@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ready_request.h"
 #include "response.h"
 
 class ReadyResponse : public Response {
