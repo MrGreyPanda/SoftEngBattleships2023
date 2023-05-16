@@ -29,6 +29,8 @@ std::unordered_map<std::string, sockpp::tcp_socket>
 // ServerNetworkManager methods
 
 void ServerNetworkManager::start(unsigned port) {
+    sockpp::initialize();
+
     if (acceptor_ && acceptor_.is_open()) {
         std::cerr << "[ServerNetworkManager] (Debug) acceptor already open"
                   << std::endl;
