@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <array>
+#include <iostream>
 
 
 class Board {
@@ -156,6 +158,8 @@ bool all_ships_sunk();
  * @brief update the ship at a given coordinate
 */
 void update_ship(const short &x, const short &y);
+
+bool is_valid_configuration();
 
 private:
 

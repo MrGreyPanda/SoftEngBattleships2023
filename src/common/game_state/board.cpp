@@ -195,7 +195,32 @@ void OwnBoard::update_ship(const short &x, const short &y){
     if(ship == nullptr) return; //maybe throw exception here
     ship->shot_at();
 }
-
+bool OwnBoard::is_valid_configuration(){
+    int num_ships = this->get_num_ships();
+    auto ships_vec = *this->get_ship_vec();
+    for(int i = 0; i < num_ships; i++){
+        if(ships_vec[i]->get_is_placed() == false) return false;
+    }
+    std::array<int, 6> ship_lengths = {0, 2, 3, 3, 4, 5};
+    short grid_size = this->get_grid_size();
+    for(int i = 0; i < grid_size; i++){
+        for(int j = 0; j < grid_size; j++){
+            int grid_value = get_grid_value(i, j);
+            if(grid_value > 5 || grid_value < 0) return false;
+            if(grid_value != 0){
+                ship_lengths[grid_value]--;
+            }
+        }
+    }
+    for(int i = 0; i < 6; i++){
+        if(ship_lengths[i] != 0){
+            std::cout << "Ship " << (ShipCategory)i << " has wrong length!" << std::endl;   
+            return false;
+        }
+    }
+    
+    return true;
+}
 
 // ------------ EnemyBoard ------------- //
 // EnemyBoard::~EnemyBoard() {

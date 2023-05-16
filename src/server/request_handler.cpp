@@ -265,10 +265,10 @@ void RequestHandler::handle_shoot_request_(const ShootRequest& shoot_request) {
         }
 
         // Change turn in game state
-        game_ptr->change_turn_player_index();
 
         return;
     }
+    else game_ptr->change_turn_player_index();
 }
 
 void RequestHandler::handle_give_up_request_(
