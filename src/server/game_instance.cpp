@@ -45,6 +45,10 @@ bool GameInstance::try_add_player(Player *new_player) {
     return false;
 }
 
+std::string GameInstance::try_get_other_player_id(std::string player_id){
+    return game_state_->get_other_player_id(player_id);
+}
+
 bool GameInstance::shoot() {
     // TODO
     throw std::runtime_error("Not implemented");
