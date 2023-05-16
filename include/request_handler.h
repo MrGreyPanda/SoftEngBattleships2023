@@ -2,17 +2,22 @@
 
 #include <tuple>
 
+#include "gave_up_message.h"
 #include "give_up_request.h"
 #include "give_up_response.h"
+#include "join_message.h"
 #include "join_request.h"
 #include "join_response.h"
 #include "player.h"
+#include "prepared_message.h"
 #include "prepared_request.h"
 #include "prepared_response.h"
+#include "ready_message.h"
 #include "ready_request.h"
 #include "ready_response.h"
 #include "shoot_request.h"
 #include "shoot_response.h"
+#include "shot_message.h"
 
 class RequestHandler {
    public:
@@ -21,7 +26,7 @@ class RequestHandler {
     /**
      * @brief Handle a join request. Creates a new player and returns a pointer
      * to the player object. Creates a ServerResponse and calls the
-     * send_response function of the ServerNetworkManager
+     * send_message function of the ServerNetworkManager
      *
      * @param request The client request object
      * @returns The pointer to the new player object
@@ -32,7 +37,7 @@ class RequestHandler {
    private:
     /**
      * @brief Handle a ready request. Creates a ServerResponse and calls the
-     * send_response function of the ServerNetworkManager
+     * send_message function of the ServerNetworkManager
      *
      * @param request
      */
@@ -40,7 +45,7 @@ class RequestHandler {
 
     /**
      * @brief Handle a prepared request. Creates a ServerResponse and calls the
-     * send_response function of the ServerNetworkManager
+     * send_message function of the ServerNetworkManager
      *
      * @param request
      */
@@ -49,7 +54,7 @@ class RequestHandler {
 
     /**
      * @brief Handle a shoot request. Creates a ShootResponse and calls the
-     * send_response function of the ServerNetworkManager
+     * send_message function of the ServerNetworkManager
      *
      * @param request
      *
@@ -60,7 +65,7 @@ class RequestHandler {
 
     /**
      * @brief Handle a give up request. Creates a GiveUp and calls the
-     * send_response function of the ServerNetworkManager
+     * send_message function of the ServerNetworkManager
      *
      * @param request
      */

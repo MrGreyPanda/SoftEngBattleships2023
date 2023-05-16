@@ -13,8 +13,8 @@ class PreparedRequest : public Message {
 
     virtual json to_json() const override;
 
-    const std::vector<Ship>& get_ships() const;
-    const std::vector<ShipData>& get_ship_data() const;
+    std::vector<Ship> get_ships() const;
+    std::vector<ShipData> get_ship_data() const;
 
    private:
     std::vector<ShipData> ships_;

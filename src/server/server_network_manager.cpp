@@ -91,7 +91,8 @@ void ServerNetworkManager::stop() {
     std::cout << "[ServerNetworkManager] Server stopped" << std::endl;
 }
 
-void ServerNetworkManager::send_response(const std::string& response_str) {
+void ServerNetworkManager::send_message(const std::string& response_str,
+                                        const std::string& player_id) {
     // Get the IP address of the player
     auto player_address_it = player_addresses_.find(player_id);
 

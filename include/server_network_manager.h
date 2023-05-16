@@ -25,7 +25,7 @@ class ServerNetworkManager {
      * @param response The ServerResponse object with the information to send
      * @param player_id The id of the player to send the response to
      */
-    static void send_response(const std::string& response_str,
+    static void send_message(const std::string& response_str,
                               const std::string& player_id);
 
    private:
