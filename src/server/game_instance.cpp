@@ -6,13 +6,15 @@ GameInstance::GameInstance() : game_state_(new GameState()) {}
 
 GameState *GameInstance::get_game_state() { return game_state_; }
 
-std::string GameInstance::get_id() { return game_state_->get_id(); }
+std::string GameInstance::get_id() const { return game_state_->get_id(); }
 
-bool GameInstance::has_started() {
+bool GameInstance::has_started() const {
     return game_state_->get_phase() == Preparation;
 }
 
-bool GameInstance::has_ended() { return game_state_->get_phase() == End; }
+bool GameInstance::has_ended() const {
+    return game_state_->get_phase() == End;
+}
 
 bool GameInstance::start_game() {
     Phase phase = Preparation;
@@ -43,11 +45,12 @@ bool GameInstance::try_add_player(Player *new_player) {
     return false;
 }
 
-std::string GameInstance::try_get_other_player_id(std::string player_id) {
+std::string GameInstance::try_get_other_player_id(
+    std::string player_id) const {
     return game_state_->get_other_player_id(player_id);
 }
 
-bool GameInstance::player_ready(std::string player_id) {
+bool GameInstance::set_player_ready(std::string player_id) {
     lock_.lock();
     const bool is_success = game_state_->set_player_ready(player_id);
     lock_.unlock();
@@ -64,7 +67,7 @@ bool GameInstance::player_prepared() {
     throw std::runtime_error("Not implemented");
 }
 
-bool GameInstance::has_player(std::string player_id) {
+bool GameInstance::has_player(std::string player_id) const {
     lock_.lock();
     for (auto &i : game_state_->get_players()) {
         if (i->get_id() == player_id) {
@@ -75,3 +78,5 @@ bool GameInstance::has_player(std::string player_id) {
     lock_.unlock();
     return false;
 }
+
+bool GameInstance::is_full() const { return game_state_->is_full(); }

@@ -36,7 +36,7 @@ class GameInstance {
      *
      * @return std::string id
      */
-    std::string get_id();
+    std::string get_id() const;
 
     /**
      * @brief Returns the game_state
@@ -51,14 +51,14 @@ class GameInstance {
      * @return true if game has started
      * @return false else
      */
-    bool has_started();
+    bool has_started() const;
     /**
      * @brief
      *
      * @return true if game has ended
      * @return false else
      */
-    bool has_ended();
+    bool has_ended() const;
 
     // game update functions
 
@@ -77,7 +77,7 @@ class GameInstance {
      *
      * @param player_id
      */
-    bool player_ready(std::string player_id);
+    bool set_player_ready(std::string player_id);
 
     /**
      * @brief Removes player from game if possible
@@ -118,9 +118,11 @@ class GameInstance {
      * @return true if found
      * @return false else
      */
-    bool has_player(std::string player_id);
+    bool has_player(std::string player_id) const;
 
-    std::string try_get_other_player_id(std::string player_id);
+    std::string try_get_other_player_id(std::string player_id) const;
+
+    bool is_full() const;
 
    private:
     GameState* game_state_;

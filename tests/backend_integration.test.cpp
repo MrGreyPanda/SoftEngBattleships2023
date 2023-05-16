@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "gtest/gtest.h"
+#include "join_message.h"
 #include "join_request.h"
 #include "join_response.h"
 #include "prepared_request.h"
@@ -16,7 +17,7 @@
 
 using json = nlohmann::json;
 
-//sockpp::initialize();
+// sockpp::initialize();
 
 const unsigned port = 1337;
 const sockpp::inet_address host_address("localhost", port);
@@ -101,6 +102,7 @@ TEST(BackendIntegrationTest, Join) {
         send_request_to_server(connector_1, join_request.to_string());
         return recieve_response_json_from_server(connector_1);
     });
+
     auto task2 = std::async(std::launch::async, [&]() {
         send_request_to_server(connector_2, join_request.to_string());
         return recieve_response_json_from_server(connector_2);
@@ -138,6 +140,17 @@ TEST(BackendIntegrationTest, Join) {
 
         player_id_2 = join_response_2.get_player_id();
         EXPECT_FALSE(player_id_2.empty());
+
+        // Both game IDs are expected to match since there are no other players
+        EXPECT_EQ(game_id_1, game_id_2);
+
+        // player 1 should have recieved a message that player 2 joined
+        const json message_json_1 =
+            recieve_response_json_from_server(connector_1);
+        const JoinMessage joined_message_1(message_json_1);
+        EXPECT_EQ(joined_message_1.get_type(), MessageType::JoinedMessageType);
+        EXPECT_EQ(joined_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(joined_message_1.get_player_id(), player_id_1);
 
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();

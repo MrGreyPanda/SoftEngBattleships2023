@@ -112,9 +112,8 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
     GameInstance* game_ptr =
         GameInstanceManager::add_player_to_any_game(new_player_ptr);
 
-    const std::string game_id = game_ptr->get_id();
-
     if (game_ptr != nullptr) {
+        const std::string game_id = game_ptr->get_id();
         std::cout << "[ServerRequestHandler] Added Player '" << new_player_id
                   << "'to a game with ID '" << game_id << "'" << std::endl;
 
@@ -123,16 +122,26 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
         // formulate response
         const JoinResponse join_response(game_id, new_player_id);
 
-        // notify the other player that a player joined
-        // create join message
-        const std::string other_player_id =
-            game_ptr->try_get_other_player_id(new_player_id);
+        if (game_ptr->is_full()) {
+            // notify the other player that a player joined
+            // create join message
+            const std::string other_player_id =
+                game_ptr->try_get_other_player_id(new_player_id);
 
-        if (!other_player_id.empty()) {
-            const JoinMessage join_message(game_id, other_player_id);
+            if (!other_player_id.empty()) {
+                const JoinMessage join_message(game_id, other_player_id);
 
-            ServerNetworkManager::send_message(join_message.to_string(),
-                                               join_message.get_player_id());
+                ServerNetworkManager::send_message(
+                    join_message.to_string(), join_message.get_player_id());
+            } else {
+                std::cout
+                    << "[ServerRequestHandler] Error: Could not find other "
+                       "player for game with ID '"
+                    << game_id << "'" << std::endl;
+            }
+        } else {
+            std::cout << "[ServerRequestHandler] (Debug) Game with ID '"
+                      << game_id << "' is not full yet" << std::endl;
         }
 
         return std::make_tuple(new_player_ptr, join_response);
@@ -179,7 +188,7 @@ void ServerRequestHandler::handle_ready_request_(
     }
 
     // mark the player as ready in its game instance
-    if (!game_ptr->player_ready(player_id)) {
+    if (!game_ptr->set_player_ready(player_id)) {
         std::cout
             << "[ServerRequestHandler] Error: Could not mark player with "
                "ID '"
@@ -223,8 +232,8 @@ void ServerRequestHandler::handle_shoot_request_(
     const ShootRequest& shoot_request) {
     std::string game_id = shoot_request.get_game_id();
 
-    GameState* game_ptr =
-        GameInstanceManager::get_game_instance(game_id)->get_game_state();
+    const GameInstance* game_ptr =
+        GameInstanceManager::get_game_instance(game_id);
 
     std::string player_id = shoot_request.get_player_id();
     short x               = shoot_request.get_x();
@@ -245,7 +254,7 @@ void ServerRequestHandler::handle_shoot_request_(
     // Check if other players board is already shot at the given coords
     // Get other player id from game state via game instance
     std::string other_player_id =
-        game_ptr->get_other_player_id(player_ptr->get_id());
+        game_ptr->try_get_other_player_id(player_ptr->get_id());
 
     // Get other player from player manager
     Player* other_player_ptr = PlayerManager::try_get_player(other_player_id);
@@ -314,7 +323,7 @@ void ServerRequestHandler::handle_shoot_request_(
         }
 
         // Change turn in game state
-        game_ptr->change_turn_player_index();
+        // TODO
 
         return;
     }

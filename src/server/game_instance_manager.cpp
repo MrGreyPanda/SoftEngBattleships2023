@@ -42,19 +42,34 @@ GameInstance *GameInstanceManager::get_game_instance(
 GameInstance *GameInstanceManager::add_player_to_any_game(Player *player_ptr) {
     // check that player is not already subscribed to another game
     games_lock_.lock();
+    // loop over known pairs of game_id and game_instance
     for (auto &it : games_) {
         if (it.second->has_player(player_ptr->get_id())) {
+            // this player already is in a game!
+            // Return a nullptr to indicate that the player was not 'added' to
+            // a game because they were already in one
             games_lock_.unlock();
             return nullptr;
         }
     }
 
-    // find first joinable instance and add player
+    // again loop over known pairs of game_id and game_instance
+    // and try to add the player to a non-full game.
     for (auto &it : games_) {
-        if (!it.second->get_game_state()->is_full()) {
-            it.second->try_add_player(player_ptr);
-            games_lock_.unlock();
-            return it.second;
+        if (!it.second->is_full()) {
+            if (it.second->try_add_player(player_ptr)) {
+                // successfully added player to a game
+                games_lock_.unlock();
+                return it.second;
+            } else {
+                // failed to add player to a game
+                // this should not happen
+                std::cout << "[GameInstanceManager] (Error) Failed to add "
+                             "player to a game"
+                          << std::endl;
+                games_lock_.unlock();
+                return nullptr;
+            }
         }
     }
     games_lock_.unlock();

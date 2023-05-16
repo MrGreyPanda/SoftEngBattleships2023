@@ -43,7 +43,7 @@ class GameState {
      * @brief Get the id_ of the game
      * @return The id_ of the game
      */
-    std::string get_id();
+    std::string get_id() const;
 
     /**
      * @brief set the phase of the game
@@ -54,7 +54,7 @@ class GameState {
      * @brief Get the phase of the game
      * @return The phase of the game
      */
-    Phase get_phase();
+    Phase get_phase() const;
 
     /**
      * @brief Get players of the game
@@ -91,7 +91,7 @@ class GameState {
      * @return true
      * @return false
      */
-    bool is_full();
+    inline bool is_full() const;
 
     /**
      * @brief Set the player with the given ID as ready to go from the lobby
@@ -104,7 +104,7 @@ class GameState {
     /**
      * @brief get turn player index
      */
-    unsigned short get_turn_player_index();
+    unsigned short get_turn_player_index() const;
 
     /**
      * @brief change turn player index
@@ -115,11 +115,11 @@ class GameState {
      * @brief Get the ships_ in the game
      * @return The ships_ in the game
      */
-    std::vector<Ship> get_ships();
+    std::vector<Ship> get_ships() const;
 
     bool start_game();  // Let's see if this is needed
 
-    std::string get_other_player_id(std::string id);
+    std::string get_other_player_id(std::string id) const;
 
    private:
     std::string id_;
