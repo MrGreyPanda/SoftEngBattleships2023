@@ -30,6 +30,13 @@ Player* GameState::get_player_by_id(std::string id_) {
     return nullptr;
 }
 
+std::string GameState::get_player_id_by_index(unsigned short index) {
+    if(index < players_.size()) {
+        return players_[index]->get_id();
+    }
+    return "";
+}
+
 bool GameState::add_player(Player* player) {
     if(!is_full()){
         for(auto player_ : players_) {

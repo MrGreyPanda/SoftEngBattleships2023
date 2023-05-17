@@ -70,6 +70,13 @@ class GameState {
     Player* get_player_by_id(std::string id_);
 
     /**
+     * @brief Get player by index
+     * @param index The index of the player
+     * @return The player_id with the given index
+    */
+    std::string get_player_id_by_index(unsigned short index);
+
+    /**
      * @brief Adds player to the game
      * 
      * @return true 

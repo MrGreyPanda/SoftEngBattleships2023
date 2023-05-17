@@ -1,6 +1,7 @@
 #include "game_controller.h"
 
 GameState GameController::game_state_ = GameState();
+std::string GameController::game_player_id_;
 
 void GameController::init() {
     SDLGui::init("Battleships", SDL_WINDOWPOS_UNDEFINED,
@@ -22,6 +23,14 @@ void GameController::init() {
     EndPanel::init();
 
     game_state_.set_phase(Battle);
+}
+
+void GameController::set_player_id(std::string player_id) {
+    game_player_id_ = player_id;
+}
+
+std::string GameController::get_player_id() {
+    return game_player_id_;
 }
 
 void GameController::run() {

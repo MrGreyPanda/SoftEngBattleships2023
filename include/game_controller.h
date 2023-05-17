@@ -14,8 +14,13 @@ class GameController {
     static void init();
     static void run();
 
+    static std::string get_player_id();
+    static void set_player_id(std::string player_id);
+
    private:
     static void render();
 
     static GameState game_state_;
+
+    static std::string game_player_id_;   // get player_id in connection panel.
 };
