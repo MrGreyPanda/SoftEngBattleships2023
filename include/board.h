@@ -85,6 +85,13 @@ class Board {
      */
     void set_is_shot(const short &x, const short &y, bool value);
 
+    /**
+     * @brief get ship of vector of that type
+     * @param type type of the ship
+     * @return ship* of that ship
+     */
+    Ship *get_ship_by_name(const ShipCategory &type);
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *
@@ -165,6 +172,10 @@ class OwnBoard : public Board {
      * @brief update the ship at a given coordinate
      */
     void update_ship(const short &x, const short &y);
+
+    bool is_valid_configuration() const;
+
+    bool is_ultimate_configuration() const;
 
    private:
 };

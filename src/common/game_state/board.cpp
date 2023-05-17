@@ -211,9 +211,9 @@ void OwnBoard::update_ship(const short &x, const short &y) {
     ship->shot_at();
 }
 
-bool OwnBoard::is_valid_configuration() {
+bool OwnBoard::is_valid_configuration() const {
     int num_ships  = this->get_num_ships();
-    auto ships_vec = *this->get_ship_vec();
+    auto ships_vec = this->get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ships_vec[i]->get_is_placed() == false) return false;
     }
@@ -239,8 +239,8 @@ bool OwnBoard::is_valid_configuration() {
     return true;
 }
 
-bool OwnBoard::is_ultimate_configuration() {
-    auto ship_vec = *this->get_ship_vec();
+bool OwnBoard::is_ultimate_configuration() const {
+    auto ship_vec = this->get_ship_vec();
     if (ship_vec[0]->get_is_horizontal() != true ||
         ship_vec[0]->get_x() != 6 || ship_vec[0]->get_y() != 7)
         return false;

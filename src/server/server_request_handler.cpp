@@ -232,8 +232,7 @@ void ServerRequestHandler::handle_shoot_request_(
     const ShootRequest& shoot_request) {
     std::string game_id = shoot_request.get_game_id();
 
-    const GameInstance* game_ptr =
-        GameInstanceManager::get_game_instance(game_id);
+    GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
     std::string player_id = shoot_request.get_player_id();
     short x               = shoot_request.get_x();
@@ -325,8 +324,9 @@ void ServerRequestHandler::handle_shoot_request_(
         // Change turn in game state
 
         return;
-    } else
-        game_ptr->change_turn_player_index();
+    } else {
+        game_ptr->get_game_state()->change_turn_player_index();
+    }
 }
 
 void ServerRequestHandler::handle_give_up_request_(
