@@ -78,14 +78,11 @@ bool GameInstance::set_player_prepared(const std::string &player_id,
         return false;
     }
 
-    // 2. Place ships one by one on the board
-    for (const ShipData &ship_data : ships) {
-        if (!player_ptr->get_own_board().place_ship(ship_data.x, ship_data.y,
-                                                    ship_data.name)) {
-            // The ship could not be placed
-            return false;
-        }
-    }
+    // 2. Place ships
+    bool is_valid_placement =
+        player_ptr->get_own_board().set_ship_placement(ships);
+    if (!is_valid_placement) return false;
+
     // all ships have been placed successfully, the configuration is valid
 
     // 3. update the player to be prepared

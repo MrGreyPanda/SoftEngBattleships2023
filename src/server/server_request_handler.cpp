@@ -341,8 +341,7 @@ void ServerRequestHandler::handle_shoot_request_(
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
         const ShootResponse shoot_response(
             game_id, player_id, x, y, is_valid, has_hit,
-            "Error: This position was already shot at!");  // TODO: check if
-                                                           // valid
+            "Error: This position was already shot at!");
 
         ServerNetworkManager::send_message(shoot_response.to_string(),
                                            shoot_response.get_player_id());
