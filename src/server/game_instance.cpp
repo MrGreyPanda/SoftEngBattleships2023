@@ -80,9 +80,8 @@ bool GameInstance::set_player_prepared(const std::string &player_id,
 
     // 2. Place ships one by one on the board
     for (const ShipData &ship_data : ships) {
-        Ship *new_ship = new Ship(ship_data);  // FIXME memory leak
         if (!player_ptr->get_own_board().place_ship(ship_data.x, ship_data.y,
-                                                    *new_ship)) {
+                                                    ship_data.name)) {
             // The ship could not be placed
             return false;
         }
