@@ -93,4 +93,6 @@ class ClientResponseMessageHandler {
     static void handle_shot_message_(const ShotMessage& message);
 
     // TODO more
+    // Maybe have private static game_state_* here, then, this handler can really handle all stuff
+    // Question is, who is updating the GUI? and how?
 };

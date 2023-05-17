@@ -241,13 +241,15 @@ void ServerRequestHandler::handle_shoot_request_(
     std::string player_id = shoot_request.get_player_id();
     short x               = shoot_request.get_x();
     short y               = shoot_request.get_y();
-
+    bool is_valid = false;
+    bool has_hit = false;
     // Get player from player manager
     Player* player_ptr = PlayerManager::try_get_player(player_id);
 
     // Check if own players enemy board is already shot at the given coords
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
-        const ShootResponse shoot_response(game_id, player_id, x, y);
+        const ShootResponse shoot_response(game_id, player_id, x, y, is_valid, has_hit,
+                                            "Error: This position was already shot at!");     // TODO: check if valid
 
         ServerNetworkManager::send_message(shoot_response.to_string(),
                                            shoot_response.get_player_id());
@@ -265,26 +267,28 @@ void ServerRequestHandler::handle_shoot_request_(
     if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
         // Send error message to client
         const ShootResponse shoot_response(
-            game_id, player_id, x, y,
+            game_id, player_id, x, y, is_valid, has_hit,
             "Error: This position was already shot at!");
 
         ServerNetworkManager::send_message(shoot_response.to_string(),
                                            shoot_response.get_player_id());
         return;
     }
+    is_valid = true;
 
     other_player_ptr->get_own_board().set_is_shot(x, y, true);
     player_ptr->get_enemy_board().set_is_shot(x, y, true);
     // Check if other players board has a ship at the given coords
     if (other_player_ptr->get_own_board().get_grid_value(x, y) != 0) {
         // Send hit message to client
-        const ShootResponse hit_response(game_id, player_id, x, y);
+        has_hit = true;
+        const ShootResponse hit_response(game_id, player_id, x, y, is_valid, has_hit);
 
         ServerNetworkManager::send_message(hit_response.to_string(),
                                            hit_response.get_player_id());
 
         // Send hit message to other client
-        const ShootResponse got_hit_response(game_id, other_player_id, x, y);
+        const ShootResponse got_hit_response(game_id, other_player_id, x, y, is_valid, has_hit);
         // Error message
         ServerNetworkManager::send_message(got_hit_response.to_string(),
                                            got_hit_response.get_player_id());

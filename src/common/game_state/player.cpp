@@ -32,9 +32,9 @@ bool Player::get_is_ready() const { return is_ready_; }
 
 bool Player::get_is_prepared() const { return is_prepared_; }
 
-OwnBoard Player::get_own_board() const { return own_board_; }
+OwnBoard &Player::get_own_board() { return own_board_; }
 
-EnemyBoard Player::get_enemy_board() const { return enemy_board_; }
+EnemyBoard &Player::get_enemy_board() { return enemy_board_; }
 
 bool Player::shoot(const short &x, const short &y) {
     if (this->get_enemy_board().is_valid_shot(x, y)) {
