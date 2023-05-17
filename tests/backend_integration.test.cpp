@@ -227,11 +227,11 @@ TEST(BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
         std::vector<ShipData> ships_data_1 = {
-            ShipData(ShipCategory::Carrier, false, 4, 2),
-            ShipData(ShipCategory::Battleship, true, 6, 0),
-            ShipData(ShipCategory::Cruiser, true, 7, 6),
-            ShipData(ShipCategory::Submarine, true, 6, 8),
             ShipData(ShipCategory::Destroyer, false, 0, 5),
+            ShipData(ShipCategory::Submarine, true, 6, 8),
+            ShipData(ShipCategory::Cruiser, true, 7, 6),
+            ShipData(ShipCategory::Battleship, true, 6, 0),
+            ShipData(ShipCategory::Carrier, false, 4, 2),
         };
 
         const PreparedRequest prepared_request_1(game_id_1, player_id_1,
@@ -261,11 +261,11 @@ TEST(BackendIntegrationTest, Preparation) {
 
         // Place ships for player 2
         std::vector<ShipData> ships_data_2 = {
-            ShipData(ShipCategory::Carrier, false, 0, 0),
-            ShipData(ShipCategory::Battleship, true, 6, 9),
-            ShipData(ShipCategory::Cruiser, false, 6, 1),
-            ShipData(ShipCategory::Submarine, true, 4, 0),
             ShipData(ShipCategory::Destroyer, false, 5, 3),
+            ShipData(ShipCategory::Submarine, true, 4, 0),
+            ShipData(ShipCategory::Cruiser, false, 6, 1),
+            ShipData(ShipCategory::Battleship, true, 6, 9),
+            ShipData(ShipCategory::Carrier, false, 0, 0),
         };
 
         const PreparedRequest prepared_request_2(game_id_2, player_id_2,

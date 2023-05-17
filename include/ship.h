@@ -16,11 +16,11 @@ accordingly.
 // Enumerators to categorize the different ship types
 
 enum ShipCategory {
-    Destroyer  = (unsigned short)1,   // size = 2
-    Submarine  = (unsigned short)2,  // size = 3
-    Cruiser    = (unsigned short)3,  // size = 3
-    Battleship = (unsigned short)4,  // size = 4
-    Carrier    = (unsigned short)5  // size = 5
+    Destroyer  = (short)1,   // size = 2
+    Submarine  = (short)2,  // size = 3
+    Cruiser    = (short)3,  // size = 3
+    Battleship = (short)4,  // size = 4
+    Carrier    = (short)5  // size = 5
 };
 
 /**

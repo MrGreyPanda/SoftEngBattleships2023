@@ -19,7 +19,7 @@ unsigned short Board::get_grid_size() const { return grid_size_; }
 // }
 
 unsigned short Board::get_grid_value(const short &x, const short &y) const {
-    return grid_[y][x];
+    return grid_[x][y];
 }
 
 unsigned short Board::get_num_ships() const { return ships_.size(); }
@@ -36,15 +36,15 @@ const std::vector<const Ship *> Board::get_ship_vec() const {
 }
 
 void Board::set_grid_value(const short &x, const short &y, int value) {
-    grid_[y][x] = value;
+    grid_[x][y] = value;
 }
 
 bool Board::get_is_shot(const short &x, const short &y) const {
-    return is_shot_[y][x];
+    return is_shot_[x][y];
 }
 
 void Board::set_is_shot(const short &x, const short &y, bool value) {
-    is_shot_[y][x] = value;
+    is_shot_[x][y] = value;
 }
 
 Ship *Board::get_ship_by_name(const ShipCategory &type) {
@@ -71,18 +71,20 @@ Ship *Board::get_ship_by_name(const ShipCategory &type) {
 bool OwnBoard::is_valid_placement(const short &x, const short &y,
                                   const Ship &ship) const {
     int grid_size_ = this->get_grid_size();
+    bool is_4 = ship.get_name() == Battleship;
     if (x >= grid_size_ || y >= grid_size_ || x < 0 || y < 0) return false;
 
     bool is_horizontal = ship.get_is_horizontal();
     short ship_length  = ship.get_length();
-
     if (is_horizontal) {
         if (x + ship_length > grid_size_) return false;
         ShipCategory shiptype = ship.get_name();
         for (int i = 0; i < ship_length; i++) {
             if (get_grid_value(x + i, y) != 0 &&
                 get_grid_value(x + i, y) != shiptype)
-                return false;
+                { if(is_4) std::cout << "it failed here\n";
+                if(is_4) std::cout << shiptype << "\n" << "grid value = " << get_grid_value(x, y) << "\n";
+                return false;}
         }
         return true;
     }
@@ -104,7 +106,10 @@ bool OwnBoard::is_valid_placement(const short &x, const short &y,
 bool OwnBoard::place_ship(const short &x, const short &y,
                           const ShipCategory &shipname) {
     Ship *ship = this->get_ship_by_name(shipname);
-    if (!this->is_valid_placement(x, y, *ship)) return false;
+    if (!this->is_valid_placement(x, y, *ship)){
+        std::cout << "Invalid placement\n" << shipname << "\nx = " << x << "\ny = " << y << "\n";
+        return false;
+    }
     bool is_horizontal = ship->get_is_horizontal();
     short ship_length  = ship->get_length();
     bool is_placed     = ship->get_is_placed();
@@ -176,6 +181,7 @@ bool OwnBoard::rotate_ship(const ShipCategory &shipname) {
         return true;
     }
 }
+
 Ship *OwnBoard::get_ship(const short &x, const short &y) {
     ShipCategory shiptype          = (ShipCategory)get_grid_value(x, y);
     int num_ships                  = get_num_ships();
@@ -206,6 +212,11 @@ void OwnBoard::update_ship(const short &x, const short &y) {
 bool OwnBoard::set_ship_configuration(const std::vector<ShipData> &ships) {
     for (Ship *ship_ptr : get_ship_vec()) {
         ship_ptr->set_is_placed(false);
+    }
+    for(int i = 0; i < get_grid_size(); i++){
+        for(int j = 0; j < get_grid_size(); j++){
+            set_grid_value(i, j, 0);
+        }
     }
     for (const ShipData &ship : ships) {
         Ship *ship_ptr = get_ship_by_name(ship.name);
