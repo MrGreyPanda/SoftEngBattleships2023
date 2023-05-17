@@ -28,7 +28,7 @@ void ServerRequestHandler::handle_request(const MessageType& type,
         case MessageType::PreparedRequestType:
             // Parse the ready request
             try {
-                PreparedRequest prepared_request(data);
+                const PreparedRequest prepared_request(data);
                 handle_prepared_request_(prepared_request);
             } catch (const std::exception& e) {
                 std::cout << "[ServerRequestHandler] Error parsing prepared "

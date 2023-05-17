@@ -226,8 +226,8 @@ TEST(BackendIntegrationTest, GameStartedMessage) {
 TEST(BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
-        std::vector<ShipData> ships_data_1 = {
-            ShipData(ShipCategory::Destroyer, false, 0, 5),
+        const std::vector<ShipData> ships_data_1 = {
+            ShipData(ShipCategory::Destroyer, true, 0, 5),
             ShipData(ShipCategory::Submarine, true, 6, 8),
             ShipData(ShipCategory::Cruiser, true, 7, 6),
             ShipData(ShipCategory::Battleship, true, 6, 0),
@@ -236,6 +236,8 @@ TEST(BackendIntegrationTest, Preparation) {
 
         const PreparedRequest prepared_request_1(game_id_1, player_id_1,
                                                  ships_data_1);
+
+        std::cout << "print: " << prepared_request_1.to_string() << std::endl;
 
         send_request_to_server(connector_1, prepared_request_1.to_string());
 

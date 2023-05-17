@@ -145,7 +145,7 @@ ShipData Ship::get_data() const {
 
 ShipData::ShipData(const ShipCategory &name, const bool &is_horizontal,
                    const short &x, const short &y)
-    : name(name), is_horizontal(is_horizontal), x(x), y(x) {}
+    : name(name), is_horizontal(is_horizontal), x(x), y(y) {}
 
 bool ShipData::operator==(const ShipData &other) const {
     return name == other.name && is_horizontal == other.is_horizontal &&

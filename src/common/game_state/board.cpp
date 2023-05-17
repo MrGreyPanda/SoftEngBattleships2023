@@ -76,8 +76,8 @@ bool OwnBoard::is_valid_placement(const short &x, const short &y,
     bool is_horizontal = ship.get_is_horizontal();
     short ship_length  = ship.get_length();
     if (is_horizontal) {
-        if (x + ship_length >= grid_size_ || y + ship_length >= grid_size_) {
-            std::cout << "[Board] (Debug) The ship doesn't fit" << std::endl;
+        if (x + ship_length > grid_size_) {
+            // the ship doesn't fit in the grid
             return false;
         }
         ShipCategory shiptype = ship.get_name();
