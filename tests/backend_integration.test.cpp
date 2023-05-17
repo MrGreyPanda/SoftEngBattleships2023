@@ -165,27 +165,13 @@ TEST(BackendIntegrationTest, Join) {
 
 TEST(BackendIntegrationTest, Ready) {
     // send ready request player 1
-    ReadyRequest ready_request_1(game_id_1, player_id_1);
-
-    auto task1 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_1, ready_request_1.to_string());
-        return recieve_response_json_from_server(connector_1);
-    });
-
-    // Wait a short time to avoid two ready messages being sent a the same time
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-    // send ready request player 2
-    ReadyRequest ready_request_2(game_id_2, player_id_2);
-
-    auto task2 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_2, ready_request_2.to_string());
-        return recieve_response_json_from_server(connector_2);
-    });
-
     try {
-        const ReadyResponse ready_response_1(task1.get());
+        ReadyRequest ready_request_1(game_id_1, player_id_1);
+        send_request_to_server(connector_1, ready_request_1.to_string());
+        const ReadyResponse ready_response_1(
+            recieve_response_json_from_server(connector_1));
 
+        // validate the ready response for player 1
         if (!ready_response_1.get_error().empty()) {
             FAIL() << "Ready response 1 has error: "
                    << ready_response_1.get_error();
@@ -194,9 +180,20 @@ TEST(BackendIntegrationTest, Ready) {
         EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
         EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
 
-        const ReadyResponse ready_response_2(task2.get());
+        // Player 2 should have recieved a ready message for player 1
+        const json message_json_2 =
+            recieve_response_json_from_server(connector_2);
+        const ReadyMessage ready_message_2(message_json_2);
+        EXPECT_EQ(ready_message_2.get_type(), MessageType::ReadyMessageType);
+        EXPECT_EQ(ready_message_2.get_game_id(), game_id_2);
+        EXPECT_EQ(ready_message_2.get_player_id(), player_id_2);
 
-        // check if the response is a ready response
+        // send ready request player 2
+        ReadyRequest ready_request_2(game_id_2, player_id_2);
+        send_request_to_server(connector_2, ready_request_2.to_string());
+        // validate response for player 2
+        const ReadyResponse ready_response_2(
+            recieve_response_json_from_server(connector_2));
         if (!ready_response_2.get_error().empty()) {
             FAIL() << "Ready response 2 has error: "
                    << ready_response_2.get_error();
