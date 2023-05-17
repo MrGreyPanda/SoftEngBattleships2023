@@ -3,6 +3,7 @@
 
 GameState* BattlePanel::game_state_ = nullptr;
 std::string BattlePanel::game_player_id_;
+unsigned short BattlePanel::help_button_counter_ = 0;
 
 void BattlePanel::init()
 {
@@ -30,6 +31,25 @@ void BattlePanel::init()
         SDLGui::TextFlagsExt_CenterTextHorizontal | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(turn_message_text);
+
+    SDLGui::TextButtonWidget* resign_button = new SDLGui::TextButtonWidget(
+        "resignButton", "Resign", 0.05f, .05f, .1f, .05f, 0.,
+         SDLGui::TextButtonFlagsExt_CenterText);
+    battle_panel_context->addWidget(resign_button);
+    
+
+    SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
+        "helpButton", "?", 0.85f, .05f, .1f, .05f, 0.,
+         SDLGui::TextButtonFlagsExt_CenterText);
+    battle_panel_context->addWidget(help_button);
+
+
+    SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
+        "helpMessageText", "", .01f, .1f, .8f, .8f, 0.,
+        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
+            SDLGui::TextFlagsExt_CenterHorizontal);
+    battle_panel_context->addWidget(help_message_text);
+    
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
@@ -75,6 +95,18 @@ void BattlePanel::render()
         SDLGui::Text("turnMessageText").updateText(64, "It is the enemy' turn.");
     }
 
+    if(SDLGui::TextButton("helpButton")){
+        if(help_button_counter_ == 0){
+            ++help_button_counter_;
+            // Set the background
+            SDLGui::Text("helpMessageText").updateText(512, "Click on the enemy board to shoot. Click on the resign button to resign. Press R while holding a ship to rotate it. Click on the help button to close this message.");
+        }
+        else{
+            --help_button_counter_;
+            // Set the background to nothing
+            SDLGui::Text("helpMessageText").updateText(512, "");
+        }
+    }
 
 
     SDLGui::end();

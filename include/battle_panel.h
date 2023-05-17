@@ -21,4 +21,5 @@ public:
 private:
     static GameState* game_state_;
     static std::string game_player_id_;
+    static unsigned short help_button_counter_;
 };
