@@ -152,7 +152,7 @@ class OwnBoard : public Board {
      *
      * @return true if the configuration is valid
      */
-    bool set_ship_placement(const std::vector<ShipData> &ships);
+    bool set_ship_configuration(const std::vector<ShipData> &ships);
 
     /**
      * @brief If ship is on the board, it checks if it can be rotated.

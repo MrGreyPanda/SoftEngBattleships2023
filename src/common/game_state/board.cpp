@@ -203,7 +203,7 @@ void OwnBoard::update_ship(const short &x, const short &y) {
     ship->shot_at();
 }
 
-bool OwnBoard::set_ship_placement(const std::vector<ShipData> &ships) {
+bool OwnBoard::set_ship_configuration(const std::vector<ShipData> &ships) {
     for (Ship *ship_ptr : get_ship_vec()) {
         ship_ptr->set_is_placed(false);
     }

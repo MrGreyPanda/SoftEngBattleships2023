@@ -80,7 +80,7 @@ bool GameInstance::set_player_prepared(const std::string &player_id,
 
     // 2. Place ships
     bool is_valid_placement =
-        player_ptr->get_own_board().set_ship_placement(ships);
+        player_ptr->get_own_board().set_ship_configuration(ships);
     if (!is_valid_placement) return false;
 
     // all ships have been placed successfully, the configuration is valid
