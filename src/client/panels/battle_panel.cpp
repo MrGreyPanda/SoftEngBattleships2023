@@ -7,7 +7,7 @@ void BattlePanel::init()
     SDLGui::SDLGuiContext* battle_panel_context = 
         new SDLGui::SDLGuiContext("battlePanelContext");
 
-
+    
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
