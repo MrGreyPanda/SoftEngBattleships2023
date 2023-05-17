@@ -95,9 +95,18 @@ std::string GameState::get_other_player_id(std::string id) const {
     return "";
 }
 
-bool GameState::players_ready() const {
+bool GameState::all_players_ready() const {
     for (Player* player : players_) {
         if (!player->get_is_ready()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool GameState::all_players_prepared() const {
+    for (Player* player : players_) {
+        if (!player->get_is_prepared()) {
             return false;
         }
     }

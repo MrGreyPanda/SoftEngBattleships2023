@@ -94,7 +94,7 @@ class GameInstance {
      * @return true
      * @return false
      */
-    bool players_ready() const;
+    bool all_players_ready() const;
 
     /**
      * @brief Attempts to start the game
@@ -118,7 +118,16 @@ class GameInstance {
      * @return true
      * @return false
      */
-    bool player_prepared();  // FIXME this can't be right
+    bool set_player_prepared(const std::string& player_id,
+                             const std::vector<ShipData>& ships);
+
+    /**
+     * @brief Checks if all players are prepared
+     *
+     * @return true
+     * @return false
+     */
+    bool all_players_prepared() const;
 
     /**
      * @brief Checks for a player with the given id

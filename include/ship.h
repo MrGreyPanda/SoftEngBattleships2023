@@ -36,6 +36,8 @@ struct ShipData {
     bool is_horizontal;
     short x;
     short y;
+
+    bool operator==(const ShipData &other) const;
 };
 
 /**
@@ -71,7 +73,7 @@ class Ship {
 
     /**
      * @brief Copy constructor
-    */
+     */
     Ship(const Ship &other);
 
     /**

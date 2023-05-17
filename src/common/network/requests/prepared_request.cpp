@@ -5,12 +5,12 @@ PreparedRequest::PreparedRequest(const json& data) : Message(data) {
 
     // create empty ship data vector
     ships_ = std::vector<ShipData>(0);
-    for (auto& ship_data_json : data["ships"]) {
+    for (auto& ship_data_json : data.at("ships")) {
         ShipData ship_data;
-        ship_data.name          = ship_data_json["name"];
-        ship_data.is_horizontal = ship_data_json["is_horizontal"];
-        ship_data.x             = ship_data_json["x"];
-        ship_data.y             = ship_data_json["y"];
+        ship_data.name          = ship_data_json.at("name");
+        ship_data.is_horizontal = ship_data_json.at("is_horizontal");
+        ship_data.x             = ship_data_json.at("x");
+        ship_data.y             = ship_data_json.at("y");
 
         ships_.push_back(ship_data);
     }

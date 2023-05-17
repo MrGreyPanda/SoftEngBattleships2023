@@ -75,14 +75,14 @@ Ship::Ship(const Ship &ship)
 
 Ship &Ship::operator=(const Ship &ship) {
     if (this != &ship) {
-        name_ = ship.name_;
-        is_sunk_ = ship.is_sunk_;
-        length_ = ship.length_;
-        damage_ = ship.damage_;
-        is_placed_ = ship.is_placed_;
+        name_          = ship.name_;
+        is_sunk_       = ship.is_sunk_;
+        length_        = ship.length_;
+        damage_        = ship.damage_;
+        is_placed_     = ship.is_placed_;
         is_horizontal_ = ship.is_horizontal_;
-        x_ = ship.x_;
-        y_ = ship.y_;
+        x_             = ship.x_;
+        y_             = ship.y_;
     }
     return *this;
 }
@@ -146,3 +146,8 @@ ShipData Ship::get_data() const {
 ShipData::ShipData(const ShipCategory &name, const bool &is_horizontal,
                    const short &x, const short &y)
     : name(name), is_horizontal(is_horizontal), x(x), y(x) {}
+
+bool ShipData::operator==(const ShipData &other) const {
+    return name == other.name && is_horizontal == other.is_horizontal &&
+           x == other.x && y == other.y;
+}

@@ -122,7 +122,23 @@ class GameState {
 
     std::string get_other_player_id(std::string id) const;
 
-    bool players_ready() const;
+    /**
+     * @brief Returns whether all players are ready to go from the lobby phase
+     * to the preparation phase.
+     *
+     * @return 'true' if all players in the game are ready,
+     * @return 'false' else
+     */
+    bool all_players_ready() const;
+
+    /**
+     * @brief Returns whether all players are ready to go from the preparation
+     * phase to the battle phase.
+     *
+     * @return 'true' if all players in the game are ready,
+     * @return 'false' else
+     */
+    bool all_players_prepared() const;
 
    private:
     std::string id_;

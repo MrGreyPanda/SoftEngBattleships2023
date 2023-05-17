@@ -3,14 +3,15 @@
 #include "response.h"
 #include "shoot_request.h"
 
-class ShootResponse : public ShootRequest, Response {
+class ShootResponse : public ShootRequest, public Response {
    public:
     ShootResponse(const json& data);
     ShootResponse(const std::string& game_id, const std::string& player_id,
-                  unsigned short x, unsigned short y, bool is_valid, bool has_hit);
+                  unsigned short x, unsigned short y, bool is_valid,
+                  bool has_hit);
     ShootResponse(const std::string& game_id, const std::string& player_id,
-                  unsigned short x, unsigned short y, bool is_valid, bool has_hit,
-                  const std::string& error);
+                  unsigned short x, unsigned short y, bool is_valid,
+                  bool has_hit, const std::string& error);
 
     json to_json() const;
 
@@ -20,7 +21,7 @@ class ShootResponse : public ShootRequest, Response {
 
     std::string get_player_id() const;
 
-    private:
-     bool is_valid_;
-     bool has_hit_;
+   private:
+    bool is_valid_;
+    bool has_hit_;
 };
