@@ -87,6 +87,15 @@ class GameInstance {
      * @return false else
      */
     bool try_remove_player(Player* player);
+
+    /**
+     * @brief
+     *
+     * @return true
+     * @return false
+     */
+    bool players_ready() const;
+
     /**
      * @brief Attempts to start the game
      *

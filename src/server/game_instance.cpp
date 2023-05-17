@@ -83,3 +83,7 @@ bool GameInstance::has_player(std::string player_id) const {
 }
 
 bool GameInstance::is_full() const { return game_state_->is_full(); }
+
+bool GameInstance::players_ready() const {
+    return game_state_->players_ready();
+}

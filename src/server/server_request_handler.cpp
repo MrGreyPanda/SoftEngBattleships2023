@@ -216,6 +216,29 @@ void ServerRequestHandler::handle_ready_request_(
         ServerNetworkManager::send_message(ready_message.to_string(),
                                            other_player_id);
     }
+
+    // Check if both players are ready to advance the game
+    if (game_ptr->players_ready()) {
+        std::cout << "[ServerRequestHandler] (Debug) Both players are ready, "
+                     "starting game!"
+                  << std::endl;
+
+        // Start the game
+        game_ptr->start_game();
+
+        // Send a message to both players that the game has started
+        // const GameStartedMessage game_started_message(game_id, player_id);
+        // ServerNetworkManager::send_message(game_started_message.to_string(),
+        //                                    player_id);
+
+        // const std::string other_player_id =
+        //     game_ptr->try_get_other_player_id(player_id);
+
+        // if (!other_player_id.empty()) {
+        //     ServerNetworkManager::send_message(
+        //         game_started_message.to_string(), other_player_id);
+        // }
+    }
 }
 
 void ServerRequestHandler::handle_prepared_request_(
