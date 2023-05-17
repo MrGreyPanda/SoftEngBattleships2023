@@ -5,6 +5,7 @@
 #include "SDLGui.hpp"
 #include "game_state.h"
 #include "connection_panel.h"
+#include "lobby_panel.h"
 #include "preparation_panel.h"
 #include "battle_panel.h"
 #include "end_panel.h"
