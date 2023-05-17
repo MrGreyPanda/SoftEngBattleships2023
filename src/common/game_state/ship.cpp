@@ -17,7 +17,7 @@ accordingly.
 //     damage_ = length_;
 // }
 
-unsigned short category_to_size(ShipCategory type) {
+const unsigned short category_to_size(const ShipCategory &type) {
     switch (type) {
         case Carrier:
             return 5;
@@ -35,9 +35,9 @@ unsigned short category_to_size(ShipCategory type) {
 }
 
 // Constructor
-Ship::Ship(ShipCategory name_)
-    : name_(name_), is_sunk_(false), is_placed_(false), is_horizontal_(false) {
-    length_ = category_to_size(name_);
+Ship::Ship(const ShipCategory &name_)
+    : name_(name_), is_sunk_(false), is_placed_(false), is_horizontal_(false), length_(category_to_size(name_)){
+    // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
 }
@@ -48,8 +48,8 @@ Ship::Ship(const ShipData &data)
       is_placed_(true),
       is_horizontal_(data.is_horizontal),
       x_(data.x),
-      y_(data.y) {
-    length_ = category_to_size(name_);
+      y_(data.y), length_(category_to_size(data.name)){
+    // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
     damage_ = 0;
@@ -63,29 +63,29 @@ Ship::Ship()
       is_placed_(false),
       is_horizontal_(false) {}
 
-Ship::Ship(const Ship &ship)
-    : name_(ship.name_),
-      is_sunk_(ship.is_sunk_),
-      length_(ship.length_),
-      damage_(ship.damage_),
-      is_placed_(ship.is_placed_),
-      is_horizontal_(ship.is_horizontal_),
-      x_(ship.x_),
-      y_(ship.y_) {}
+// Ship::Ship(const Ship &ship)
+//     : name_(ship.name_),
+//       is_sunk_(ship.is_sunk_),
+//       length_(ship.length_),
+//       damage_(ship.damage_),
+//       is_placed_(ship.is_placed_),
+//       is_horizontal_(ship.is_horizontal_),
+//       x_(ship.x_),
+//       y_(ship.y_) {}
 
-Ship &Ship::operator=(const Ship &ship) {
-    if (this != &ship) {
-        name_ = ship.name_;
-        is_sunk_ = ship.is_sunk_;
-        length_ = ship.length_;
-        damage_ = ship.damage_;
-        is_placed_ = ship.is_placed_;
-        is_horizontal_ = ship.is_horizontal_;
-        x_ = ship.x_;
-        y_ = ship.y_;
-    }
-    return *this;
-}
+// Ship &Ship::operator=(const Ship &ship) {
+//     if (this != &ship) {
+//         name_ = ship.name_;
+//         is_sunk_ = ship.is_sunk_;
+//         length_ = ship.length_;
+//         damage_ = ship.damage_;
+//         is_placed_ = ship.is_placed_;
+//         is_horizontal_ = ship.is_horizontal_;
+//         x_ = ship.x_;
+//         y_ = ship.y_;
+//     }
+//     return *this;
+// }
 
 Ship::~Ship() {
     // Nothing to do here
@@ -127,7 +127,7 @@ short Ship::get_x() const { return x_; }
 
 short Ship::get_y() const { return y_; }
 
-void Ship::set_xy(const short &x, const short &y) {
+void Ship::set_xy(const unsigned short &x, const unsigned short &y) {
     x_ = x;
     y_ = y;
     set_is_placed(true);

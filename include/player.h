@@ -105,6 +105,8 @@ class Player {
      */
     bool has_lost() const;
 
+    bool is_own_turn;
+
    private:
     std::string id_;
     bool is_ready_;
