@@ -32,7 +32,7 @@ class Board {
      * @brief Get the grid_size_ of the board
      * @return The grid_size_ of the board
      */
-    unsigned short get_grid_size() const;
+    const unsigned short get_grid_size() const;
 
     // /**
     //  * @brief Get the ships_ that are not sunk on the board
@@ -97,7 +97,7 @@ class Board {
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *
      * grid_size_ board
      */
-    unsigned short grid_size_ = 10;
+    const unsigned short grid_size_ = 10;
     std::vector<std::vector<unsigned short>> grid_ =
         std::vector<std::vector<unsigned short>>(
             grid_size_, std::vector<unsigned short>(grid_size_, 0));

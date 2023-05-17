@@ -13,7 +13,7 @@ Board::~Board() {
     // ships_.clear();
 }
 
-unsigned short Board::get_grid_size() const { return grid_size_; }
+const unsigned short Board::get_grid_size() const { return grid_size_; }
 
 // unsigned short Board::get_num_active_ships() {
 //     unsigned short num_active_ships = 0;
