@@ -7,7 +7,9 @@ Board::Board() : grid_size_(10) {
 
 // I should need to use delete here, but I don't know why it doesn't work
 Board::~Board() {
-    ships_.clear();
+    for(int i = 0; i < ships_.size(); i++) {
+        if(ships_[i] != nullptr) delete ships_[i];
+    }
 }
 
 const unsigned short Board::get_grid_size() const { return grid_size_; }

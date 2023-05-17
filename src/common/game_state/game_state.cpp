@@ -9,7 +9,7 @@ GameState::GameState()
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players){}
+    : id_(id), phase_(Connect), turn_player_index_(0), players_(players){}
 
 GameState::~GameState() {}
 
