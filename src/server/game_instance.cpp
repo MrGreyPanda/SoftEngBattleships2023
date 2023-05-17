@@ -78,6 +78,13 @@ bool GameInstance::set_player_prepared(const std::string &player_id,
         return false;
     }
 
+    // Debug print ships
+    std::cout << "Ships: " << std::endl;
+    for (auto ship : ships) {
+        std::cout << "Ship: " << ship.name << " " << ship.x << " " << ship.y
+                  << " " << ship.is_horizontal << std::endl;
+    }
+
     // 2. Place ships
     bool is_valid_placement =
         player_ptr->get_own_board().set_ship_configuration(ships);

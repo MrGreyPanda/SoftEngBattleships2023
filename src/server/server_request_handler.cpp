@@ -265,6 +265,10 @@ void ServerRequestHandler::handle_prepared_request_(
         return;
     }
 
+    std::cout
+        << "[ServerRequestHandler] (Debug) Handling a prepared request!\n"
+        << prepared_request.to_string() << std::endl;
+
     // Validate ship configuration
     const bool is_config_valid =
         game_ptr->set_player_prepared(player_id, ship_data_vec);

@@ -1,6 +1,11 @@
 #pragma once
+
+#include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <utility>
+
+using json = nlohmann::json;
+
 /*
 The class attributes are:
 length_: short, defines the length_ of the ship, for example 5, 4, 3, 2 or 1
@@ -16,11 +21,11 @@ accordingly.
 // Enumerators to categorize the different ship types
 
 enum ShipCategory {
-    Destroyer  = (short)1,   // size = 2
+    Destroyer  = (short)1,  // size = 2
     Submarine  = (short)2,  // size = 3
     Cruiser    = (short)3,  // size = 3
     Battleship = (short)4,  // size = 4
-    Carrier    = (short)5  // size = 5
+    Carrier    = (short)5   // size = 5
 };
 
 /**
@@ -39,6 +44,13 @@ struct ShipData {
 
     bool operator==(const ShipData &other) const;
 };
+/**
+ * @brief Casts ship data from JSON to a ShipData object
+ *
+ * @param j
+ * @param data
+ */
+void from_json(const json &j, ShipData &data);
 
 /**
  * @brief Converts a ShipCategory to the size of the ship

@@ -151,3 +151,10 @@ bool ShipData::operator==(const ShipData &other) const {
     return name == other.name && is_horizontal == other.is_horizontal &&
            x == other.x && y == other.y;
 }
+
+void from_json(const json &j, ShipData &data) {
+    j.at("name").get_to(data.name);
+    j.at("is_horizontal").get_to(data.is_horizontal);
+    j.at("x").get_to(data.x);
+    j.at("y").get_to(data.y);
+}

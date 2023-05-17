@@ -51,7 +51,7 @@ add_executable(Battleships ${COMMON_SOURCES} src/client/main.cpp ${CLIENT_SOURCE
 # build server
 add_executable(BattleshipsServer ${COMMON_SOURCES} src/server/main.cpp ${SERVER_SOURCES})
 
-add_executable(BattleshipsTests ${COMMON_SOURCES} ${CLIENT_SOURCES} ${SERVER_SOURCES} ${TEST_SOURCES})
+add_executable(BattleshipsTests ${COMMON_SOURCES} ${CLIENT_SOURCES} ${SERVER_SOURCES} ${TEST_SOURCES} tests/test_helpers.h)
 
 
 # Build sockpp
