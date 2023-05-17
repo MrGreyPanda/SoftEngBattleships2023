@@ -73,8 +73,22 @@ GameInstance *GameInstanceManager::add_player_to_any_game(Player *player_ptr) {
         }
     }
     games_lock_.unlock();
-    GameInstance* new_game = create_new_game_();
-    new_game->try_add_player(player_ptr);
+
+    GameInstance *new_game = create_new_game_();
+    if (new_game == nullptr) {
+        std::cout << "[GameInstanceManager] (Error) Failed to create new game"
+                  << std::endl;
+        return nullptr;
+    }
+
+    const bool added_success = new_game->try_add_player(player_ptr);
+    if (!added_success) {
+        std::cout << "[GameInstanceManager] (Error) Failed to add player to "
+                     "newly created game"
+                  << std::endl;
+        return nullptr;
+    }
+
     return new_game;
 }
 

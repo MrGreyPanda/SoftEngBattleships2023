@@ -28,9 +28,9 @@ Phase GameState::get_phase() const { return phase_; }
 std::vector<Player*> GameState::get_players() { return players_; }
 
 Player* GameState::get_player_by_id(std::string id_) {
-    for (auto player : players_) {
-        if (player->get_id() == id_) {
-            return player;
+    for (Player* player_ptr : players_) {
+        if (player_ptr->get_id() == id_) {
+            return player_ptr;
         }
     }
     return nullptr;
@@ -87,9 +87,9 @@ bool GameState::start_game() {
 }
 
 std::string GameState::get_other_player_id(std::string id) const {
-    for(unsigned i = 0; i < 2; i++){
-        if(players_.at(i)->get_id() == id){
-            return players_.at((i+1)%2)->get_id();
+    for (unsigned i = 0; i < players_.size(); i++) {
+        if (players_.at(i)->get_id() == id) {
+            return players_.at((i + 1) % 2)->get_id();
         }
     }
 

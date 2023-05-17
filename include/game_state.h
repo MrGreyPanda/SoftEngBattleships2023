@@ -91,7 +91,7 @@ class GameState {
      * @return true
      * @return false
      */
-    inline bool is_full() const;
+    bool is_full() const;
 
     /**
      * @brief Set the player with the given ID as ready to go from the lobby

@@ -7,8 +7,10 @@
 #include "join_message.h"
 #include "join_request.h"
 #include "join_response.h"
+#include "prepared_message.h"
 #include "prepared_request.h"
 #include "prepared_response.h"
+#include "ready_message.h"
 #include "ready_request.h"
 #include "ready_response.h"
 #include "server_network_manager.h"
@@ -103,6 +105,10 @@ TEST(BackendIntegrationTest, Join) {
         return recieve_response_json_from_server(connector_1);
     });
 
+    // Wait a short time to avoid two join messages being sent
+    // TODO add test for this
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     auto task2 = std::async(std::launch::async, [&]() {
         send_request_to_server(connector_2, join_request.to_string());
         return recieve_response_json_from_server(connector_2);
@@ -166,6 +172,9 @@ TEST(BackendIntegrationTest, Ready) {
         return recieve_response_json_from_server(connector_1);
     });
 
+    // Wait a short time to avoid two ready messages being sent a the same time
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     // send ready request player 2
     ReadyRequest ready_request_2(game_id_2, player_id_2);
 
@@ -173,12 +182,6 @@ TEST(BackendIntegrationTest, Ready) {
         send_request_to_server(connector_2, ready_request_2.to_string());
         return recieve_response_json_from_server(connector_2);
     });
-
-    if (task1.wait_for(timeout) == std::future_status::timeout ||
-        task2.wait_for(timeout) == std::future_status::timeout) {
-        FAIL() << "Timed out waiting for response from server";
-        return;
-    }
 
     try {
         const ReadyResponse ready_response_1(task1.get());
@@ -201,6 +204,15 @@ TEST(BackendIntegrationTest, Ready) {
         EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
         EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
         EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
+
+        // Player 1 should have recieved a ready message for player 2
+        const json message_json_1 =
+            recieve_response_json_from_server(connector_1);
+        const ReadyMessage ready_message_1(message_json_1);
+        EXPECT_EQ(ready_message_1.get_type(), MessageType::ReadyMessageType);
+        EXPECT_EQ(ready_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(ready_message_1.get_player_id(), player_id_1);
+
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
     }

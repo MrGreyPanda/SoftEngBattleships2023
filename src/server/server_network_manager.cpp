@@ -99,7 +99,7 @@ void ServerNetworkManager::send_message(const std::string& response_str,
     auto player_address_it = player_addresses_.find(player_id);
 
     if (player_address_it == player_addresses_.end()) {
-        std::cerr << "[ServerNetworkManager] Error sending response: "
+        std::cerr << "[ServerNetworkManager] Error sending message to client: "
                   << "Player with ID '" << player_id << "' not found!"
                   << std::endl;
         return;
@@ -114,7 +114,7 @@ void ServerNetworkManager::send_response_to_peer_(
     auto socket_it = sockets_.find(address.to_string());
 
     if (socket_it == sockets_.end()) {
-        std::cerr << "[ServerNetworkManager] Error sending response: "
+        std::cerr << "[ServerNetworkManager] Error sending message to client: "
                   << "Socket for IP " << address.to_string() << " not found!"
                   << std::endl;
         return;

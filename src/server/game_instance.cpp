@@ -72,8 +72,8 @@ bool GameInstance::player_prepared() {
 
 bool GameInstance::has_player(std::string player_id) const {
     lock_.lock();
-    for (auto &i : game_state_->get_players()) {
-        if (i->get_id() == player_id) {
+    for (Player *player_ptr : game_state_->get_players()) {
+        if (player_ptr->get_id() == player_id) {
             lock_.unlock();
             return true;
         }

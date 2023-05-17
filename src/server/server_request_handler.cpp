@@ -131,8 +131,8 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
             if (!other_player_id.empty()) {
                 const JoinMessage join_message(game_id, other_player_id);
 
-                ServerNetworkManager::send_message(
-                    join_message.to_string(), join_message.get_player_id());
+                ServerNetworkManager::send_message(join_message.to_string(),
+                                                   other_player_id);
             } else {
                 std::cout
                     << "[ServerRequestHandler] Error: Could not find other "
