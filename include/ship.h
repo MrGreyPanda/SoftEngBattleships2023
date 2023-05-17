@@ -70,6 +70,16 @@ class Ship {
     Ship(const ShipData &data);
 
     /**
+     * @brief Copy constructor
+    */
+    Ship(const Ship &other);
+
+    /**
+     * @brief Copy assignment operator
+     */
+    Ship &operator=(const Ship &other);
+
+    /**
      * @brief Destroy the Ship object
      */
     ~Ship();

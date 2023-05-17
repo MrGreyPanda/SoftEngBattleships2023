@@ -323,10 +323,10 @@ void ServerRequestHandler::handle_shoot_request_(
         }
 
         // Change turn in game state
-        // TODO
 
         return;
-    }
+    } else
+        game_ptr->change_turn_player_index();
 }
 
 void ServerRequestHandler::handle_give_up_request_(

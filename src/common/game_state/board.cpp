@@ -52,6 +52,13 @@ void Board::set_is_shot(const short &x, const short &y, bool value) {
     is_shot_[y][x] = value;
 }
 
+Ship *Board::get_ship_by_name(const ShipCategory &type) {
+    for (int i = 0; i < ships_.size(); i++) {
+        if (ships_[i]->get_name() == type) return ships_[i];
+    }
+    return nullptr;
+}
+
 // OwnBoard::OwnBoard() : Board() {}
 
 // OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
@@ -120,6 +127,7 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
             set_grid_value(x + i, y, shiptype);
         }
         ship.set_xy(x, y);
+        *(this->get_ship(x, y)) = ship;
         return true;
     } else if (!is_horizontal) {
         if (is_placed) {
@@ -133,6 +141,7 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
             set_grid_value(x, y + i, shiptype);
         }
         ship.set_xy(x, y);
+        *(this->get_ship(x, y)) = ship;
         return true;
     } else
         return false;  // Throw exception here, unexpected behaviour
@@ -156,6 +165,7 @@ bool OwnBoard::rotate_ship(Ship &ship) {
                 set_grid_value(x + i, y, 0);
                 set_grid_value(x, y + i, shiptype);
             }
+            *(this->get_ship(x, y)) = ship;
             return true;
         } else if (!is_horizontal) {
             // Remove old ship
@@ -163,11 +173,14 @@ bool OwnBoard::rotate_ship(Ship &ship) {
                 set_grid_value(x, y + i, 0);
                 set_grid_value(x + i, y, shiptype);
             }
+            *(this->get_ship(x, y)) = ship;
             return true;
         } else
             return false;  // Throw exception here unexpected behaviour
     } else {
         ship.set_is_horizontal(!is_horizontal);
+
+        *this->get_ship_by_name(ship.get_name()) = ship;
         return true;
     }
 }
@@ -196,6 +209,54 @@ void OwnBoard::update_ship(const short &x, const short &y) {
     Ship *ship = get_ship(x, y);
     if (ship == nullptr) return;  // maybe throw exception here
     ship->shot_at();
+}
+
+bool OwnBoard::is_valid_configuration() {
+    int num_ships  = this->get_num_ships();
+    auto ships_vec = *this->get_ship_vec();
+    for (int i = 0; i < num_ships; i++) {
+        if (ships_vec[i]->get_is_placed() == false) return false;
+    }
+    std::array<int, 6> ship_lengths = {0, 2, 3, 3, 4, 5};
+    short grid_size                 = this->get_grid_size();
+    for (int i = 0; i < grid_size; i++) {
+        for (int j = 0; j < grid_size; j++) {
+            int grid_value = get_grid_value(i, j);
+            if (grid_value > 5 || grid_value < 0) return false;
+            if (grid_value != 0) {
+                ship_lengths[grid_value]--;
+            }
+        }
+    }
+    for (int i = 0; i < 6; i++) {
+        if (ship_lengths[i] != 0) {
+            std::cout << "Ship " << (ShipCategory)i << " has wrong length!"
+                      << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool OwnBoard::is_ultimate_configuration() {
+    auto ship_vec = *this->get_ship_vec();
+    if (ship_vec[0]->get_is_horizontal() != true ||
+        ship_vec[0]->get_x() != 6 || ship_vec[0]->get_y() != 7)
+        return false;
+    if (ship_vec[1]->get_is_horizontal() != true ||
+        ship_vec[1]->get_x() != 2 || ship_vec[1]->get_y() != 7)
+        return false;
+    if (ship_vec[2]->get_is_horizontal() != true ||
+        ship_vec[2]->get_x() != 4 || ship_vec[2]->get_y() != 5)
+        return false;
+    if (ship_vec[3]->get_is_horizontal() != false ||
+        ship_vec[3]->get_x() != 7 || ship_vec[3]->get_y() != 2)
+        return false;
+    if (ship_vec[4]->get_is_horizontal() != true ||
+        ship_vec[4]->get_x() != 3 || ship_vec[4]->get_y() != 6)
+        return false;
+    return true;
 }
 
 // ------------ EnemyBoard ------------- //
