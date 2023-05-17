@@ -9,13 +9,7 @@ GameState::GameState()
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players) {
-    ships_.push_back(Ship(Destroyer));
-    ships_.push_back(Ship(Submarine));
-    ships_.push_back(Ship(Cruiser));
-    ships_.push_back(Ship(Battleship));
-    ships_.push_back(Ship(Carrier));
-}
+    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players){}
 
 GameState::~GameState() {}
 
@@ -75,7 +69,6 @@ void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
 
-std::vector<Ship> GameState::get_ships() { return ships_; }
 
 bool GameState::start_game(){
     if(players_.size() < 2) {

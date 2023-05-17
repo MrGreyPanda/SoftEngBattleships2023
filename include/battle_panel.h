@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SDLGui.hpp"
+#include <string>
 
 #include "game_state.h"
 
