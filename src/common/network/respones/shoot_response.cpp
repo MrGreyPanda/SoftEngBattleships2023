@@ -35,3 +35,7 @@ std::string ShootResponse::get_game_id() const {
 std::string ShootResponse::get_player_id() const {
     return ShootRequest::get_player_id();
 }
+
+bool ShootResponse::is_valid() const { return is_valid_; }
+
+bool ShootResponse::has_hit() const { return has_hit_; }
