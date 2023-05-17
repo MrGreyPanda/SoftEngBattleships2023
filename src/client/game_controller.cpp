@@ -22,7 +22,7 @@ void GameController::init() {
     EndPanel::set_game_state(&game_state_);
     EndPanel::init();
 
-    game_state_.set_phase(Lobby);
+    game_state_.set_phase(Preparation);
 }
 
 void GameController::set_player_id(std::string player_id) {

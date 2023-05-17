@@ -32,7 +32,7 @@ void ClientResponseMessageHandler::handle_message_string(
     }
 
     // handle the message for its type
-    /*switch (message_type) {
+    switch (message_type) {
         // join
         case MessageType::JoinResponseType:
             handle_join_response_(JoinResponse(json_message));
@@ -75,7 +75,7 @@ void ClientResponseMessageHandler::handle_message_string(
                          "message type"
                       << std::endl;
             break;
-    }*/
+    }
 }
 
 // TODO: implement
