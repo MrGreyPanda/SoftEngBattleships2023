@@ -63,13 +63,13 @@ class Board {
      * @brief Get the ships_ on the board
      * @return The ships_ on the board
      */
-    std::vector<Ship *> &get_ship_vec();
+    std::array<Ship *, 5> &get_ship_vec();
 
     /**
      * @brief Get the ships_ on the board (unmodifiable)
      * @return The ships_ on the board
      */
-    const std::vector<const Ship *> get_ship_vec() const;
+    const std::array<const Ship *, 5> get_ship_vec() const;
 
     /**
      * @brief Get the is_shot_ value at a given coordinate
@@ -98,12 +98,9 @@ class Board {
      * grid_size_ board
      */
     const unsigned short grid_size_ = 10;
-    std::vector<std::vector<unsigned short>> grid_ =
-        std::vector<std::vector<unsigned short>>(
-            grid_size_, std::vector<unsigned short>(grid_size_, 0));
-    std::vector<std::vector<bool>> is_shot_ = std::vector<std::vector<bool>>(
-        grid_size_, std::vector<bool>(grid_size_, false));
-    std::vector<Ship *> ships_;
+    std::array<std::array<unsigned short, 10>, 10> grid_{0};
+    std::array<std::array<bool, 10>, 10> is_shot_{false};
+    std::array<Ship *, 5> ships_;
 };
 
 /*
