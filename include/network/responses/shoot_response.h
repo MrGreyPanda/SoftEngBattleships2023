@@ -20,6 +20,10 @@ class ShootResponse : public ShootRequest, Response {
 
     std::string get_player_id() const;
 
+    bool is_valid() const;
+
+    bool has_hit() const;
+
     private:
      bool is_valid_;
      bool has_hit_;

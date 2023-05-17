@@ -17,6 +17,7 @@ public:
     static void set_player_id(std::string player_id);
 
     static void set_game_state(GameState* game_state);
+
 private:
     static GameState* game_state_;
     static std::string game_player_id_;

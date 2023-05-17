@@ -52,7 +52,7 @@ void BattlePanel::handle_shots(){
             // Send a shoot request to the server
             ShootRequest shoot_request(game_state_->get_id(), game_player_id_, x, y);
             ClientNetworkManager::send_message(shoot_request.to_string());
-            SDLGui::GridWidget("enemy_board").disable();    
+            SDLGui::GridWidget("enemy_board").disable();
         }
     }
 }

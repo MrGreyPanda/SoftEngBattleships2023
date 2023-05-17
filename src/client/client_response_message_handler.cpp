@@ -134,6 +134,15 @@ void ClientResponseMessageHandler::handle_shoot_response_(
     std::cout << "[ClientResponseMessageHandler] Handling shoot response not "
                  "implemented yet."
               << std::endl;
+
+    if(response.is_valid()){
+        if(response.has_hit()){
+        }
+        else{}
+    }
+    else{
+
+    }
 }
 
 // TODO: implement
@@ -142,4 +151,10 @@ void ClientResponseMessageHandler::handle_shot_message_(
     std::cout << "[ClientResponseMessageHandler] Handling shot message not "
                  "implemented yet."
               << std::endl;
+    if(message.has_hit()){
+        
+    }
+    else{
+
+    }
 }

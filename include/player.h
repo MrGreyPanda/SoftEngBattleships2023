@@ -85,12 +85,12 @@ class Player {
     /**
      * @brief Returns the player's own board
      */
-    OwnBoard get_own_board() const;
+    OwnBoard &get_own_board();
 
     /**
      * @brief Returns the player's enemy board
      */
-    EnemyBoard get_enemy_board() const;
+    EnemyBoard &get_enemy_board();
 
     /**
      * @brief Try to shoot at a given coordinate
