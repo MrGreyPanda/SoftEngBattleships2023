@@ -7,7 +7,7 @@ std::string BattlePanel::game_player_id_;
 void BattlePanel::init()
 {
     SDLGui::SDLGuiContext* battle_panel_context = 
-        new SDLGui::SDLGuiContext("battlePanelContext");
+        new SDLGui::SDLGuiContext("battle_panel_context");
 
     SDLGui::GridWidget* own_board = 
         new SDLGui::GridWidget("own_board", .05f, .05f, .4f, .8f,
@@ -26,7 +26,7 @@ void BattlePanel::init()
         battle_panel_context->addWidget(battle_phase_title);
 
     SDLGui::TextWidget* turn_message_text = new SDLGui::TextWidget(
-        "turnMessageText", "", .0f, .9f, .3f, .1f, 0.,
+        "turn_message_text", "", .0f, .9f, .3f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterTextHorizontal | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(turn_message_text);
@@ -59,12 +59,12 @@ void BattlePanel::handle_shots(){
 
 void BattlePanel::render()
 {
-    SDLGui::begin("battlePanelContext");
+    SDLGui::begin("battle_panel_context");
     unsigned short turn = game_state_->get_turn_player_index();
     bool own_turn = game_state_->get_player_id_by_index(turn) == game_player_id_;
     if(own_turn){
         /*if(Grid is enabled)*/
-        SDLGui::Text("turnMessageText").updateText(64, "It is your turn.");
+        SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
         handle_shots();
 
         /*else if (grid is disabled)*/
@@ -72,7 +72,7 @@ void BattlePanel::render()
     }
 
     else{
-        SDLGui::Text("turnMessageText").updateText(64, "It is the enemy' turn.");
+        SDLGui::Text("turn_message_text").updateText(64, "It is the enemy' turn.");
     }
 
 
