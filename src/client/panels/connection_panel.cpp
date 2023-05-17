@@ -70,7 +70,7 @@ void ConnectionPanel::render() {
         SDLGui::Text("serverMessageText")
             .updateText(64, "Connected to %s:%hu", server_address_.c_str(),
                         server_port_);
-        game_state_->set_phase(Phase::Preparation);
+        game_state_->set_phase(Phase::Lobby);
     }
 
     SDLGui::end();
