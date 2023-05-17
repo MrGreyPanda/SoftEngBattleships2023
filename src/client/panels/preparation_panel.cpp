@@ -6,10 +6,10 @@ unsigned short PreparationPanel::help_button_counter_ = 0;
 void PreparationPanel::init()
 {
     SDLGui::SDLGuiContext* preparation_panel_context = 
-        new SDLGui::SDLGuiContext("preparationPanelContext");
+        new SDLGui::SDLGuiContext("preparation_panel_context");
 
     SDLGui::GridWidget* preparation_grid = 
-        new SDLGui::GridWidget("preparationGrid", .05f, .05f, .4f, .8f,
+        new SDLGui::GridWidget("preparation_grid", .05f, .05f, .4f, .8f,
         0., 10, 10, SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
     preparation_panel_context->addWidget(preparation_grid);
 
@@ -20,7 +20,7 @@ void PreparationPanel::init()
         preparation_panel_context->addWidget(preparation_phase_title);
 
     SDLGui::TextButtonWidget* ready_button = 
-        new SDLGui::TextButtonWidget("readyButton", "Ready", .0f, .9f, .3f, .08f, 0.,
+        new SDLGui::TextButtonWidget("ready_button", "Ready", .0f, .9f, .3f, .08f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText | SDLGui::TextButtonFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(ready_button);
 
@@ -32,25 +32,25 @@ void PreparationPanel::init()
     
     SDLGui::DraggableImageWidget* battleship_ship = 
         new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
-        .6f, .35f, .3f, .12f, 0., 4, 1, SDLGui::DraggableImageFlagsExt_NoBackground |
+        .6f, .35f, .3f, .12f, 0., 4, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
     preparation_panel_context->addWidget(battleship_ship);
     
     SDLGui::DraggableImageWidget* cruiser_ship = 
         new SDLGui::DraggableImageWidget("cruiser_ship", "../assets/cruiser.bmp",
-        .6f, .5f, .3f, .12f, 0., 3, 1, SDLGui::DraggableImageFlagsExt_NoBackground |
+        .6f, .5f, .3f, .12f, 0., 3, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
     preparation_panel_context->addWidget(cruiser_ship);
     
     SDLGui::DraggableImageWidget* submarine_ship = 
         new SDLGui::DraggableImageWidget("submarine_ship", "../assets/submarine.bmp",
-        .6f, .65f, .3f, .12f, 0., 3, 1, SDLGui::DraggableImageFlagsExt_NoBackground |
+        .6f, .65f, .3f, .12f, 0., 3, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
     preparation_panel_context->addWidget(submarine_ship);
 
     SDLGui::DraggableImageWidget* destroyer_ship = 
         new SDLGui::DraggableImageWidget("destroyer_ship", "../assets/destroyer.bmp",
-        .6f, .8f, .3f, .12f, 0., 2, 1, SDLGui::DraggableImageFlagsExt_NoBackground |
+        .6f, .8f, .3f, .12f, 0., 2, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
     preparation_panel_context->addWidget(destroyer_ship);
 
@@ -71,9 +71,126 @@ void PreparationPanel::init()
 
 void PreparationPanel::render()
 {
-    SDLGui::begin("preparationPanelContext");
+    SDLGui::begin("preparation_panel_context");
 
-    if (SDLGui::TextButton("readyButton"))
+    static SDLGui::DraggableImageWidget& carrier = SDLGui::DraggableImage("carrier_ship");
+    static SDLGui::DraggableImageWidget& battleship = SDLGui::DraggableImage("battleship_ship");
+    static SDLGui::DraggableImageWidget& cruiser = SDLGui::DraggableImage("cruiser_ship");
+    static SDLGui::DraggableImageWidget& submarine = SDLGui::DraggableImage("submarine_ship");
+    static SDLGui::DraggableImageWidget& destroyer = SDLGui::DraggableImage("destroyer_ship");
+
+    static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
+
+    static std::pair<uint32_t, uint32_t> grid_cell_coords;
+    static SDL_FRect grid_hover_cell_data;
+    static std::pair<float, float> image_position;
+
+    if (carrier.isGrabbed()) {
+        if (grid.isHovered()) {
+            grid_cell_coords = grid.getHoverIndices();
+            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+            carrier.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        }
+    }
+    if (carrier.onDrop()) {
+        if (!grid.isHovered()) carrier.reset();
+        else {
+            image_position = carrier.getPosition();
+            grid_cell_coords = grid.getHoverIndices();
+            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            if (can_be_placed) {
+                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                carrier.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            }
+            else carrier.reset();
+        }
+    }
+
+    if (battleship.isGrabbed()) {
+        if (grid.isHovered()) {
+            grid_cell_coords = grid.getHoverIndices();
+            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+            battleship.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        }
+    }
+    if (battleship.onDrop()) {
+        if (!grid.isHovered()) battleship.reset();
+        else {
+            image_position = battleship.getPosition();
+            grid_cell_coords = grid.getHoverIndices();
+            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            if (can_be_placed) {
+                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                battleship.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            }
+            else battleship.reset();
+        }
+    }
+
+    if (cruiser.isGrabbed()) {
+        if (grid.isHovered()) {
+            grid_cell_coords = grid.getHoverIndices();
+            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+            cruiser.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        }
+    }
+    if (cruiser.onDrop()) {
+        if (!grid.isHovered()) cruiser.reset();
+        else {
+            image_position = cruiser.getPosition();
+            grid_cell_coords = grid.getHoverIndices();
+            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            if (can_be_placed) {
+                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                cruiser.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            }
+            else cruiser.reset();
+        }
+    }
+
+    if (submarine.isGrabbed()) {
+        if (grid.isHovered()) {
+            grid_cell_coords = grid.getHoverIndices();
+            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+            submarine.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        }
+    }
+    if (submarine.onDrop()) {
+        if (!grid.isHovered()) submarine.reset();
+        else {
+            image_position = submarine.getPosition();
+            grid_cell_coords = grid.getHoverIndices();
+            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            if (can_be_placed) {
+                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                submarine.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            }
+            else submarine.reset();
+        }
+    }
+
+    if (destroyer.isGrabbed()) {
+        if (grid.isHovered()) {
+            grid_cell_coords = grid.getHoverIndices();
+            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+            destroyer.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        }
+    }
+    if (destroyer.onDrop()) {
+        if (!grid.isHovered()) destroyer.reset();
+        else {
+            image_position = destroyer.getPosition();
+            grid_cell_coords = grid.getHoverIndices();
+            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            if (can_be_placed) {
+                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                destroyer.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            }
+            else destroyer.reset();
+        }
+    }
+
+    if (SDLGui::TextButton("ready_button"))
         game_state_->set_phase(Battle);
 
     if(SDLGui::TextButton("helpButton")){
