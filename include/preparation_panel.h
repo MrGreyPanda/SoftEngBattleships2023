@@ -16,4 +16,5 @@ public:
     static void set_game_state(GameState* game_state) { game_state_ = game_state; };
 private:
     static GameState* game_state_;
+    static unsigned short help_button_counter_;
 };
