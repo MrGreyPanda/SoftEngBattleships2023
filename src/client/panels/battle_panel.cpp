@@ -63,8 +63,11 @@ void BattlePanel::render()
     unsigned short turn = game_state_->get_turn_player_index();
     bool own_turn = game_state_->get_player_id_by_index(turn) == game_player_id_;
     if(own_turn){
+        /*if(Grid is enabled)*/
         SDLGui::Text("turnMessageText").updateText(64, "It is your turn.");
         handle_shots();
+
+        /*else if (grid is disabled)*/
         
     }
 

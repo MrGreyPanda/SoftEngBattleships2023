@@ -120,7 +120,7 @@ class GameState {
 
     bool start_game(); // Let's see if this is needed
 
-    std::string get_other_player_id(std::string id);
+    std::string get_other_player_id(std::string id) const;
 
    private:
     std::string id_;
