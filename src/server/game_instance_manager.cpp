@@ -73,7 +73,9 @@ GameInstance *GameInstanceManager::add_player_to_any_game(Player *player_ptr) {
         }
     }
     games_lock_.unlock();
-    return create_new_game_();
+    GameInstance* new_game = create_new_game_();
+    new_game->try_add_player(player_ptr);
+    return new_game;
 }
 
 bool GameInstanceManager::try_add_player(Player *player_ptr,

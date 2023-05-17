@@ -47,7 +47,10 @@ bool GameInstance::try_add_player(Player *new_player) {
 
 std::string GameInstance::try_get_other_player_id(
     std::string player_id) const {
-    return game_state_->get_other_player_id(player_id);
+    lock_.lock();
+    std::string other_player_id = game_state_->get_other_player_id(player_id);
+    lock_.unlock();
+    return other_player_id;
 }
 
 bool GameInstance::set_player_ready(std::string player_id) {
