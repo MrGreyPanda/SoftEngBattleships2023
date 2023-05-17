@@ -16,27 +16,33 @@
 #include "shoot_response.h"
 #include "shot_message.h"
 
+// give up
 // ...
+
+// other messages
 
 /**
  * @brief Handles responses and messages from the server to the client.
  */
 class ClientResponseMessageHandler {
    public:
+    static void handle_message_string(const std::string& message);
+
+   private:
     /**
      * @brief Handles the response to a join request. This will include the
      * game_id and player_id assigned to this client
      *
      * @param request
      */
-    static void handle_join_response(const JoinResponse& request);
+    static void handle_join_response_(const JoinResponse& request);
 
     /**
      * @brief Handles the message of another player joining the lobby.
      *
      * @param request
      */
-    static void handle_join_message(const JoinMessage& message);
+    static void handle_joined_message_(const JoinedMessage& message);
 
     /**
      * @brief Handles the response to a ready request.
@@ -45,7 +51,7 @@ class ClientResponseMessageHandler {
      *
      * @param request
      */
-    static void handle_ready_response(const ReadyReponse& request);
+    static void handle_ready_response_(const ReadyResponse& request);
 
     /**
      * @brief Handles the message of another player being ready to play (to go
@@ -53,7 +59,7 @@ class ClientResponseMessageHandler {
      *
      * @param request
      */
-    static void handle_ready_message(const ReadyMessage& message);
+    static void handle_ready_message_(const ReadyMessage& message);
 
     /**
      * @brief Handles the response to a prepared request. This will include
@@ -61,14 +67,14 @@ class ClientResponseMessageHandler {
      *
      * @param request
      */
-    static void handle_prepared_response(const PreparedResponse& request);
+    static void handle_prepared_response_(const PreparedResponse& request);
 
     /**
      * @brief Handles the message of another player being prepared to battle.
      *
      * @param request
      */
-    // static void handle_prepared_message(const PreparedMessage& message);
+    static void handle_prepared_message_(const PreparedMessage& message);
 
     /**
      * @brief Handles the response to a shoot request. This will include
@@ -76,7 +82,7 @@ class ClientResponseMessageHandler {
      *
      * @param request
      */
-    static void handle_shoot_response(const ShootResponse& request);
+    static void handle_shoot_response_(const ShootResponse& request);
 
     /**
      * @brief Handles the message of another players shot on this clients
@@ -84,7 +90,7 @@ class ClientResponseMessageHandler {
      *
      * @param request
      */
-    // static void handle_shot_message(const ShotMessage& message);
+    static void handle_shot_message_(const ShotMessage& message);
 
     // TODO more
 };

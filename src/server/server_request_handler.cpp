@@ -129,7 +129,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
                 game_ptr->try_get_other_player_id(new_player_id);
 
             if (!other_player_id.empty()) {
-                const JoinMessage join_message(game_id, other_player_id);
+                const JoinedMessage join_message(game_id, other_player_id);
 
                 ServerNetworkManager::send_message(join_message.to_string(),
                                                    other_player_id);
@@ -220,6 +220,10 @@ void ServerRequestHandler::handle_ready_request_(
 
 void ServerRequestHandler::handle_prepared_request_(
     const PreparedRequest& prepared_request) {
+    // Validate ship configuration
+
+    // Send response
+
     const PreparedResponse prepared_response(
         prepared_request.get_game_id(), prepared_request.get_player_id(),
         prepared_request.get_ship_data(), "Not implemented yet!");

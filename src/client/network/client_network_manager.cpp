@@ -7,6 +7,7 @@
 #include <sstream>
 #include <thread>
 
+#include "client_response_message_handler.h"
 #include "join_request.h"
 
 // initialise static members
@@ -124,10 +125,8 @@ void ClientNetworkManager::handle_incoming_messages_() {
             while (std::getline(str_stream, line, '\0')) {
                 const std::string message = line;
 
-                // TODO handle incoming message, for now just print it
-                std::cout << "[ClientNetworkManager] (Debug) recieved "
-                             "message: '"
-                          << message << "'" << std::endl;
+                // handle the message
+                ClientResponseMessageHandler::handle_message_string(message);
             }
         } catch (std::exception& err) {
             std::cerr << "[ClientNetworkManager] Error while handling socket "

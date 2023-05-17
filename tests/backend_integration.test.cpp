@@ -153,7 +153,7 @@ TEST(BackendIntegrationTest, Join) {
         // player 1 should have recieved a message that player 2 joined
         const json message_json_1 =
             recieve_response_json_from_server(connector_1);
-        const JoinMessage joined_message_1(message_json_1);
+        const JoinedMessage joined_message_1(message_json_1);
         EXPECT_EQ(joined_message_1.get_type(), MessageType::JoinedMessageType);
         EXPECT_EQ(joined_message_1.get_game_id(), game_id_1);
         EXPECT_EQ(joined_message_1.get_player_id(), player_id_1);
