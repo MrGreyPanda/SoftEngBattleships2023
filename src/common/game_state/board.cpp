@@ -1,8 +1,8 @@
 #include "board.h"
 
 Board::Board() : grid_size_(10) {
-    ships_ = {new Ship(Carrier), new Ship(Battleship), new Ship(Cruiser),
-              new Ship(Destroyer), new Ship(Submarine)};
+    ships_ = {new Ship(Destroyer), new Ship(Submarine), new Ship(Cruiser),
+              new Ship(Battleship), new Ship(Carrier)};
 }
 
 // I should need to use delete here, but I don't know why it doesn't work

@@ -70,6 +70,13 @@ class GameState {
     Player* get_player_by_id(std::string id_);
 
     /**
+     * @brief Get player by index
+     * @param index The index of the player
+     * @return The player_id with the given index
+    */
+    std::string get_player_id_by_index(unsigned short index);
+
+    /**
      * @brief Adds player to the game
      *
      * @return true
@@ -111,13 +118,7 @@ class GameState {
      */
     void change_turn_player_index();
 
-    /**
-     * @brief Get the ships_ in the game
-     * @return The ships_ in the game
-     */
-    std::vector<Ship> get_ships() const;
-
-    bool start_game();  // Let's see if this is needed
+    bool start_game(); // Let's see if this is needed
 
     std::string get_other_player_id(std::string id) const;
 
@@ -125,6 +126,5 @@ class GameState {
     std::string id_;
     std::vector<Player*> players_;
     Phase phase_;
-    std::vector<Ship> ships_;
     unsigned short turn_player_index_;
 };
