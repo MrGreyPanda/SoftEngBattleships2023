@@ -25,10 +25,12 @@ TEST(GameInstanceManagerTest, AddPlayerToAnyGame) {
     EXPECT_TRUE(added_game != nullptr);
     Player *player2 = player_manager->add_or_get_player("Lukas");
     added_game      = game_manager->add_player_to_any_game(player2);
+    GameInstance* full_game = added_game;
     EXPECT_TRUE(added_game != nullptr);
     Player *player3 = player_manager->add_or_get_player("Simon");
     added_game      = game_manager->add_player_to_any_game(player3);
     EXPECT_TRUE(added_game != nullptr);
+    EXPECT_NE(added_game, full_game);
     delete game_manager;
     delete player_manager;
 }

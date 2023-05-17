@@ -1,8 +1,8 @@
 #pragma once
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
-#include <algorithm>
 
 #include "player.h"
 /*
@@ -16,7 +16,7 @@ the index of the player in the players array whose turn it is.
 */
 
 // Enum describing the different phases of the game
-enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3};
+enum Phase { Lobby = 0, Preparation = 1, Battle = 2, End = 3 };
 
 class GameState {
    public:
@@ -43,7 +43,7 @@ class GameState {
      * @brief Get the id_ of the game
      * @return The id_ of the game
      */
-    std::string get_id();
+    std::string get_id() const;
 
     /**
      * @brief set the phase of the game
@@ -54,7 +54,7 @@ class GameState {
      * @brief Get the phase of the game
      * @return The phase of the game
      */
-    Phase get_phase();
+    Phase get_phase() const;
 
     /**
      * @brief Get players of the game
@@ -78,17 +78,17 @@ class GameState {
 
     /**
      * @brief Adds player to the game
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     bool add_player(Player*);
 
     /**
      * @brief Removes player from the game
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     bool remove_player(Player*);
 
@@ -98,12 +98,20 @@ class GameState {
      * @return true
      * @return false
      */
-    bool is_full();
+    bool is_full() const;
+
+    /**
+     * @brief Set the player with the given ID as ready to go from the lobby
+     * phase to the preparation phase.
+     *
+     * @param player_id
+     */
+    bool set_player_ready(std::string player_id);
 
     /**
      * @brief get turn player index
      */
-    unsigned short get_turn_player_index();
+    unsigned short get_turn_player_index() const;
 
     /**
      * @brief change turn player index

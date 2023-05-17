@@ -14,9 +14,9 @@ Player::Player(const std::string &id)
       is_ready_(false),
       is_prepared_(false),
       own_board_(OwnBoard()),
-      enemy_board_(EnemyBoard()){}
+      enemy_board_(EnemyBoard()) {}
 
-std::string Player::get_id() { return id_; }
+std::string Player::get_id() const { return id_; }
 
 void Player::set_id(std::string id) { this->id_ = id; }
 
@@ -28,13 +28,13 @@ void Player::set_prepared() { is_prepared_ = true; }
 
 void Player::unset_prepared() { is_prepared_ = false; }
 
-bool Player::get_is_ready() { return is_ready_; }
+bool Player::get_is_ready() const { return is_ready_; }
 
-bool Player::get_is_prepared() { return is_prepared_; }
+bool Player::get_is_prepared() const { return is_prepared_; }
 
-OwnBoard Player::get_own_board() { return own_board_; }
+OwnBoard Player::get_own_board() const { return own_board_; }
 
-EnemyBoard Player::get_enemy_board() { return enemy_board_; }
+EnemyBoard Player::get_enemy_board() const { return enemy_board_; }
 
 bool Player::shoot(const short &x, const short &y) {
     if (this->get_enemy_board().is_valid_shot(x, y)) {
@@ -45,9 +45,8 @@ bool Player::shoot(const short &x, const short &y) {
     return false;
 }
 
-bool Player::has_lost() { return own_board_.all_ships_sunk(); }
+bool Player::has_lost() const { return own_board_.all_ships_sunk(); }
 
 Player::~Player() {
     // std::cout << "Player " << id_ << " destroyed" << std::endl;
-    
 }

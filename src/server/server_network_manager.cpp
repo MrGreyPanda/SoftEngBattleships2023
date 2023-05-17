@@ -5,8 +5,8 @@
 #include <sstream>
 #include <thread>
 
-#include "request_handler.h"
 #include "response.h"
+#include "server_request_handler.h"
 
 using json = nlohmann::json;
 
@@ -99,7 +99,7 @@ void ServerNetworkManager::send_message(const std::string& response_str,
     auto player_address_it = player_addresses_.find(player_id);
 
     if (player_address_it == player_addresses_.end()) {
-        std::cerr << "[ServerNetworkManager] Error sending response: "
+        std::cerr << "[ServerNetworkManager] Error sending message to client: "
                   << "Player with ID '" << player_id << "' not found!"
                   << std::endl;
         return;
@@ -114,7 +114,7 @@ void ServerNetworkManager::send_response_to_peer_(
     auto socket_it = sockets_.find(address.to_string());
 
     if (socket_it == sockets_.end()) {
-        std::cerr << "[ServerNetworkManager] Error sending response: "
+        std::cerr << "[ServerNetworkManager] Error sending message to client: "
                   << "Socket for IP " << address.to_string() << " not found!"
                   << std::endl;
         return;
@@ -212,7 +212,7 @@ void ServerNetworkManager::handle_incoming_message_(
         JoinRequest client_join_request;
 
         std::tuple<Player*, JoinResponse> join_req_tuple =
-            RequestHandler::handle_join_request(client_join_request);
+            ServerRequestHandler::handle_join_request(client_join_request);
 
         Player* player_ptr    = std::get<0>(join_req_tuple);
         JoinResponse response = std::get<1>(join_req_tuple);
@@ -266,6 +266,6 @@ void ServerNetworkManager::handle_incoming_message_(
             return;
         }
 
-        RequestHandler::handle_request(request_type, data);
+        ServerRequestHandler::handle_request(request_type, data);
     }
 }

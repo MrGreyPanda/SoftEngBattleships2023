@@ -4,10 +4,13 @@
 #include <thread>
 
 #include "gtest/gtest.h"
+#include "join_message.h"
 #include "join_request.h"
 #include "join_response.h"
+#include "prepared_message.h"
 #include "prepared_request.h"
 #include "prepared_response.h"
+#include "ready_message.h"
 #include "ready_request.h"
 #include "ready_response.h"
 #include "server_network_manager.h"
@@ -16,7 +19,7 @@
 
 using json = nlohmann::json;
 
-//sockpp::initialize();
+// sockpp::initialize();
 
 const unsigned port = 1337;
 const sockpp::inet_address host_address("localhost", port);
@@ -101,6 +104,11 @@ TEST(BackendIntegrationTest, Join) {
         send_request_to_server(connector_1, join_request.to_string());
         return recieve_response_json_from_server(connector_1);
     });
+
+    // Wait a short time to avoid two join messages being sent
+    // TODO add test for this
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
     auto task2 = std::async(std::launch::async, [&]() {
         send_request_to_server(connector_2, join_request.to_string());
         return recieve_response_json_from_server(connector_2);
@@ -139,6 +147,17 @@ TEST(BackendIntegrationTest, Join) {
         player_id_2 = join_response_2.get_player_id();
         EXPECT_FALSE(player_id_2.empty());
 
+        // Both game IDs are expected to match since there are no other players
+        EXPECT_EQ(game_id_1, game_id_2);
+
+        // player 1 should have recieved a message that player 2 joined
+        const json message_json_1 =
+            recieve_response_json_from_server(connector_1);
+        const JoinMessage joined_message_1(message_json_1);
+        EXPECT_EQ(joined_message_1.get_type(), MessageType::JoinedMessageType);
+        EXPECT_EQ(joined_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(joined_message_1.get_player_id(), player_id_1);
+
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
     }
@@ -146,42 +165,51 @@ TEST(BackendIntegrationTest, Join) {
 
 TEST(BackendIntegrationTest, Ready) {
     // send ready request player 1
-    ReadyRequest ready_request_1(game_id_1, player_id_1);
-
-    auto task1 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_1, ready_request_1.to_string());
-        return recieve_response_json_from_server(connector_1);
-    });
-
-    // send ready request player 2
-    ReadyRequest ready_request_2(game_id_2, player_id_2);
-
-    auto task2 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_2, ready_request_2.to_string());
-        return recieve_response_json_from_server(connector_2);
-    });
-
-    if (task1.wait_for(timeout) == std::future_status::timeout ||
-        task2.wait_for(timeout) == std::future_status::timeout) {
-        FAIL() << "Timed out waiting for response from server";
-        return;
-    }
-
     try {
-        const ReadyResponse ready_response_1(task1.get());
+        ReadyRequest ready_request_1(game_id_1, player_id_1);
+        send_request_to_server(connector_1, ready_request_1.to_string());
+        const ReadyResponse ready_response_1(
+            recieve_response_json_from_server(connector_1));
 
-        EXPECT_TRUE(ready_response_1.get_error().empty());
+        // validate the ready response for player 1
+        if (!ready_response_1.get_error().empty()) {
+            FAIL() << "Ready response 1 has error: "
+                   << ready_response_1.get_error();
+        }
         EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
         EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
         EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
 
-        const ReadyResponse ready_response_2(task2.get());
+        // Player 2 should have recieved a ready message for player 1
+        const json message_json_2 =
+            recieve_response_json_from_server(connector_2);
+        const ReadyMessage ready_message_2(message_json_2);
+        EXPECT_EQ(ready_message_2.get_type(), MessageType::ReadyMessageType);
+        EXPECT_EQ(ready_message_2.get_game_id(), game_id_2);
+        EXPECT_EQ(ready_message_2.get_player_id(), player_id_2);
 
-        // check if the response is a ready response
-        EXPECT_TRUE(ready_response_2.get_error().empty());
+        // send ready request player 2
+        ReadyRequest ready_request_2(game_id_2, player_id_2);
+        send_request_to_server(connector_2, ready_request_2.to_string());
+        // validate response for player 2
+        const ReadyResponse ready_response_2(
+            recieve_response_json_from_server(connector_2));
+        if (!ready_response_2.get_error().empty()) {
+            FAIL() << "Ready response 2 has error: "
+                   << ready_response_2.get_error();
+        }
         EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
         EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
         EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
+
+        // Player 1 should have recieved a ready message for player 2
+        const json message_json_1 =
+            recieve_response_json_from_server(connector_1);
+        const ReadyMessage ready_message_1(message_json_1);
+        EXPECT_EQ(ready_message_1.get_type(), MessageType::ReadyMessageType);
+        EXPECT_EQ(ready_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(ready_message_1.get_player_id(), player_id_1);
+
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
     }
@@ -242,9 +270,9 @@ TEST(BackendIntegrationTest, Preparation) {
     }
 }
 
-TEST(BackendIntegrationTest, Shoot) {}
+TEST(BackendIntegrationTest, Shoot) { FAIL() << "Not implemented"; }
 
-TEST(BackendIntegrationTest, GiveUp) {}
+TEST(BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
 
 TEST(BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();
