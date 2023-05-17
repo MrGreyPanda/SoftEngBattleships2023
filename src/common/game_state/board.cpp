@@ -106,14 +106,14 @@ bool OwnBoard::is_valid_placement(const short &x, const short &y,
     return false;  // Throw exception here
 }
 
-bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
-    if (!this->is_valid_placement(x, y, ship)) return false;
-    bool is_horizontal    = ship.get_is_horizontal();
-    short ship_length     = ship.get_length();
-    bool is_placed        = ship.get_is_placed();
-    short old_x           = ship.get_x();
-    short old_y           = ship.get_y();
-    ShipCategory shiptype = ship.get_name();
+bool OwnBoard::place_ship(const short &x, const short &y, const ShipCategory &shipname) {
+    Ship* ship = this->get_ship_by_name(shipname);
+    if (!this->is_valid_placement(x, y, *ship)) return false;
+    bool is_horizontal    = ship->get_is_horizontal();
+    short ship_length     = ship->get_length();
+    bool is_placed        = ship->get_is_placed();
+    short old_x           = ship->get_x();
+    short old_y           = ship->get_y();
 
     if (is_horizontal) {
         if (is_placed) {
@@ -124,10 +124,9 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
         }
         // Place new ship
         for (int i = 0; i < ship_length; i++) {
-            set_grid_value(x + i, y, shiptype);
+            set_grid_value(x + i, y, shipname);
         }
-        ship.set_xy(x, y);
-        *(this->get_ship(x, y)) = ship;
+        ship->set_xy(x, y);
         return true;
     } else if (!is_horizontal) {
         if (is_placed) {
@@ -138,49 +137,46 @@ bool OwnBoard::place_ship(const short &x, const short &y, Ship &ship) {
         }
         // Place new ship
         for (int i = 0; i < ship_length; i++) {
-            set_grid_value(x, y + i, shiptype);
+            set_grid_value(x, y + i, shipname);
         }
-        ship.set_xy(x, y);
-        *(this->get_ship(x, y)) = ship;
+        ship->set_xy(x, y);
         return true;
     } else
         return false;  // Throw exception here, unexpected behaviour
 }
 
-bool OwnBoard::rotate_ship(Ship &ship) {
-    bool is_horizontal = ship.get_is_horizontal();
-    if (ship.get_is_placed() == true) {
-        short ship_length     = ship.get_length();
-        short x               = ship.get_x();
-        short y               = ship.get_y();
-        ShipCategory shiptype = ship.get_name();
-        ship.set_is_horizontal(!is_horizontal);
-        if (!this->is_valid_placement(x, y, ship)) {
-            ship.set_is_horizontal(is_horizontal);
+bool OwnBoard::rotate_ship(const ShipCategory &shipname) {
+    Ship *ship = this->get_ship_by_name(shipname);
+    bool is_horizontal = ship->get_is_horizontal();
+    if (ship->get_is_placed() == true) {
+        short ship_length     = ship->get_length();
+        short x               = ship->get_x();
+        short y               = ship->get_y();
+
+        ship->set_is_horizontal(!is_horizontal);
+        if (!this->is_valid_placement(x, y, *ship)) {
+            ship->set_is_horizontal(is_horizontal);
             return false;
         }
         if (is_horizontal) {
             // Remove old ship & place new ship
             for (int i = 0; i < ship_length; i++) {
                 set_grid_value(x + i, y, 0);
-                set_grid_value(x, y + i, shiptype);
+                set_grid_value(x, y + i, shipname);
             }
-            *(this->get_ship(x, y)) = ship;
             return true;
         } else if (!is_horizontal) {
             // Remove old ship
             for (int i = 0; i < ship_length; i++) {
                 set_grid_value(x, y + i, 0);
-                set_grid_value(x + i, y, shiptype);
+                set_grid_value(x + i, y, shipname);
             }
-            *(this->get_ship(x, y)) = ship;
             return true;
         } else
             return false;  // Throw exception here unexpected behaviour
     } else {
-        ship.set_is_horizontal(!is_horizontal);
+        ship->set_is_horizontal(!is_horizontal);
 
-        *this->get_ship_by_name(ship.get_name()) = ship;
         return true;
     }
 }

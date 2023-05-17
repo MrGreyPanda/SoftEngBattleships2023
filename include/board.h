@@ -144,7 +144,7 @@ class OwnBoard : public Board {
      * @param x, y  The coordinates of the ship to be placed
      * @param ship The ship to be placed
      */
-    bool place_ship(const short &x, const short &y, Ship &ship);
+    bool place_ship(const short &x, const short &y, const ShipCategory &shipname);
 
     /**
      * @brief If ship is on the board, it checks if it can be rotated.
@@ -153,7 +153,7 @@ class OwnBoard : public Board {
      * @param ship The ship to be rotated
      * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
      */
-    bool rotate_ship(Ship &ship);
+    bool rotate_ship(const ShipCategory &shipname);
 
     /**
      * @brief Get the ship at a given coordinate
