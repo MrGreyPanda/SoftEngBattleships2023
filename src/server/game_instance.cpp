@@ -65,9 +65,37 @@ bool GameInstance::shoot() {
     throw std::runtime_error("Not implemented");
 }
 
-bool GameInstance::player_prepared() {
-    // TODO
-    throw std::runtime_error("Not implemented");
+bool GameInstance::set_player_prepared(const std::string &player_id,
+                                       const std::vector<ShipData> &ships) {
+    // 1. Get player by ID
+    // 2. Place ships one by one on the board
+    // 3. if all ships have valid placements, update the player to be prepared
+
+    // 1. Get player by ID
+    Player *player_ptr = game_state_->get_player_by_id(player_id);
+    if (player_ptr == nullptr) {
+        // The player could not be found
+        return false;
+    }
+
+    // Debug print ships
+    std::cout << "Ships: " << std::endl;
+    for (auto ship : ships) {
+        std::cout << "Ship: " << ship.name << " " << ship.x << " " << ship.y
+                  << " " << ship.is_horizontal << std::endl;
+    }
+
+    // 2. Place ships
+    bool is_valid_placement =
+        player_ptr->get_own_board().set_ship_configuration(ships);
+    if (!is_valid_placement) return false;
+
+    // all ships have been placed successfully, the configuration is valid
+
+    // 3. update the player to be prepared
+    player_ptr->set_prepared();
+
+    return true;
 }
 
 bool GameInstance::has_player(std::string player_id) const {
@@ -83,3 +111,11 @@ bool GameInstance::has_player(std::string player_id) const {
 }
 
 bool GameInstance::is_full() const { return game_state_->is_full(); }
+
+bool GameInstance::all_players_ready() const {
+    return game_state_->all_players_ready();
+}
+
+bool GameInstance::all_players_prepared() const {
+    return game_state_->all_players_prepared();
+}

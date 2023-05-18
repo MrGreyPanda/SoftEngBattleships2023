@@ -1,1 +1,1 @@
-{"message_type":"ready", "game_id": "3735253246770816601", "player_id": "11279137348608480270"}
+{"message_type":"ready_request", "game_id": "test_ready_game_id", "player_id": "test_ready_player_id"}

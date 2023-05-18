@@ -28,7 +28,7 @@ void ServerRequestHandler::handle_request(const MessageType& type,
         case MessageType::PreparedRequestType:
             // Parse the ready request
             try {
-                PreparedRequest prepared_request(data);
+                const PreparedRequest prepared_request(data);
                 handle_prepared_request_(prepared_request);
             } catch (const std::exception& e) {
                 std::cout << "[ServerRequestHandler] Error parsing prepared "
@@ -216,20 +216,115 @@ void ServerRequestHandler::handle_ready_request_(
         ServerNetworkManager::send_message(ready_message.to_string(),
                                            other_player_id);
     }
+
+    // Check if both players are ready to advance the game
+    if (game_ptr->all_players_ready()) {
+        std::cout << "[ServerRequestHandler] (Debug) Both players are ready, "
+                     "starting game!"
+                  << std::endl;
+
+        // Start the game
+        game_ptr->start_game();
+
+        // Send a message to both players that the game has started
+        // const GameStartedMessage game_started_message(game_id, player_id);
+        // ServerNetworkManager::send_message(game_started_message.to_string(),
+        //                                    player_id);
+
+        // const std::string other_player_id =
+        //     game_ptr->try_get_other_player_id(player_id);
+
+        // if (!other_player_id.empty()) {
+        //     ServerNetworkManager::send_message(
+        //         game_started_message.to_string(), other_player_id);
+        // }
+    }
 }
 
 void ServerRequestHandler::handle_prepared_request_(
     const PreparedRequest& prepared_request) {
+    // Get GameInstance
+    const std::string game_id   = prepared_request.get_game_id();
+    const std::string player_id = prepared_request.get_player_id();
+    const std::vector<ShipData> ship_data_vec =
+        prepared_request.get_ship_data();
+    GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
+
+    if (game_ptr == nullptr) {
+        std::cout << "[ServerRequestHandler] Error: Could not find game with "
+                     "ID '"
+                  << game_id << "'" << std::endl;
+
+        const PreparedResponse prepared_response(
+            game_id, player_id, ship_data_vec,
+            "Error: Could not find game for given Game ID.");
+
+        ServerNetworkManager::send_message(prepared_response.to_string(),
+                                           player_id);
+
+        return;
+    }
+
+    std::cout
+        << "[ServerRequestHandler] (Debug) Handling a prepared request!\n"
+        << prepared_request.to_string() << std::endl;
+
     // Validate ship configuration
+    const bool is_config_valid =
+        game_ptr->set_player_prepared(player_id, ship_data_vec);
 
     // Send response
+    if (is_config_valid) {
+        // Send valid response
+        const PreparedResponse valid_preparation_response(game_id, player_id,
+                                                          ship_data_vec);
 
-    const PreparedResponse prepared_response(
-        prepared_request.get_game_id(), prepared_request.get_player_id(),
-        prepared_request.get_ship_data(), "Not implemented yet!");
+        ServerNetworkManager::send_message(
+            valid_preparation_response.to_string(), player_id);
+    } else {
+        // Send invalid response
+        const PreparedResponse invalid_preparation_response(
+            game_id, player_id, ship_data_vec,
+            "Error: Invalid ship configuration.");
 
-    ServerNetworkManager::send_message(prepared_response.to_string(),
-                                       prepared_response.get_player_id());
+        ServerNetworkManager::send_message(
+            invalid_preparation_response.to_string(), player_id);
+    }
+
+    // Send a message to the other player if the other player is not yet
+    // prepared
+    const std::string other_player_id =
+        game_ptr->try_get_other_player_id(player_id);
+
+    if (!other_player_id.empty()) {
+        const PreparedMessage prepared_message(game_id, other_player_id);
+        ServerNetworkManager::send_message(prepared_message.to_string(),
+                                           other_player_id);
+    }
+
+    // Check if both players are ready to advance the game
+    if (game_ptr->all_players_prepared()) {
+        std::cout
+            << "[ServerRequestHandler] (Debug) Both players are prepared, "
+               "starting battle!"
+            << std::endl;
+
+        // Start the game
+        game_ptr->start_game();
+
+        // Send a message to both players that the game has started
+        // const GameStartedMessage game_started_message(game_id, player_id);
+        // ServerNetworkManager::send_message(game_started_message.to_string(),
+        //                                    player_id);
+
+        // const std::string other_player_id =
+        //     game_ptr->try_get_other_player_id(player_id);
+
+        // if (!other_player_id.empty()) {
+        //     ServerNetworkManager::send_message(
+        //         game_started_message.to_string(), other_player_id);
+        // }
+    }
 }
 
 void ServerRequestHandler::handle_shoot_request_(
@@ -241,15 +336,16 @@ void ServerRequestHandler::handle_shoot_request_(
     std::string player_id = shoot_request.get_player_id();
     short x               = shoot_request.get_x();
     short y               = shoot_request.get_y();
-    bool is_valid = false;
-    bool has_hit = false;
+    bool is_valid         = false;
+    bool has_hit          = false;
     // Get player from player manager
     Player* player_ptr = PlayerManager::try_get_player(player_id);
 
     // Check if own players enemy board is already shot at the given coords
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
-        const ShootResponse shoot_response(game_id, player_id, x, y, is_valid, has_hit,
-                                            "Error: This position was already shot at!");     // TODO: check if valid
+        const ShootResponse shoot_response(
+            game_id, player_id, x, y, is_valid, has_hit,
+            "Error: This position was already shot at!");
 
         ServerNetworkManager::send_message(shoot_response.to_string(),
                                            shoot_response.get_player_id());
@@ -282,13 +378,15 @@ void ServerRequestHandler::handle_shoot_request_(
     if (other_player_ptr->get_own_board().get_grid_value(x, y) != 0) {
         // Send hit message to client
         has_hit = true;
-        const ShootResponse hit_response(game_id, player_id, x, y, is_valid, has_hit);
+        const ShootResponse hit_response(game_id, player_id, x, y, is_valid,
+                                         has_hit);
 
         ServerNetworkManager::send_message(hit_response.to_string(),
                                            hit_response.get_player_id());
 
         // Send hit message to other client
-        const ShootResponse got_hit_response(game_id, other_player_id, x, y, is_valid, has_hit);
+        const ShootResponse got_hit_response(game_id, other_player_id, x, y,
+                                             is_valid, has_hit);
         // Error message
         ServerNetworkManager::send_message(got_hit_response.to_string(),
                                            got_hit_response.get_player_id());

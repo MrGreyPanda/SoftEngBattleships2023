@@ -141,7 +141,15 @@ class OwnBoard : public Board {
      * @param x, y  The coordinates of the ship to be placed
      * @param ship The ship to be placed
      */
-    bool place_ship(const short &x, const short &y, const ShipCategory &shipname);
+    bool place_ship(const short &x, const short &y,
+                    const ShipCategory &shipname);
+
+    /**
+     * @brief Set the ships on the board from the ShipData objects
+     *
+     * @return true if the configuration is valid
+     */
+    bool set_ship_configuration(const std::vector<ShipData> &ships);
 
     /**
      * @brief If ship is on the board, it checks if it can be rotated.
