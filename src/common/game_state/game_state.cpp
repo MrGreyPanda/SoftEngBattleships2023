@@ -4,7 +4,7 @@
 
 GameState::GameState()
     : id_(HelperFunctions::create_random_id()),
-      phase_(Connect),
+      phase_(Connection),
       turn_player_index_(0),
       players_({}) {}
 
@@ -95,6 +95,9 @@ std::string GameState::get_other_player_id(std::string id) const {
     return "";
 }
 
+void GameState::set_game_id(const std::string& game_id) {
+    id_ = game_id;
+}
 bool GameState::all_players_ready() const {
     for (Player* player : players_) {
         if (!player->get_is_ready()) {

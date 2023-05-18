@@ -16,7 +16,7 @@ the index of the player in the players array whose turn it is.
 */
 
 // Enum describing the different phases of the game
-enum Phase { Connect = 0, Lobby = 1, Preparation = 2, Battle = 3, End = 4 };
+enum Phase { Connection = 0, Lobby = 1, Preparation = 2, Battle = 3, End = 4 };
 
 class GameState {
    public:
@@ -122,6 +122,7 @@ class GameState {
 
     std::string get_other_player_id(std::string id) const;
 
+    void set_game_id(const std::string& game_id);
     /**
      * @brief Returns whether all players are ready to go from the lobby phase
      * to the preparation phase.

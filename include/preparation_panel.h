@@ -6,6 +6,7 @@
 
 #include "client_network_manager.h"
 #include "game_state.h"
+#include "prepared_request.h"
 
 class PreparationPanel {
 public:

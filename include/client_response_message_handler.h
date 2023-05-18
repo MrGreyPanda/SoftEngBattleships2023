@@ -19,6 +19,8 @@
 // give up
 // ...
 
+#include "game_state.h"
+
 // other messages
 
 /**
@@ -27,6 +29,11 @@
 class ClientResponseMessageHandler {
    public:
     static void handle_message_string(const std::string& message);
+
+    inline static void set_game_controller_game_state(GameState* game_state)
+    {
+        game_controller_game_state_ = game_state;
+    };
 
    private:
     /**
@@ -95,4 +102,6 @@ class ClientResponseMessageHandler {
     // TODO more
     // Maybe have private static game_state_* here, then, this handler can really handle all stuff
     // Question is, who is updating the GUI? and how?
+
+    static GameState* game_controller_game_state_;
 };

@@ -1,7 +1,6 @@
 #include "game_controller.h"
 
 GameState GameController::game_state_ = GameState();
-std::string GameController::game_player_id_;
 
 void GameController::init() {
     SDLGui::init("Battleships", SDL_WINDOWPOS_UNDEFINED,
@@ -25,15 +24,8 @@ void GameController::init() {
     EndPanel::set_game_state(&game_state_);
     EndPanel::init();
 
+    ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
     game_state_.set_phase(Preparation);
-}
-
-void GameController::set_player_id(std::string player_id) {
-    game_player_id_ = player_id;
-}
-
-std::string GameController::get_player_id() {
-    return game_player_id_;
 }
 
 void GameController::run() {
@@ -50,7 +42,7 @@ void GameController::render() {
         if(game_state_.get_phase() == Battle) BattlePanel::render();
         if (game_state_.get_phase() == Preparation) PreparationPanel::render();
         if (game_state_.get_phase() == Lobby) LobbyPanel::render();
-        if (game_state_.get_phase() == Connect) ConnectionPanel::render();
+        if (game_state_.get_phase() == Connection) ConnectionPanel::render();
 
         SDLGui::renderFrame();
     }
