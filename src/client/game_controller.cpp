@@ -18,10 +18,18 @@ void GameController::init() {
     PreparationPanel::set_game_state(&game_state_);
     PreparationPanel::init();
 
+    // This is for testing purposes only --------
     game_state_.add_player(new Player("1234"));
     if(game_state_.get_players().size() == 1) std::cout << "Player added" << std::endl;
     game_state_.get_players()[0]->is_own_turn = true;
     game_state_.get_players()[0]->has_shot = false;
+    unsigned short i = 0;
+    for(const auto ship : game_state_.get_players()[0]->get_own_board().get_ship_vec()){
+        ship->set_xy(i,i);
+        ship->set_is_placed(true);
+        i++;
+    }
+    // -----------------------------------------
 
     BattlePanel::set_game_state(&game_state_);
     BattlePanel::init();

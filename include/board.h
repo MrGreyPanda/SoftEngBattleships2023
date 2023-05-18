@@ -91,6 +91,13 @@ class Board {
      */
     Ship *get_ship_by_name(const ShipCategory &type);
 
+    /**
+     * @brief Check if all the ships on this board have been destroyed
+     */
+    bool all_ships_sunk() const;
+
+    const Ship* get_ship_by_index(const unsigned short &index) const;
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *
@@ -166,11 +173,6 @@ class OwnBoard : public Board {
      * TODO: throw an error if no ship at given coordinate
      */
     Ship *get_ship(const short &x, const short &y);
-
-    /**
-     * @brief Check if all the ships on this board have been destroyed
-     */
-    bool all_ships_sunk() const;
 
     /**
      * @brief update the ship at a given coordinate

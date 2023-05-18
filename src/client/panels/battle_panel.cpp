@@ -7,6 +7,10 @@ Player* BattlePanel::player_ = nullptr;
 
 void BattlePanel::init()
 {
+    static SDL_FRect grid_hover_cell_data;
+
+    set_player_ptr(game_state_->get_players()[0]);
+    OwnBoard* players_board = &player_->get_own_board();
     SDLGui::SDLGuiContext* battle_panel_context = 
         new SDLGui::SDLGuiContext("battle_panel_context");
 
@@ -53,39 +57,50 @@ void BattlePanel::init()
     /**
      * @brief The following widgets are used to display the ships that the player has placed
     */
-    // SDLGui::DraggableImageWidget* carrier_ship = 
-    //     new SDLGui::DraggableImageWidget("carrier_ship", "../assets/carrier.bmp",
-    //     .6f, .2f, .3f, .12f, 0., 5, 1, 
-    //     SDLGui::DraggableImageFlagsExt_CenterImage);
-    // battle_panel_context->addWidget(carrier_ship);
+    SDLGui::DraggableImageWidget* carrier_ship = 
+        new SDLGui::DraggableImageWidget("carrier_ship", "../assets/carrier.bmp",
+        .6f, .2f, .3f, .12f, 0., 5, 1, 
+        SDLGui::DraggableImageFlagsExt_CenterImage);
+    battle_panel_context->addWidget(carrier_ship);
+    // Ship* carrier = players_board->get_ship_by_name(Carrier);
+    // grid_hover_cell_data = own_board->getIndexCellCoordinates(carrier->get_x(), carrier->get_y());
+    // carrier_ship->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
 
-    // SDLGui::DraggableImageWidget* battleship_ship = 
-    //     new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
-    //     .6f, .35f, .25f, .1f, 0., 4, 1, 
-    //     SDLGui::DraggableImageFlagsExt_CenterImage);
-    // battle_panel_context->addWidget(battleship_ship);
+    SDLGui::DraggableImageWidget* battleship_ship = 
+        new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
+        .6f, .35f, .25f, .1f, 0., 4, 1, 
+        SDLGui::DraggableImageFlagsExt_CenterImage);
+    battle_panel_context->addWidget(battleship_ship);
 
-    // SDLGui::DraggableImageWidget* cruiser_ship = 
-    //     new SDLGui::DraggableImageWidget("cruiser_ship", "../assets/cruiser.bmp",
-    //     .6f, .5f, .2f, .08f, 0., 3, 1, 
-    //     SDLGui::DraggableImageFlagsExt_CenterImage);
-    // battle_panel_context->addWidget(cruiser_ship);
+    SDLGui::DraggableImageWidget* cruiser_ship = 
+        new SDLGui::DraggableImageWidget("cruiser_ship", "../assets/cruiser.bmp",
+        .6f, .5f, .2f, .08f, 0., 3, 1, 
+        SDLGui::DraggableImageFlagsExt_CenterImage);
+    battle_panel_context->addWidget(cruiser_ship);
 
-    // SDLGui::DraggableImageWidget* submarine_ship = 
-    //     new SDLGui::DraggableImageWidget("submarine_ship", "../assets/submarine.bmp",
-    //     .6f, .65f, .2f, .08f, 0., 3, 1, 
-    //     SDLGui::DraggableImageFlagsExt_CenterImage);
-    // battle_panel_context->addWidget(submarine_ship);
+    SDLGui::DraggableImageWidget* submarine_ship = 
+        new SDLGui::DraggableImageWidget("submarine_ship", "../assets/submarine.bmp",
+        .6f, .65f, .2f, .08f, 0., 3, 1, 
+        SDLGui::DraggableImageFlagsExt_CenterImage);
+    battle_panel_context->addWidget(submarine_ship);
 
-    // SDLGui::DraggableImageWidget* destroyer_ship = 
-    //     new SDLGui::DraggableImageWidget("destroyer_ship", "../assets/destroyer.bmp",
-    //     .6f, .8f, .15f, .06f, 0., 2, 1, 
-    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+    SDLGui::DraggableImageWidget* destroyer_ship = 
+        new SDLGui::DraggableImageWidget("destroyer_ship", "../assets/destroyer.bmp",
+        .6f, .8f, .15f, .06f, 0., 2, 1, 
+        SDLGui::DraggableImageFlagsExt_CenterImage);
+    battle_panel_context->addWidget(destroyer_ship);
 
-    // battle_panel_context->addWidget(destroyer_ship);
 
+    std::array<SDLGui::DraggableImageWidget*, 5> ship_widgets = {
+        destroyer_ship, submarine_ship, cruiser_ship, battleship_ship, carrier_ship
+    };
 
-    set_player_ptr(game_state_->get_players()[0]);
+    for(int i = 0; i < 5; i ++){
+        const Ship* ship = players_board->get_ship_by_index(i);
+        grid_hover_cell_data = own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
+        ship_widgets[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+        ship_widgets[i]->disable();
+    }
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }

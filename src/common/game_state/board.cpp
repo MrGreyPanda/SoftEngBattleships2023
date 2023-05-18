@@ -57,6 +57,20 @@ Ship *Board::get_ship_by_name(const ShipCategory &type) {
     return nullptr;
 }
 
+bool Board::all_ships_sunk() const {
+    int num_ships                              = get_num_ships();
+    const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
+    for (int i = 0; i < num_ships; i++) {
+        if (ships_vec.at(i)->get_is_sunk() == false) return false;
+    }
+    return true;
+}
+
+
+const Ship* Board::get_ship_by_index(const unsigned short &index) const {
+    return ships_[index];
+}
+
 // OwnBoard::OwnBoard() : Board() {}
 
 // OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
@@ -201,14 +215,6 @@ Ship *OwnBoard::get_ship(const short &x, const short &y) {
     return nullptr;
 }
 
-bool OwnBoard::all_ships_sunk() const {
-    int num_ships                              = get_num_ships();
-    const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
-    for (int i = 0; i < num_ships; i++) {
-        if (ships_vec.at(i)->get_is_sunk() == false) return false;
-    }
-    return true;
-}
 
 void OwnBoard::update_ship(const short &x, const short &y) {
     Ship *ship = get_ship(x, y);

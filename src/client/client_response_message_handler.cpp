@@ -133,7 +133,8 @@ void ClientResponseMessageHandler::handle_shoot_response_(
             // update the grid value for GUI, don't change turn
             player->is_own_turn = true;
             player->has_shot = false;
-            player->get_own_board().set_grid_value(response.get_x(), response.get_y(), 6);
+            // Check if ship has been sunk
+            player->get_enemy_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
         else{
             // Change turns
