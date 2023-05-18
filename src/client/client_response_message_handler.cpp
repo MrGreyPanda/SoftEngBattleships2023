@@ -122,7 +122,7 @@ void ClientResponseMessageHandler::handle_prepared_message_(
     game_controller_game_state_->get_players()[1]->set_prepared();
 }
 
-// TODO: implement
+// Handles shoot response and updates game state
 void ClientResponseMessageHandler::handle_shoot_response_(
     const ShootResponse &response) {
 
@@ -130,33 +130,39 @@ void ClientResponseMessageHandler::handle_shoot_response_(
     if(response.is_valid()){
         player->get_enemy_board().set_is_shot(response.get_x(), response.get_y(), true);
         if(response.has_hit()){
+            // update the grid value for GUI, don't change turn
             player->is_own_turn = true;
             player->has_shot = false;
             player->get_own_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
         else{
+            // Change turns
             player->is_own_turn = false;
             player->has_shot = true;
         }
     }
     else{
+        // Not changing turn as the player has to shoot again
         player->is_own_turn = true;
         player->has_shot = false;
     }
 }
 
-// TODO: implement
+// Handles shoot message and updates game state
 void ClientResponseMessageHandler::handle_shot_message_(
     const ShotMessage &message) {
-        
+
     unsigned short x = message.get_x();
     unsigned short y = message.get_y();
     game_controller_game_state_->get_players()[0]->get_own_board().set_is_shot(x, y, true);
     if(message.has_hit()){
+        // update the status of the ship
         game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->shot_at();
+        // Just for safety
         game_controller_game_state_->get_players()[0]->is_own_turn = false;
     }
     else{
+        // Change turns
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
         game_controller_game_state_->get_players()[0]->has_shot = false;
     }
