@@ -1,7 +1,9 @@
 #include "shot_message.h"
 
 ShotMessage::ShotMessage(const json& data) : ShootRequest(data) {
-    has_hit_ = data.at("has_hit").get<bool>();
+    has_hit_            = data.at("has_hit").get<bool>();
+    has_destroyed_ship_ = data.at("has_destroyed_ship").get<bool>();
+    destroyed_ship_     = data.at("destroyed_ship").get<ShipData>();
 }
 
 ShotMessage::ShotMessage(const std::string& game_id,

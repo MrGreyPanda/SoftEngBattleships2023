@@ -7,6 +7,11 @@
   "is_valid": false,
   "has_hit": true,
   "has_destroyed_ship": true,
-  "destroyed_ship_category": 3,
+  "destroyed_ship": {
+    "name": 2,
+    "x": 1,
+    "y": 5,
+    "is_horizonal": true
+  },
   "error": "here comes the error!"
 }

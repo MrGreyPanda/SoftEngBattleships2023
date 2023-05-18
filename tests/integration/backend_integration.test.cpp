@@ -81,7 +81,7 @@ void stop() {
     ServerNetworkManager::stop();
 }
 
-TEST(BackendIntegrationTest, StartServer) {
+TEST(Z_BackendIntegrationTest, StartServer) {
     std::thread server_thread(ServerNetworkManager::start, port);
     server_thread.detach();
 
@@ -89,7 +89,7 @@ TEST(BackendIntegrationTest, StartServer) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
-TEST(BackendIntegrationTest, Connect) {
+TEST(Z_BackendIntegrationTest, Connect) {
     // Player 1
     bool connection_1_success = connector_1.connect(host_address);
     EXPECT_TRUE(connection_1_success);
@@ -99,7 +99,7 @@ TEST(BackendIntegrationTest, Connect) {
     EXPECT_TRUE(connection_2_success);
 }
 
-TEST(BackendIntegrationTest, Join) {
+TEST(Z_BackendIntegrationTest, Join) {
     JoinRequest join_request;
 
     // Launch async tasks for sending requests and receiving responses
@@ -169,7 +169,7 @@ TEST(BackendIntegrationTest, Join) {
     }
 }
 
-TEST(BackendIntegrationTest, Ready) {
+TEST(Z_BackendIntegrationTest, Ready) {
     // send ready request player 1
     try {
         ReadyRequest ready_request_1(game_id_1, player_id_1);
@@ -225,7 +225,7 @@ TEST(BackendIntegrationTest, Ready) {
  * @brief Simulate two players having prepared their board and being ready to
  * start the game.
  */
-TEST(BackendIntegrationTest, Preparation) {
+TEST(Z_BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
         const std::vector<ShipData> ships_data_1 = {
@@ -301,7 +301,7 @@ TEST(BackendIntegrationTest, Preparation) {
     }
 }
 
-TEST(BackendIntegrationTest, FirstShotFrom1at2) {
+TEST(Z_BackendIntegrationTest, FirstShotFrom1at2) {
     try {
         // player 1 shoots at player 2
         const ShootRequest shoot_request_1(game_id_1, player_id_1, 3, 8);
@@ -336,9 +336,9 @@ TEST(BackendIntegrationTest, FirstShotFrom1at2) {
     }
 }
 
-TEST(BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
+TEST(Z_BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
 
-TEST(BackendIntegrationTest, DisconnectAndShutdownServer) {
+TEST(Z_BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();
 
     EXPECT_FALSE(connector_1.is_open());
