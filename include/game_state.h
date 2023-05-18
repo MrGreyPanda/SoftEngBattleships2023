@@ -73,7 +73,7 @@ class GameState {
      * @brief Get player by index
      * @param index The index of the player
      * @return The player_id with the given index
-    */
+     */
     std::string get_player_id_by_index(unsigned short index);
 
     /**
@@ -118,11 +118,28 @@ class GameState {
      */
     void change_turn_player_index();
 
-    bool start_game(); // Let's see if this is needed
+    bool start_game();  // Let's see if this is needed
 
     std::string get_other_player_id(std::string id) const;
 
     void set_game_id(const std::string& game_id);
+    /**
+     * @brief Returns whether all players are ready to go from the lobby phase
+     * to the preparation phase.
+     *
+     * @return 'true' if all players in the game are ready,
+     * @return 'false' else
+     */
+    bool all_players_ready() const;
+
+    /**
+     * @brief Returns whether all players are ready to go from the preparation
+     * phase to the battle phase.
+     *
+     * @return 'true' if all players in the game are ready,
+     * @return 'false' else
+     */
+    bool all_players_prepared() const;
 
    private:
     std::string id_;

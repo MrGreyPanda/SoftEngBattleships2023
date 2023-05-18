@@ -1,6 +1,7 @@
 #include "preparation_panel.h"
 
 GameState* PreparationPanel::game_state_ = nullptr;
+unsigned short PreparationPanel::help_button_counter_ = 0;
 
 void PreparationPanel::init()
 {
@@ -52,6 +53,18 @@ void PreparationPanel::init()
         .6f, .8f, .3f, .12f, 0., 2, 1, 
         SDLGui::DraggableImageFlagsExt_CenterImage);
     preparation_panel_context->addWidget(destroyer_ship);
+
+    SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
+        "helpButton", "?", 0.85f, .05f, .1f, .05f, 0.,
+         SDLGui::TextButtonFlagsExt_CenterText);
+    preparation_panel_context->addWidget(help_button);
+
+
+    SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
+        "helpMessageText", "", .01f, .1f, .8f, .8f, 0.,
+        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
+            SDLGui::TextFlagsExt_CenterHorizontal);
+    preparation_panel_context->addWidget(help_message_text);
 
     SDLGui::SDLGuiEnvironment::pushContext(preparation_panel_context);
 }
@@ -192,6 +205,19 @@ void PreparationPanel::render()
         both_players_ready = both_players_ready && player->get_is_prepared();
     }
     if (both_players_ready) game_state_->set_phase(Battle);
+
+    if(SDLGui::TextButton("helpButton")){
+        if(help_button_counter_ == 0){
+            ++help_button_counter_;
+            // Set the background
+            SDLGui::Text("helpMessageText").updateText(512, "Press R while holding a ship to rotate it. Click on the help button to close this message.");
+        }
+        else{
+            --help_button_counter_;
+            // Set the background to nothing
+            SDLGui::Text("helpMessageText").updateText(512, "");
+        }
+    }
 
     SDLGui::end();
 }

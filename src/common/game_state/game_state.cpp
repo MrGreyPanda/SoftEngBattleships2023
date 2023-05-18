@@ -4,12 +4,12 @@
 
 GameState::GameState()
     : id_(HelperFunctions::create_random_id()),
-      phase_(Lobby),
+      phase_(Connect),
       turn_player_index_(0),
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players){}
+    : id_(id), phase_(Lobby), turn_player_index_(0), players_(players) {}
 
 GameState::~GameState() {}
 
@@ -31,7 +31,7 @@ Player* GameState::get_player_by_id(std::string id_) {
 }
 
 std::string GameState::get_player_id_by_index(unsigned short index) {
-    if(index < players_.size()) {
+    if (index < players_.size()) {
         return players_[index]->get_id();
     }
     return "";
@@ -77,7 +77,6 @@ void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
 
-
 bool GameState::start_game() {
     if (players_.size() < 2) {
         return false;
@@ -98,4 +97,21 @@ std::string GameState::get_other_player_id(std::string id) const {
 
 void GameState::set_game_id(const std::string& game_id) {
     id_ = game_id;
+}
+bool GameState::all_players_ready() const {
+    for (Player* player : players_) {
+        if (!player->get_is_ready()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool GameState::all_players_prepared() const {
+    for (Player* player : players_) {
+        if (!player->get_is_prepared()) {
+            return false;
+        }
+    }
+    return true;
 }

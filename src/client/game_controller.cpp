@@ -12,6 +12,9 @@ void GameController::init() {
     ConnectionPanel::set_game_state(&game_state_);
     ConnectionPanel::init();
 
+    LobbyPanel::set_game_state(&game_state_);
+    LobbyPanel::init();
+
     PreparationPanel::set_game_state(&game_state_);
     PreparationPanel::init();
 
@@ -38,7 +41,8 @@ void GameController::render() {
         if(game_state_.get_phase() == End) EndPanel::render();
         if(game_state_.get_phase() == Battle) BattlePanel::render();
         if (game_state_.get_phase() == Preparation) PreparationPanel::render();
-        if (game_state_.get_phase() == Lobby) ConnectionPanel::render();
+        if (game_state_.get_phase() == Lobby) LobbyPanel::render();
+        if (game_state_.get_phase() == Connect) ConnectionPanel::render();
 
         SDLGui::renderFrame();
     }

@@ -102,4 +102,4 @@ sudo brew install doxygen
 
 on macOS using Homebrew.
 
-To obtain the documentation, build the target "docs" and open "build/docs/index.html" in your browser of preference.
+To obtain the documentation, build the target "docs" and open "[build/docs/html/index.html](./build/docs/html/index.html)" in your browser of preference.

@@ -4,18 +4,21 @@
 
 #include "SDLGui.hpp"
 
-#include "client_network_manager.h"
 #include "game_state.h"
-#include "prepared_request.h"
 
-class PreparationPanel {
+class LobbyPanel {
 public:
+    /// @brief Initializes all the widgets in the window
     static void init();
 
+    /// @brief Renders the connection window and processes user interaction
     static void render();
 
     static void set_game_state(GameState* game_state) { game_state_ = game_state; };
 private:
+    /// @brief Checks if game is full
+    static bool check_is_full();
+private:
+
     static GameState* game_state_;
-    static unsigned short help_button_counter_;
 };
