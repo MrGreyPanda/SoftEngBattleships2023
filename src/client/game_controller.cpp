@@ -42,7 +42,7 @@ void GameController::render() {
         if(game_state_.get_phase() == Battle) BattlePanel::render();
         if (game_state_.get_phase() == Preparation) PreparationPanel::render();
         if (game_state_.get_phase() == Lobby) LobbyPanel::render();
-        if (game_state_.get_phase() == Connect) ConnectionPanel::render();
+        if (game_state_.get_phase() == Connection) ConnectionPanel::render();
 
         SDLGui::renderFrame();
     }

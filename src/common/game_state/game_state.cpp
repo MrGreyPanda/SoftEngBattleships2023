@@ -4,7 +4,7 @@
 
 GameState::GameState()
     : id_(HelperFunctions::create_random_id()),
-      phase_(Connect),
+      phase_(Connection),
       turn_player_index_(0),
       players_({}) {}
 

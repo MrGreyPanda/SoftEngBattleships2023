@@ -200,6 +200,8 @@ void PreparationPanel::render()
         //game_state_->set_phase(Battle);
 
     static bool both_players_ready = true;
+    if (game_state_->get_players().size() != 2)
+        both_players_ready = false;
 
     for (auto& player : game_state_->get_players()) {
         both_players_ready = both_players_ready && player->get_is_prepared();
