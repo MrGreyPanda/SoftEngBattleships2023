@@ -4,6 +4,7 @@
 GameState* BattlePanel::game_state_ = nullptr;
 std::string BattlePanel::game_player_id_;
 unsigned short BattlePanel::help_button_counter_ = 0;
+Player* BattlePanel::player_ = nullptr;
 
 void BattlePanel::init()
 {
@@ -60,6 +61,10 @@ void BattlePanel::set_player_id(std::string player_id) {
 
 void BattlePanel::set_game_state(GameState* game_state) {
     game_state_ = game_state; 
+}
+
+void BattlePanel::set_player_ptr(Player* player) {
+    player_ = player;
 }
 
 
