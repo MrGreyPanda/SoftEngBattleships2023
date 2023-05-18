@@ -26,8 +26,10 @@ TEST(ShootResponse, JSONConstructor) {
               shoot_resp_json.at("has_destroyed_ship").get<bool>());
     EXPECT_EQ(shoot_response.get_destroyed_ship(),
               shoot_resp_json.at("destroyed_ship").get<ShipData>());
-    EXPECT_EQ(shoot_response.get_error(),
-              shoot_resp_json.at("error").get<std::string>());
+    if (shoot_resp_json.contains("error")) {
+        EXPECT_EQ(shoot_response.get_error(),
+                  shoot_resp_json.at("error").get<std::string>());
+    }
 }
 
 TEST(ShootResponse, Constructor) {
@@ -39,7 +41,7 @@ TEST(ShootResponse, Constructor) {
     bool has_hit            = true;
     bool has_destroyed_ship = true;
     ShipData destroyed_ship(ShipCategory::Submarine, true, 4, 6);
-    std::string error = "test_shoot_resp_error";
+    std::string error = "";
 
     ShootResponse shoot_response(game_id, player_id, x, y, destroyed_ship);
 

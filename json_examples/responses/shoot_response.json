@@ -4,14 +4,13 @@
   "player_id": "test_shoot_resp_player_id",
   "x": 1,
   "y": 2,
-  "is_valid": false,
+  "is_valid": true,
   "has_hit": true,
   "has_destroyed_ship": true,
   "destroyed_ship": {
     "name": 2,
     "x": 1,
     "y": 5,
-    "is_horizonal": true
-  },
-  "error": "here comes the error!"
+    "is_horizontal": true
+  }
 }

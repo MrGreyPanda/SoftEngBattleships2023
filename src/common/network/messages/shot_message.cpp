@@ -29,8 +29,10 @@ MessageType ShotMessage::get_type() const {
 }
 
 json ShotMessage::to_json() const {
-    json data       = ShootRequest::to_json();
-    data["has_hit"] = has_hit_;
+    json data                  = ShootRequest::to_json();
+    data["has_hit"]            = has_hit_;
+    data["has_destroyed_ship"] = has_destroyed_ship_;
+    data["destroyed_ship"]     = destroyed_ship_;
     return data;
 }
 

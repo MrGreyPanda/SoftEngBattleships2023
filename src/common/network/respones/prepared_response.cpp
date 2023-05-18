@@ -25,6 +25,7 @@ PreparedResponse::PreparedResponse(const std::string& game_id,
 json PreparedResponse::to_json() const {
     json j = PreparedRequest::to_json();
     j.merge_patch(Response::to_json());
+    j["is_valid"] = is_valid_;
 
     return j;
 }

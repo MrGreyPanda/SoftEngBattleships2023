@@ -17,7 +17,7 @@ TEST(PreparedResponseTest, JSONConstructor) {
               prepared_response_json.at("player_id").get<std::string>());
     EXPECT_EQ(prepared_response_from_json.get_ship_data(),
               prepared_response_json.at("ships").get<std::vector<ShipData>>());
-    EXPECT_FALSE(prepared_response_from_json.is_valid());
+    EXPECT_TRUE(prepared_response_from_json.is_valid());
     EXPECT_EQ(prepared_response_from_json.get_error(),
               prepared_response_json.at("error").get<std::string>());
 }

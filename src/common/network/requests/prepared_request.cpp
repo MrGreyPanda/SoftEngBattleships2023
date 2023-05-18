@@ -12,21 +12,8 @@ PreparedRequest::PreparedRequest(const std::string& game_id,
       ships_(ship_data) {}
 
 json PreparedRequest::to_json() const {
-    json data = Message::to_json();
-
-    // convert ship data to json
-    json ships_json = json::array();
-    for (const ShipData& ship_data : ships_) {
-        json ship_data_json;
-        ship_data_json["name"]          = ship_data.name;
-        ship_data_json["is_horizontal"] = ship_data.is_horizontal;
-        ship_data_json["x"]             = ship_data.x;
-        ship_data_json["y"]             = ship_data.y;
-
-        ships_json.push_back(ship_data_json);
-    }
-
-    data["ships"] = ships_json;
+    json data     = Message::to_json();
+    data["ships"] = ships_;
 
     return data;
 }
