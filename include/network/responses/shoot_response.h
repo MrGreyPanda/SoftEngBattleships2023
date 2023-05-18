@@ -25,6 +25,8 @@ class ShootResponse : public ShootRequest, public Response {
 
     bool has_hit() const;
 
+    MessageType get_type() const;
+
    private:
     bool is_valid_;
     bool has_hit_;

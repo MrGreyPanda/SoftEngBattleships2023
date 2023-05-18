@@ -16,7 +16,7 @@ class BaseMessage {
      *
      * @return MessageType
      */
-    MessageType get_type() const;
+    virtual MessageType get_type() const;
 
     /**
      * @brief Get the JSON representation of this message
