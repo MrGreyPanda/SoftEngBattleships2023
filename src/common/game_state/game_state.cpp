@@ -95,3 +95,7 @@ std::string GameState::get_other_player_id(std::string id) const {
 
     return "";
 }
+
+void GameState::set_game_id(const std::string& game_id) {
+    id_ = game_id;
+}

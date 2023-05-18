@@ -4,6 +4,7 @@
 
 #include "SDLGui.hpp"
 #include "game_state.h"
+#include "client_response_message_handler.h"
 #include "connection_panel.h"
 #include "preparation_panel.h"
 #include "battle_panel.h"
@@ -22,5 +23,5 @@ class GameController {
 
     static GameState game_state_;
 
-    static std::string game_player_id_;   // get player_id in connection panel.
+    //static std::string game_player_id_;   // get player_id in connection panel.
 };

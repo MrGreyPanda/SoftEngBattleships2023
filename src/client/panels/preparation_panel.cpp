@@ -72,6 +72,8 @@ void PreparationPanel::render()
     static SDL_FRect grid_hover_cell_data;
     static std::pair<float, float> image_position;
 
+    
+
     if (carrier.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
@@ -177,8 +179,19 @@ void PreparationPanel::render()
         }
     }
 
-    if (SDLGui::TextButton("ready_button"))
-        game_state_->set_phase(Battle);
+    if (SDLGui::TextButton("ready_button")) {
+        SDLGui::TextButton("ready_button").disable();
+        Player* player = game_state_->get_players()[0];
+        //ClientNetworkManager::send_message(PreparedRequest(game_state_->get_id(), player->get_id(), player->get_own_board().get_ship_vec()));
+    }
+        //game_state_->set_phase(Battle);
+
+    static bool both_players_ready = true;
+
+    for (auto& player : game_state_->get_players()) {
+        both_players_ready = both_players_ready && player->get_is_prepared();
+    }
+    if (both_players_ready) game_state_->set_phase(Battle);
 
     SDLGui::end();
 }
