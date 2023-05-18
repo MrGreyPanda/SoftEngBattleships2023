@@ -25,7 +25,8 @@ enum ShipCategory {
     Submarine  = (short)2,  // size = 3
     Cruiser    = (short)3,  // size = 3
     Battleship = (short)4,  // size = 4
-    Carrier    = (short)5   // size = 5
+    Carrier    = (short)5,   // size = 5
+    ShipPart   = (short)6   // size = 1
 };
 
 /**

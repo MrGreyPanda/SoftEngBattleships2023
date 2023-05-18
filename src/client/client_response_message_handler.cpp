@@ -128,14 +128,22 @@ void ClientResponseMessageHandler::handle_shoot_response_(
     std::cout << "[ClientResponseMessageHandler] Handling shoot response not "
                  "implemented yet."
               << std::endl;
-
+    Player* player = game_controller_game_state_->get_player_by_id(response.get_player_id());
     if(response.is_valid()){
+        player->get_enemy_board().set_is_shot(response.get_x(), response.get_y(), true);
         if(response.has_hit()){
+            player->is_own_turn = true;
+            player->has_shot = false;
+            player->get_own_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
-        else{}
+        else{
+            player->is_own_turn = false;
+            player->has_shot = true;
+        }
     }
     else{
-
+        player->is_own_turn = true;
+        player->has_shot = false;
     }
 }
 

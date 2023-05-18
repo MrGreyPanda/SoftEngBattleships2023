@@ -14,7 +14,6 @@ public:
 
     static void handle_shots();
 
-    static void set_player_id(std::string player_id);
 
     static void set_player_ptr(Player* player);
 
@@ -23,6 +22,5 @@ public:
 private:
     static GameState* game_state_;
     static Player* player_;
-    static std::string game_player_id_;
     static unsigned short help_button_counter_;
 };
