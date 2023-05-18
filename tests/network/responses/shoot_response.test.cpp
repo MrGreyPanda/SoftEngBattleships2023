@@ -22,21 +22,26 @@ TEST(ShootResponse, JSONConstructor) {
               shoot_resp_json.at("has_hit").get<bool>());
     EXPECT_EQ(shoot_response.is_valid(),
               shoot_resp_json.at("is_valid").get<bool>());
+    EXPECT_EQ(shoot_response.has_destroyed_ship(),
+              shoot_resp_json.at("has_destroyed_ship").get<bool>());
+    EXPECT_EQ(shoot_response.get_destroyed_ship(),
+              shoot_resp_json.at("destroyed_ship").get<ShipData>());
     EXPECT_EQ(shoot_response.get_error(),
               shoot_resp_json.at("error").get<std::string>());
 }
 
 TEST(ShootResponse, Constructor) {
-    std::string game_id   = "test_shoot_resp_game_id";
-    std::string player_id = "test_shoot_resp_player_id";
-    unsigned short x      = 1;
-    unsigned short y      = 2;
-    bool is_valid         = true;
-    bool has_hit          = false;
-    std::string error     = "test_shoot_resp_error";
+    std::string game_id     = "test_shoot_resp_game_id";
+    std::string player_id   = "test_shoot_resp_player_id";
+    unsigned short x        = 1;
+    unsigned short y        = 2;
+    bool is_valid           = true;
+    bool has_hit            = true;
+    bool has_destroyed_ship = true;
+    ShipData destroyed_ship(ShipCategory::Submarine, true, 4, 6);
+    std::string error = "test_shoot_resp_error";
 
-    ShootResponse shoot_response(game_id, player_id, x, y, is_valid, has_hit,
-                                 error);
+    ShootResponse shoot_response(game_id, player_id, x, y, destroyed_ship);
 
     EXPECT_EQ(shoot_response.get_type(), MessageType::ShootResponseType);
     EXPECT_EQ(shoot_response.get_game_id(), game_id);
@@ -45,6 +50,8 @@ TEST(ShootResponse, Constructor) {
     EXPECT_EQ(shoot_response.get_y(), y);
     EXPECT_EQ(shoot_response.has_hit(), has_hit);
     EXPECT_EQ(shoot_response.is_valid(), is_valid);
+    EXPECT_EQ(shoot_response.has_destroyed_ship(), has_destroyed_ship);
+    EXPECT_EQ(shoot_response.get_destroyed_ship(), destroyed_ship);
     EXPECT_EQ(shoot_response.get_error(), error);
 }
 

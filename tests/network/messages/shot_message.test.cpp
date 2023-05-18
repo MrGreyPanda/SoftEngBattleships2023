@@ -19,14 +19,19 @@ TEST(ShotMessage, JSONConstructor) {
     EXPECT_EQ(shot_message.get_y(),
               shot_msg_json.at("y").get<unsigned short>());
     EXPECT_EQ(shot_message.has_hit(), shot_msg_json.at("has_hit").get<bool>());
+    EXPECT_EQ(shot_message.has_destroyed_ship(),
+              shot_msg_json.at("has_destroyed_ship").get<bool>());
+    EXPECT_EQ(shot_message.get_destroyed_ship(),
+              shot_msg_json.at("destroyed_ship").get<ShipData>());
 }
 
 TEST(ShotMessage, Constructor) {
-    std::string game_id   = "test_shot_msg_game_id";
-    std::string player_id = "test_shot_msg_player_id";
-    unsigned short x      = 1;
-    unsigned short y      = 2;
-    bool has_hit          = false;
+    std::string game_id     = "test_shot_msg_game_id";
+    std::string player_id   = "test_shot_msg_player_id";
+    unsigned short x        = 1;
+    unsigned short y        = 2;
+    bool has_hit            = false;
+    bool has_destroyed_ship = false;
 
     ShotMessage shot_message(game_id, player_id, x, y, has_hit);
 
@@ -36,6 +41,7 @@ TEST(ShotMessage, Constructor) {
     EXPECT_EQ(shot_message.get_x(), x);
     EXPECT_EQ(shot_message.get_y(), y);
     EXPECT_EQ(shot_message.has_hit(), has_hit);
+    EXPECT_EQ(shot_message.has_destroyed_ship(), has_destroyed_ship);
 }
 
 TEST(ShotMessage, to_json) {

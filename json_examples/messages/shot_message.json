@@ -4,5 +4,7 @@
   "player_id": "12345_player",
   "x": 4,
   "y": 9,
-  "has_hit": true
+  "has_hit": true,
+  "has_destroyed_ship": true,
+  "destroyed_ship_category": 2
 }

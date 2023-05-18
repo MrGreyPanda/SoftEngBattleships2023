@@ -6,5 +6,7 @@
   "y": 2,
   "is_valid": false,
   "has_hit": true,
-  "error": "shot is invalid!"
+  "has_destroyed_ship": true,
+  "destroyed_ship_category": 3,
+  "error": "here comes the error!"
 }

@@ -6,19 +6,28 @@ ShootResponse::ShootResponse(const json& data)
 }
 
 ShootResponse::ShootResponse(const std::string& game_id,
-                             const std::string& player_id, unsigned short x,
-                             unsigned short y, bool is_valid, bool has_hit)
-    : Response(MessageType::ShootResponseType, game_id, player_id),
-      ShotMessage(game_id, player_id, x, y, has_hit),
-      is_valid_(is_valid) {}
-
-ShootResponse::ShootResponse(const std::string& game_id,
-                             const std::string& player_id, unsigned short x,
-                             unsigned short y, bool is_valid, bool has_hit,
+                             const std::string& player_id,
+                             const unsigned short& x, const unsigned short& y,
                              const std::string& error)
     : Response(MessageType::ShootResponseType, game_id, player_id, error),
+      ShotMessage(game_id, player_id, x, y, false),
+      is_valid_(false) {}
+
+ShootResponse::ShootResponse(const std::string& game_id,
+                             const std::string& player_id,
+                             const unsigned short& x, const unsigned short& y,
+                             const bool& has_hit)
+    : Response(MessageType::ShootResponseType, game_id, player_id),
       ShotMessage(game_id, player_id, x, y, has_hit),
-      is_valid_(is_valid) {}
+      is_valid_(true) {}
+
+ShootResponse::ShootResponse(const std::string& game_id,
+                             const std::string& player_id,
+                             const unsigned short& x, const unsigned short& y,
+                             const ShipData& destroyed_ship_)
+    : Response(MessageType::ShootResponseType, game_id, player_id),
+      ShotMessage(game_id, player_id, x, y, destroyed_ship_),
+      is_valid_(true) {}
 
 json ShootResponse::to_json() const {
     json j        = Response::to_json();

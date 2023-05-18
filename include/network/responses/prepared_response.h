@@ -7,10 +7,11 @@ class PreparedResponse : public Response, public PreparedRequest {
    public:
     PreparedResponse(const json& data);
     PreparedResponse(const std::string& game_id, const std::string& player_id,
-                     const std::vector<ShipData>& ship_data);
+                     const std::vector<ShipData>& ship_data,
+                     const bool& is_valid);
     PreparedResponse(const std::string& game_id, const std::string& player_id,
                      const std::vector<ShipData>& ship_data,
-                     const std::string& error);
+                     const bool& is_valid, const std::string& error);
 
     json to_json() const override;
 
@@ -23,4 +24,7 @@ class PreparedResponse : public Response, public PreparedRequest {
     MessageType get_type() const;
 
     bool is_valid() const;
+
+   private:
+    bool is_valid_;
 };

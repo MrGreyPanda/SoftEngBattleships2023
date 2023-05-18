@@ -6,12 +6,27 @@
 class ShootResponse : public ShotMessage, public Response {
    public:
     ShootResponse(const json& data);
+
+    /**
+     * @brief Constructor for invalid shot response
+     */
     ShootResponse(const std::string& game_id, const std::string& player_id,
-                  unsigned short x, unsigned short y, bool is_valid,
-                  bool has_hit);
+                  const unsigned short& x, const unsigned short& y,
+                  const std::string& error);
+
+    /**
+     * @brief Constructor for valid shot response, with no destroyed ship
+     */
     ShootResponse(const std::string& game_id, const std::string& player_id,
-                  unsigned short x, unsigned short y, bool is_valid,
-                  bool has_hit, const std::string& error);
+                  const unsigned short& x, const unsigned short& y,
+                  const bool& has_hit);
+
+    /**
+     * @brief Constructor for valid shot response, with destroyed ship
+     */
+    ShootResponse(const std::string& game_id, const std::string& player_id,
+                  const unsigned short& x, const unsigned short& y,
+                  const ShipData& destroyed_ship_);
 
     json to_json() const;
 

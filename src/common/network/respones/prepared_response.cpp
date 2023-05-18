@@ -1,20 +1,26 @@
 #include "prepared_response.h"
 
 PreparedResponse::PreparedResponse(const json& data)
-    : Response(data), PreparedRequest(data) {}
-
-PreparedResponse::PreparedResponse(const std::string& game_id,
-                                   const std::string& player_id,
-                                   const std::vector<ShipData>& ship_data)
-    : Response(MessageType::PreparedResponseType, game_id, player_id),
-      PreparedRequest(game_id, player_id, ship_data) {}
+    : Response(data), PreparedRequest(data) {
+    is_valid_ = data.at("is_valid").get<bool>();
+}
 
 PreparedResponse::PreparedResponse(const std::string& game_id,
                                    const std::string& player_id,
                                    const std::vector<ShipData>& ship_data,
+                                   const bool& is_valid)
+    : Response(MessageType::PreparedResponseType, game_id, player_id),
+      PreparedRequest(game_id, player_id, ship_data),
+      is_valid_(is_valid) {}
+
+PreparedResponse::PreparedResponse(const std::string& game_id,
+                                   const std::string& player_id,
+                                   const std::vector<ShipData>& ship_data,
+                                   const bool& is_valid,
                                    const std::string& error)
     : Response(MessageType::PreparedResponseType, game_id, player_id, error),
-      PreparedRequest(game_id, player_id, ship_data) {}
+      PreparedRequest(game_id, player_id, ship_data),
+      is_valid_(is_valid) {}
 
 json PreparedResponse::to_json() const {
     json j = PreparedRequest::to_json();
@@ -37,6 +43,4 @@ MessageType PreparedResponse::get_type() const {
     return MessageType::PreparedResponseType;
 }
 
-bool PreparedResponse::is_valid() const {
-    return Response::get_error().empty();
-}
+bool PreparedResponse::is_valid() const { return is_valid_; }

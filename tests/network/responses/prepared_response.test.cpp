@@ -32,7 +32,7 @@ TEST(PreparedResponseTest, NoErrorConstructor) {
         ShipData(ShipCategory::Battleship, true, 6, 0),
         ShipData(ShipCategory::Carrier, false, 4, 2),
     };
-    PreparedResponse prepared_response(game_id, player_id, ship_data);
+    PreparedResponse prepared_response(game_id, player_id, ship_data, true);
 
     EXPECT_EQ(prepared_response.get_type(), MessageType::PreparedResponseType);
     EXPECT_EQ(prepared_response.get_game_id(), game_id);
@@ -53,7 +53,8 @@ TEST(PreparedResponseTest, ErrorConstructor) {
         ShipData(ShipCategory::Carrier, false, 4, 2),
     };
     std::string error = "test_prep_res_error";
-    PreparedResponse prepared_response(game_id, player_id, ship_data, error);
+    PreparedResponse prepared_response(game_id, player_id, ship_data, false,
+                                       error);
 
     EXPECT_EQ(prepared_response.get_type(), MessageType::PreparedResponseType);
     EXPECT_EQ(prepared_response.get_game_id(), game_id);
