@@ -25,7 +25,7 @@ void GameController::init() {
     EndPanel::init();
 
     ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
-    game_state_.set_phase(Preparation);
+    game_state_.set_phase(Connection);
 }
 
 void GameController::run() {

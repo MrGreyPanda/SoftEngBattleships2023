@@ -91,7 +91,8 @@ void ClientResponseMessageHandler::handle_join_response_(
 // TODO: implement
 void ClientResponseMessageHandler::handle_joined_message_(
     const JoinedMessage &message) {
-    assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
+    assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr");
+    game_controller_game_state_->add_player(new Player(""));
 }
 
 // Sets own player as ready

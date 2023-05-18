@@ -45,6 +45,8 @@ void ConnectionPanel::init() {
 void ConnectionPanel::render() {
     SDLGui::begin("connection_panel_context");
 
+    static bool send_join_request = true;
+
     if (SDLGui::TextButton("server_connection_button")) {
         if (check_server_address()) {
             if (!ClientNetworkManager::connect(server_address_,
@@ -58,7 +60,6 @@ void ConnectionPanel::render() {
                                 server_address_.c_str(), server_port_);
                 SDLGui::TextButton("server_connection_button").disable();
                 SDLGui::TextInput("server_address_input").disable();
-                //ClientNetworkManager::send_request(JoinRequest());
             }
         }
         else
@@ -70,8 +71,12 @@ void ConnectionPanel::render() {
         SDLGui::Text("server_message_text")
             .updateText(64, "Connected to %s:%hu", server_address_.c_str(),
                         server_port_);
-        game_state_->set_phase(Lobby);
-        
+        if (send_join_request) {
+            ClientNetworkManager::send_message(JoinRequest().to_string());
+            send_join_request = false;
+        }
+        if (game_state_->get_players().size() != 0)
+            game_state_->set_phase(Lobby);
     }
 
     SDLGui::end();
