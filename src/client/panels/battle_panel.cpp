@@ -109,7 +109,6 @@ void BattlePanel::handle_shots(){
             ShootRequest shoot_request(game_state_->get_id(), player_->get_id(), x, y);
             ClientNetworkManager::send_message(shoot_request.to_string());
             player_->has_shot = true;
-            
         }
     }
 }
@@ -117,6 +116,39 @@ void BattlePanel::handle_shots(){
 void BattlePanel::render()
 {
     SDLGui::begin("battle_panel_context");
+
+    unsigned short grid_size = player_->get_enemy_board().get_grid_size();
+    for(int i = 0; i < grid_size; i++){
+        for(int j = 0; j < grid_size; j++){
+            if(player_->get_enemy_board().get_is_shot(i, j)){
+                unsigned short grid_value = player_->get_enemy_board().get_grid_value(i, j);
+                if(grid_value == 6){
+                    // TODO: set color to red
+                }
+                else if(grid_value > 0 && grid_value < 6){
+                    // TODO: set color to red with brighter opacity, something else
+                }
+                else if(grid_value == 0){
+                    // TODO: set color to blue
+                }
+                else{
+                    // Return error
+                }
+            }
+            if(player_->get_own_board().get_is_shot(i, j)){
+                unsigned short grid_value = player_->get_own_board().get_grid_value(i, j);
+                if(grid_value > 0 && grid_value < 7){
+                    // TODO: set color to red
+                }
+                else if(grid_value == 0){
+                    // TODO: set color to blue
+                }
+                else{
+                    // Return error
+                }
+            }
+        }
+    }
 
     
     if(player_->is_own_turn){
@@ -127,7 +159,6 @@ void BattlePanel::render()
             SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
             handle_shots();
         }
-        /*else if (grid is disabled)*/
         
     }
 
