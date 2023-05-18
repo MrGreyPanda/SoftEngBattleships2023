@@ -1,0 +1,8 @@
+{
+  "type": "shot_message",
+  "game_id": "12345_game",
+  "player_id": "12345_player",
+  "x": 4,
+  "y": 9,
+  "has_hit": true
+}

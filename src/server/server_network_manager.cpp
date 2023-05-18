@@ -204,7 +204,8 @@ void ServerNetworkManager::handle_incoming_message_(
     }
 
     const MessageType request_type =
-        MessageTypeHelpers::make_message_type_from_string(data["type"]);
+        MessageTypeHelpers::make_message_type_from_string(
+            data.at("type").get<std::string>());
 
     if (request_type == MessageType::JoinRequestType) {
         // Handle join request

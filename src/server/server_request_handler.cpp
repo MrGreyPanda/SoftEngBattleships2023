@@ -329,6 +329,8 @@ void ServerRequestHandler::handle_prepared_request_(
 
 void ServerRequestHandler::handle_shoot_request_(
     const ShootRequest& shoot_request) {
+    std::cout << "Got shoot request\n";
+
     std::string game_id = shoot_request.get_game_id();
 
     GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
@@ -338,27 +340,56 @@ void ServerRequestHandler::handle_shoot_request_(
     short y               = shoot_request.get_y();
     bool is_valid         = false;
     bool has_hit          = false;
+
     // Get player from player manager
     Player* player_ptr = PlayerManager::try_get_player(player_id);
 
     // Check if own players enemy board is already shot at the given coords
     if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
         const ShootResponse shoot_response(
-            game_id, player_id, x, y, is_valid, has_hit,
+            game_id, player_id, x, y, false, false,
             "Error: This position was already shot at!");
 
         ServerNetworkManager::send_message(shoot_response.to_string(),
-                                           shoot_response.get_player_id());
+                                           player_id);
         return;
     }
 
     // Check if other players board is already shot at the given coords
     // Get other player id from game state via game instance
-    std::string other_player_id =
-        game_ptr->try_get_other_player_id(player_ptr->get_id());
+    std::string other_player_id = game_ptr->try_get_other_player_id(player_id);
+    if (other_player_id.empty()) {
+        std::cout << "[ServerRequestHandler] Error: Could not find other "
+                     "player with "
+                     "ID '"
+                  << other_player_id << "'" << std::endl;
+
+        const ShootResponse shoot_response(
+            game_id, player_id, x, y, false, false,
+            "Server Error: Could not find opponent.");
+
+        ServerNetworkManager::send_message(shoot_response.to_string(),
+                                           player_id);
+
+        return;
+    }
 
     // Get other player from player manager
     Player* other_player_ptr = PlayerManager::try_get_player(other_player_id);
+    if (other_player_ptr == nullptr) {
+        std::cout << "[ServerRequestHandler] Error: Could not find other "
+                     "player. is nullptr."
+                  << std::endl;
+
+        const ShootResponse shoot_response(
+            game_id, player_id, x, y, false, false,
+            "Server Error: Could not find opponent.");
+
+        ServerNetworkManager::send_message(shoot_response.to_string(),
+                                           player_id);
+
+        return;
+    }
 
     if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
         // Send error message to client
@@ -370,10 +401,14 @@ void ServerRequestHandler::handle_shoot_request_(
                                            shoot_response.get_player_id());
         return;
     }
-    is_valid = true;
 
-    other_player_ptr->get_own_board().set_is_shot(x, y, true);
+    // this is a valid shot, set the is_shot value to true
+    is_valid = true;
+    std::cout << "Shot is valid\n";
+
     player_ptr->get_enemy_board().set_is_shot(x, y, true);
+    other_player_ptr->get_own_board().set_is_shot(x, y, true);
+
     // Check if other players board has a ship at the given coords
     if (other_player_ptr->get_own_board().get_grid_value(x, y) != 0) {
         // Send hit message to client
@@ -382,56 +417,75 @@ void ServerRequestHandler::handle_shoot_request_(
                                          has_hit);
 
         ServerNetworkManager::send_message(hit_response.to_string(),
-                                           hit_response.get_player_id());
+                                           player_id);
 
         // Send hit message to other client
-        const ShootResponse got_hit_response(game_id, other_player_id, x, y,
-                                             is_valid, has_hit);
+        const ShotMessage got_hit_message(game_id, other_player_id, x, y,
+                                          has_hit);
         // Error message
-        ServerNetworkManager::send_message(got_hit_response.to_string(),
-                                           got_hit_response.get_player_id());
+        ServerNetworkManager::send_message(got_hit_message.to_string(),
+                                           other_player_id);
 
-        // Get ship from other players board
-        Ship* ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
+        // // Get ship from other players board
+        // Ship* ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
 
-        // Update the ships health
-        other_player_ptr->get_own_board().update_ship(x, y);
+        // // Update the ships health
+        // other_player_ptr->get_own_board().update_ship(x, y);
 
-        // Check if ship is destroyed
-        if (ship_ptr->get_is_sunk()) {
-            // Send ship destroyed message to client that shot
+        // // Check if ship is destroyed
+        // if (ship_ptr->get_is_sunk()) {
+        //     // Send ship destroyed message to client that shot
 
-            // TODO
+        //     // TODO
 
-            // update enemy boards ship vector
-            player_ptr->get_enemy_board().update_ship_vec(
-                ship_ptr->get_name());
-        }
+        //     // update enemy boards ship vector
+        //     player_ptr->get_enemy_board().update_ship_vec(
+        //         ship_ptr->get_name());
+        // }
 
-        // Check if other player has lost
-        if (other_player_ptr->has_lost()) {
-            // Send win message to client
-            // const GameOverMessage won_message(
-            //     shoot_request.get_game_id(), shoot_request.get_player_id(),
-            //     true);  // This is not how it works, here should go an
-            //             // Error message
-            // ServerNetworkManager::send_message(won_message.to_string(),
-            //                                     won_message.get_player_id());
+        // // Check if other player has lost
+        // if (other_player_ptr->has_lost()) {
+        //     // Send win message to client
+        //     // const GameOverMessage won_message(
+        //     //     shoot_request.get_game_id(),
+        //     //     shoot_request.get_player_id(), true);  // This is not
+        //     //     how it works, here should go an
+        //     //             // Error message
+        //     // ServerNetworkManager::send_message(won_message.to_string(),
+        //     // won_message.get_player_id());
 
-            // // Send lose message to other client
-            // const GameOverMessageType
-            // lost_message(shoot_request.get_game_id(),
-            //                                        other_player_id, false)
-            //     ServerNetworkManager::send_message(
-            //         lost_message.to_string(), lost_message.get_player_id());
-            // game_ptr->set_phase(End);
-        }
+        //     // // Send lose message to other client
+        //     // const GameOverMessageType
+        //     // lost_message(shoot_request.get_game_id(),
+        //     //                                        other_player_id,
+        //     //                                        false)
+        //     //     ServerNetworkManager::send_message(
+        //     //         lost_message.to_string(),
+        //     //         lost_message.get_player_id());
+        //     // game_ptr->set_phase(End);
+        // }
 
         // Change turn in game state
 
         return;
     } else {
         game_ptr->get_game_state()->change_turn_player_index();
+
+        // player missed, send miss message to client
+
+        const ShootResponse miss_response(game_id, player_id, x, y, is_valid,
+                                          has_hit);
+
+        ServerNetworkManager::send_message(miss_response.to_string(),
+                                           player_id);
+
+        // Send miss message to other client
+
+        const ShotMessage got_miss_message(game_id, other_player_id, x, y,
+                                           has_hit);
+
+        ServerNetworkManager::send_message(got_miss_message.to_string(),
+                                           other_player_id);
     }
 }
 

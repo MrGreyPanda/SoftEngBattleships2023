@@ -1,0 +1,10 @@
+{
+  "type": "shoot_response",
+  "game_id": "test_shoot_resp_game_id",
+  "player_id": "test_shoot_resp_player_id",
+  "x": 1,
+  "y": 2,
+  "is_valid": false,
+  "has_hit": true,
+  "error": "shot is invalid!"
+}

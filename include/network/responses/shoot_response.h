@@ -1,9 +1,9 @@
 #pragma once
 
 #include "response.h"
-#include "shoot_request.h"
+#include "shot_message.h"
 
-class ShootResponse : public ShootRequest, public Response {
+class ShootResponse : public ShotMessage, public Response {
    public:
     ShootResponse(const json& data);
     ShootResponse(const std::string& game_id, const std::string& player_id,
@@ -23,11 +23,8 @@ class ShootResponse : public ShootRequest, public Response {
 
     bool is_valid() const;
 
-    bool has_hit() const;
-
-    MessageType get_type() const;
+    virtual MessageType get_type() const;
 
    private:
     bool is_valid_;
-    bool has_hit_;
 };
