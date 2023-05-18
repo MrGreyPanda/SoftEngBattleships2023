@@ -125,9 +125,7 @@ void ClientResponseMessageHandler::handle_prepared_message_(
 // TODO: implement
 void ClientResponseMessageHandler::handle_shoot_response_(
     const ShootResponse &response) {
-    std::cout << "[ClientResponseMessageHandler] Handling shoot response not "
-                 "implemented yet."
-              << std::endl;
+
     Player* player = game_controller_game_state_->get_player_by_id(response.get_player_id());
     if(response.is_valid()){
         player->get_enemy_board().set_is_shot(response.get_x(), response.get_y(), true);
@@ -150,6 +148,7 @@ void ClientResponseMessageHandler::handle_shoot_response_(
 // TODO: implement
 void ClientResponseMessageHandler::handle_shot_message_(
     const ShotMessage &message) {
+        
     unsigned short x = message.get_x();
     unsigned short y = message.get_y();
     game_controller_game_state_->get_players()[0]->get_own_board().set_is_shot(x, y, true);
