@@ -100,7 +100,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
         const JoinResponse join_response("", "",
                                          "Error: Could not add player to "
-                                         "PlayerManager");
+                                         "PlayerManager", 0);
 
         return std::make_tuple(nullptr, join_response);
     }
@@ -120,7 +120,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
         // Player successfully joined the game
 
         // formulate response
-        const JoinResponse join_response(game_id, new_player_id);
+        JoinResponse join_response(game_id, new_player_id, 1);
 
         if (game_ptr->is_full()) {
             // notify the other player that a player joined
@@ -133,6 +133,8 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
                 ServerNetworkManager::send_message(join_message.to_string(),
                                                    other_player_id);
+                
+                join_response.set_player_amount(2);
             } else {
                 std::cout
                     << "[ServerRequestHandler] Error: Could not find other "
@@ -155,7 +157,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
         // Formulate error response message
         const JoinResponse response(
-            "", new_player_id, "Error: Could not add player to any game!");
+            "", new_player_id, "Error: Could not add player to any game!", 0);
 
         return std::make_tuple(nullptr, response);
     }
