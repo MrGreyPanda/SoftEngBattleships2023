@@ -1,8 +1,8 @@
 #include "message.h"
 
 Message::Message(const json& data) : BaseMessage(data) {
-    game_id_   = data["game_id"];
-    player_id_ = data["player_id"];
+    game_id_   = data.at("game_id");
+    player_id_ = data.at("player_id");
 }
 
 Message::Message(const MessageType& type, const std::string& game_id,

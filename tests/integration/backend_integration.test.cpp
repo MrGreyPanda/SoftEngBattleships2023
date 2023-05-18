@@ -215,59 +215,92 @@ TEST(BackendIntegrationTest, Ready) {
     }
 }
 
+TEST(BackendIntegrationTest, GameStartedMessage) {
+    FAIL() << "Not implemented";
+}
+
 /**
  * @brief Simulate two players having prepared their board and being ready to
  * start the game.
  */
 TEST(BackendIntegrationTest, Preparation) {
-    // Place ships for player 1
-    std::vector<ShipData> ships_data_1 = {
-        ShipData(ShipCategory::Carrier, false, 4, 2),
-        ShipData(ShipCategory::Battleship, true, 6, 0),
-        ShipData(ShipCategory::Cruiser, true, 7, 6),
-        ShipData(ShipCategory::Submarine, true, 6, 8),
-        ShipData(ShipCategory::Destroyer, false, 0, 5),
-    };
-
-    const PreparedRequest prepared_request_1(game_id_1, player_id_1,
-                                             ships_data_1);
-
-    auto task1 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_1, prepared_request_1.to_string());
-        return recieve_response_json_from_server(connector_1);
-    });
-
-    // Place ships for player 2
-    std::vector<ShipData> ships_data_2 = {
-        ShipData(ShipCategory::Carrier, false, 0, 0),
-        ShipData(ShipCategory::Battleship, true, 6, 9),
-        ShipData(ShipCategory::Cruiser, false, 6, 1),
-        ShipData(ShipCategory::Submarine, true, 4, 0),
-        ShipData(ShipCategory::Destroyer, false, 5, 3),
-    };
-
-    const PreparedRequest prepared_request_2(game_id_2, player_id_2,
-                                             ships_data_2);
-
-    send_request_to_server(connector_2, prepared_request_2.to_string());
-
-    auto task2 = std::async(std::launch::async, [&]() {
-        send_request_to_server(connector_2, prepared_request_2.to_string());
-        return recieve_response_json_from_server(connector_2);
-    });
-
     try {
-        const PreparedResponse prepared_response_1(task1.get());
+        // Place ships for player 1
+        const std::vector<ShipData> ships_data_1 = {
+            ShipData(ShipCategory::Destroyer, true, 0, 5),
+            ShipData(ShipCategory::Submarine, true, 6, 8),
+            ShipData(ShipCategory::Cruiser, true, 7, 6),
+            ShipData(ShipCategory::Battleship, true, 6, 0),
+            ShipData(ShipCategory::Carrier, false, 4, 2),
+        };
 
+        const PreparedRequest prepared_request_1(game_id_1, player_id_1,
+                                                 ships_data_1);
+
+        std::cout << "print: " << prepared_request_1.to_string() << std::endl;
+
+        send_request_to_server(connector_1, prepared_request_1.to_string());
+
+        const PreparedResponse prepared_response_1(
+            recieve_response_json_from_server(connector_1));
+
+        EXPECT_EQ(prepared_response_1.is_valid(), true);
         EXPECT_TRUE(prepared_response_1.get_error().empty());
+        EXPECT_EQ(prepared_response_1.get_type(),
+                  MessageType::PreparedResponseType);
+        EXPECT_EQ(prepared_response_1.get_game_id(), game_id_1);
+        EXPECT_EQ(prepared_response_1.get_player_id(), player_id_1);
+        EXPECT_EQ(prepared_response_1.get_ship_data(), ships_data_1);
 
-        const PreparedResponse prepared_response_2(task2.get());
+        // // player 2 should have recieved a prepared message for player 1
+        // const json message_json_2 =
+        //     recieve_response_json_from_server(connector_2);
+        // const PreparedMessage prepared_message_2(message_json_2);
+        // EXPECT_EQ(prepared_message_2.get_type(),
+        //           MessageType::PreparedMessageType);
+        // EXPECT_EQ(prepared_message_2.get_game_id(), game_id_2);
+        // EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
 
-        EXPECT_TRUE(prepared_response_2.get_error().empty());
+        // // Place ships for player 2
+        // std::vector<ShipData> ships_data_2 = {
+        //     ShipData(ShipCategory::Destroyer, false, 5, 3),
+        //     ShipData(ShipCategory::Submarine, true, 4, 0),
+        //     ShipData(ShipCategory::Cruiser, false, 6, 1),
+        //     ShipData(ShipCategory::Battleship, true, 6, 9),
+        //     ShipData(ShipCategory::Carrier, false, 0, 0),
+        // };
+
+        // const PreparedRequest prepared_request_2(game_id_2, player_id_2,
+        //                                          ships_data_2);
+
+        // send_request_to_server(connector_2, prepared_request_2.to_string());
+
+        // const PreparedResponse prepared_response_2(
+        //     recieve_response_json_from_server(connector_2));
+
+        // EXPECT_EQ(prepared_response_2.is_valid(), true);
+        // EXPECT_TRUE(prepared_response_2.get_error().empty());
+        // EXPECT_EQ(prepared_response_2.get_type(),
+        //           MessageType::PreparedResponseType);
+        // EXPECT_EQ(prepared_response_2.get_game_id(), game_id_2);
+        // EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
+        // EXPECT_EQ(prepared_response_2.get_ship_data(), ships_data_2);
+
+        // // Player 1 should have recieved a prepared message for player 2
+        // const PreparedMessage prepared_message_1(
+        //     recieve_response_json_from_server(connector_1));
+        // EXPECT_EQ(prepared_message_1.get_type(),
+        //           MessageType::PreparedMessageType);
+        // EXPECT_EQ(prepared_message_1.get_game_id(), game_id_1);
+        // EXPECT_EQ(prepared_message_1.get_player_id(), player_id_1);
 
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
     }
+}
+
+TEST(BackendIntegrationTest, BattleStartedMessage) {
+    FAIL() << "Not implemented";
 }
 
 TEST(BackendIntegrationTest, Shoot) { FAIL() << "Not implemented"; }

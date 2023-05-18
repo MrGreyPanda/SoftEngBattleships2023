@@ -1,0 +1,12 @@
+{
+  "game_id": "prepared_req_test_game_id",
+  "player_id": "prepared_req_test_player_id",
+  "ships": [
+    { "is_horizontal": false, "name": 1, "x": 0, "y": 0 },
+    { "is_horizontal": true, "name": 2, "x": 6, "y": 6 },
+    { "is_horizontal": true, "name": 3, "x": 7, "y": 7 },
+    { "is_horizontal": true, "name": 4, "x": 6, "y": 6 },
+    { "is_horizontal": false, "name": 5, "x": 4, "y": 4 }
+  ],
+  "type": "prepared_request"
+}
