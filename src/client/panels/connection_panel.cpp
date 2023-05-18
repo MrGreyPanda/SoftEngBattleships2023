@@ -85,12 +85,23 @@ void ConnectionPanel::render() {
 bool ConnectionPanel::check_server_address() {
     std::regex ipv4_regex("(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\:[0-9]+");
     std::smatch ipv4_regex_match;
+    std::regex localhost_regex("localhost\\:[0-9]+");
+    std::smatch localhost_regex_match;
     if (std::regex_match(server_address_input_, ipv4_regex_match, ipv4_regex)) {
+        std::cout << "Ipv4 matched" << std::endl;
         /* REGEX_MATCH SHOULD BE ABLE TO SPLIT THE STRING INTO COMPONENTS (to be replaced if someone know how to make it work) */
         /*printf("%llu\n", ipv4_regex_match.size());
         for (uint32_t i = 0; i < ipv4_regex_match.size(); ++i) {
             printf("%s\n", ipv4_regex_match[i].str().c_str());
         }*/
+        std::string::size_type n = server_address_input_.find(':');
+        server_address_ = server_address_input_.substr(0, n);
+        std::string port_substring = server_address_input_.substr(n + 1, server_address_input_.size() - n - 1);
+        server_port_ = (uint16_t)std::stoi(port_substring);
+        return true;
+    }
+    else if (std::regex_match(server_address_input_, localhost_regex_match, localhost_regex)) {
+        std::cout << "Localhost matched" << std::endl;
         std::string::size_type n = server_address_input_.find(':');
         server_address_ = server_address_input_.substr(0, n);
         std::string port_substring = server_address_input_.substr(n + 1, server_address_input_.size() - n - 1);
