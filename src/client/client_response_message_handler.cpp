@@ -150,13 +150,15 @@ void ClientResponseMessageHandler::handle_shoot_response_(
 // TODO: implement
 void ClientResponseMessageHandler::handle_shot_message_(
     const ShotMessage &message) {
-    std::cout << "[ClientResponseMessageHandler] Handling shot message not "
-                 "implemented yet."
-              << std::endl;
+    unsigned short x = message.get_x();
+    unsigned short y = message.get_y();
+    game_controller_game_state_->get_players()[0]->get_own_board().set_is_shot(x, y, true);
     if(message.has_hit()){
-        
+        game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->shot_at();
+        game_controller_game_state_->get_players()[0]->is_own_turn = false;
     }
     else{
-
+        game_controller_game_state_->get_players()[0]->is_own_turn = true;
+        game_controller_game_state_->get_players()[0]->has_shot = false;
     }
 }
