@@ -2,8 +2,8 @@
 
 
 GameState* BattlePanel::game_state_ = nullptr;
-std::string BattlePanel::game_player_id_;
 unsigned short BattlePanel::help_button_counter_ = 0;
+Player* BattlePanel::player_ = nullptr;
 
 void BattlePanel::init()
 {
@@ -49,17 +49,53 @@ void BattlePanel::init()
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(help_message_text);
-    
+
+    /**
+     * @brief The following widgets are used to display the ships that the player has placed
+    */
+    // SDLGui::DraggableImageWidget* carrier_ship = 
+    //     new SDLGui::DraggableImageWidget("carrier_ship", "../assets/carrier.bmp",
+    //     .6f, .2f, .3f, .12f, 0., 5, 1, 
+    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+    // battle_panel_context->addWidget(carrier_ship);
+
+    // SDLGui::DraggableImageWidget* battleship_ship = 
+    //     new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
+    //     .6f, .35f, .25f, .1f, 0., 4, 1, 
+    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+    // battle_panel_context->addWidget(battleship_ship);
+
+    // SDLGui::DraggableImageWidget* cruiser_ship = 
+    //     new SDLGui::DraggableImageWidget("cruiser_ship", "../assets/cruiser.bmp",
+    //     .6f, .5f, .2f, .08f, 0., 3, 1, 
+    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+    // battle_panel_context->addWidget(cruiser_ship);
+
+    // SDLGui::DraggableImageWidget* submarine_ship = 
+    //     new SDLGui::DraggableImageWidget("submarine_ship", "../assets/submarine.bmp",
+    //     .6f, .65f, .2f, .08f, 0., 3, 1, 
+    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+    // battle_panel_context->addWidget(submarine_ship);
+
+    // SDLGui::DraggableImageWidget* destroyer_ship = 
+    //     new SDLGui::DraggableImageWidget("destroyer_ship", "../assets/destroyer.bmp",
+    //     .6f, .8f, .15f, .06f, 0., 2, 1, 
+    //     SDLGui::DraggableImageFlagsExt_CenterImage);
+
+    // battle_panel_context->addWidget(destroyer_ship);
+
+
+    set_player_ptr(game_state_->get_players()[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
 
-void BattlePanel::set_player_id(std::string player_id) { 
-    game_player_id_ = player_id; 
-}
-
 void BattlePanel::set_game_state(GameState* game_state) {
     game_state_ = game_state; 
+}
+
+void BattlePanel::set_player_ptr(Player* player) {
+    player_ = player;
 }
 
 
@@ -68,11 +104,11 @@ void BattlePanel::handle_shots(){
         std::pair<uint32_t,uint32_t> xy = SDLGui::Grid("enemy_board").getClickIndices();
         short x = (short)xy.first;
         short y = (short)xy.second;
-        if(game_state_->get_player_by_id(game_player_id_)->get_enemy_board().is_valid_shot(x, y)){
+        if(player_->get_enemy_board().is_valid_shot(x, y)){
             // Send a shoot request to the server
-            ShootRequest shoot_request(game_state_->get_id(), game_player_id_, x, y);
+            ShootRequest shoot_request(game_state_->get_id(), player_->get_id(), x, y);
             ClientNetworkManager::send_message(shoot_request.to_string());
-            SDLGui::GridWidget("enemy_board").disable();
+            player_->has_shot = true;
         }
     }
 }
@@ -80,14 +116,49 @@ void BattlePanel::handle_shots(){
 void BattlePanel::render()
 {
     SDLGui::begin("battle_panel_context");
-    unsigned short turn = game_state_->get_turn_player_index();
-    bool own_turn = game_state_->get_player_id_by_index(turn) == game_player_id_;
-    if(own_turn){
-        /*if(Grid is enabled)*/
-        SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
-        handle_shots();
 
-        /*else if (grid is disabled)*/
+    unsigned short grid_size = player_->get_enemy_board().get_grid_size();
+    for(int i = 0; i < grid_size; i++){
+        for(int j = 0; j < grid_size; j++){
+            if(player_->get_enemy_board().get_is_shot(i, j)){
+                unsigned short grid_value = player_->get_enemy_board().get_grid_value(i, j);
+                if(grid_value == 6){
+                    // TODO: set color to red
+                }
+                else if(grid_value > 0 && grid_value < 6){
+                    // TODO: set color to red with brighter opacity, something else
+                }
+                else if(grid_value == 0){
+                    // TODO: set color to blue
+                }
+                else{
+                    // Return error
+                }
+            }
+            if(player_->get_own_board().get_is_shot(i, j)){
+                unsigned short grid_value = player_->get_own_board().get_grid_value(i, j);
+                if(grid_value > 0 && grid_value < 7){
+                    // TODO: set color to red
+                }
+                else if(grid_value == 0){
+                    // TODO: set color to blue
+                }
+                else{
+                    // Return error
+                }
+            }
+        }
+    }
+
+    
+    if(player_->is_own_turn){
+        /*if(Grid is enabled)*/
+        if(player_->has_shot){
+        }
+        else if(!player_->has_shot){
+            SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
+            handle_shots();
+        }
         
     }
 

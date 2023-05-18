@@ -14,12 +14,13 @@ public:
 
     static void handle_shots();
 
-    static void set_player_id(std::string player_id);
+
+    static void set_player_ptr(Player* player);
 
     static void set_game_state(GameState* game_state);
 
 private:
     static GameState* game_state_;
-    static std::string game_player_id_;
+    static Player* player_;
     static unsigned short help_button_counter_;
 };
