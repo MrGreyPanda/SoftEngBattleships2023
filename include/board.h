@@ -181,6 +181,8 @@ class OwnBoard : public Board {
 
     bool is_ultimate_configuration() const;
 
+    std::array<ShipData, 5> get_ship_configuration() const;
+
    private:
 };
 

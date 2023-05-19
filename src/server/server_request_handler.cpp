@@ -356,14 +356,31 @@ void ServerRequestHandler::handle_shoot_request_(
         if (has_won_game) {
             // this last ship decided the game
 
-            std::array<ShipData, 5> winner_ships;
-            std::array<ShipData, 5> loser_ships;
+            std::array<ShipData, 5> winner_ships =
+                game_ptr->get_game_state()
+                    ->get_player_by_id(player_id)
+                    ->get_own_board()
+                    .get_ship_configuration();
+
+            std::array<ShipData, 5> loser_ships =
+                game_ptr->get_game_state()
+                    ->get_player_by_id(other_player_id)
+                    ->get_own_board()
+                    .get_ship_configuration();
 
             GameOverMessage game_over_message_to_winner(game_id, player_id,
                                                         true, loser_ships);
 
             GameOverMessage game_over_message_to_loser(
                 game_id, other_player_id, false, winner_ships);
+
+            ServerNetworkManager::send_message(
+                game_over_message_to_winner.to_string(), player_id);
+            ServerNetworkManager::send_message(
+                game_over_message_to_loser.to_string(), other_player_id);
+
+            // end the game
+            kill_game_(game_ptr, player_id, other_player_id);
         }
     } else {
         ShootResponse response(game_id, player_id, x, y, has_hit);
@@ -401,6 +418,36 @@ void ServerRequestHandler::handle_give_up_request_(
     ServerNetworkManager::send_message(give_up_message.to_string(),
                                        other_player_id);
 
+    // send game over messages
+    std::array<ShipData, 5> winner_ships =
+        game_ptr->get_game_state()
+            ->get_player_by_id(other_player_id)
+            ->get_own_board()
+            .get_ship_configuration();
+
+    std::array<ShipData, 5> loser_ships = game_ptr->get_game_state()
+                                              ->get_player_by_id(player_id)
+                                              ->get_own_board()
+                                              .get_ship_configuration();
+
+    GameOverMessage game_over_message_to_winner(game_id, other_player_id, true,
+                                                loser_ships);
+
+    GameOverMessage game_over_message_to_loser(game_id, player_id, false,
+                                               winner_ships);
+
+    ServerNetworkManager::send_message(game_over_message_to_winner.to_string(),
+                                       other_player_id);
+
+    ServerNetworkManager::send_message(game_over_message_to_loser.to_string(),
+                                       player_id);
+
+    kill_game_(game_ptr, player_id, other_player_id);
+}
+
+void ServerRequestHandler::kill_game_(GameInstance* game_ptr,
+                                      const std::string& player_id,
+                                      const std::string& other_player_id) {
     // remove the game
     delete game_ptr;  // TODO FIXME check if this is correct, how to talk
                       // to player manager?
