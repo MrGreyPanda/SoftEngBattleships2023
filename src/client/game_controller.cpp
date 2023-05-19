@@ -30,11 +30,7 @@ void GameController::init() {
     EndPanel::init();
 
     ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
-<<<<<<< HEAD
     game_state_.set_phase(Connection);
-=======
-    game_state_.set_phase(Battle);
->>>>>>> origin/main
 }
 
 void GameController::run() {
