@@ -228,7 +228,7 @@ TEST(Z_BackendIntegrationTest, Ready) {
 TEST(Z_BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
-        const std::vector<ShipData> ships_data_1 = {
+        const std::array<ShipData, 5> ships_data_1 = {
             ShipData(ShipCategory::Destroyer, true, 0, 5),
             ShipData(ShipCategory::Submarine, true, 6, 8),
             ShipData(ShipCategory::Cruiser, true, 7, 6),
@@ -264,7 +264,7 @@ TEST(Z_BackendIntegrationTest, Preparation) {
         EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
 
         // Place ships for player 2
-        std::vector<ShipData> ships_data_2 = {
+        std::array<ShipData, 5> ships_data_2 = {
             ShipData(ShipCategory::Destroyer, false, 5, 3),
             ShipData(ShipCategory::Submarine, true, 4, 0),
             ShipData(ShipCategory::Cruiser, false, 6, 1),

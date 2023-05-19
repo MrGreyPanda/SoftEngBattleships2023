@@ -62,13 +62,14 @@ void GameInstance::handle_shot(const std::string &player_id,
                                const unsigned short x, const unsigned short y,
                                bool &is_valid, bool &has_hit,
                                bool &has_destroyed_ship,
-                               ShipData &destroyed_ship) {
+                               ShipData &destroyed_ship, bool &has_won_game) {
     // set all the referenced values
     other_player_id    = "";
     is_valid           = false;
     has_hit            = false;
     has_destroyed_ship = false;
     destroyed_ship     = ShipData();
+    has_won_game       = false;
 
     // 0. check if the game has started and it's this players turn!
     // 1. check if other player own board was already shot at this position
@@ -152,7 +153,7 @@ void GameInstance::handle_shot(const std::string &player_id,
             if (other_player_ptr->has_lost()) {
                 std::cout << "[GameInstance] (Debug) Game over\n";
                 game_state_->set_phase(End);
-                // TODO notify if game is over somehow
+                has_won_game = true;
             }
         }
     } else {
@@ -162,7 +163,7 @@ void GameInstance::handle_shot(const std::string &player_id,
 }
 
 bool GameInstance::set_player_prepared(const std::string &player_id,
-                                       const std::vector<ShipData> &ships) {
+                                       const std::array<ShipData, 5> &ships) {
     // 1. Get player by ID
     // 2. Place ships one by one on the board
     // 3. if all ships have valid placements, update the player to be prepared

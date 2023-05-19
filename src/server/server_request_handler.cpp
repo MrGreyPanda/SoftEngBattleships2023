@@ -3,6 +3,7 @@
 
 #include "game_instance.h"
 #include "game_instance_manager.h"
+#include "game_over_message.h"
 #include "helper_functions.h"
 #include "join_message.h"
 #include "player_manager.h"
@@ -237,7 +238,7 @@ void ServerRequestHandler::handle_prepared_request_(
     // Get GameInstance
     const std::string game_id   = prepared_request.get_game_id();
     const std::string player_id = prepared_request.get_player_id();
-    const std::vector<ShipData> ship_data_vec =
+    const std::array<ShipData, 5> ship_data_vec =
         prepared_request.get_ship_data();
     GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
@@ -322,10 +323,11 @@ void ServerRequestHandler::handle_shoot_request_(
     bool is_valid               = false;
     bool has_hit                = false;
     bool has_destroyed_ship     = false;
-    ShipData destroyed_ship;
+    ShipData destroyed_ship     = ShipData();
+    bool has_won_game           = false;
 
     game_ptr->handle_shot(player_id, other_player_id, x, y, is_valid, has_hit,
-                          has_destroyed_ship, destroyed_ship);
+                          has_destroyed_ship, destroyed_ship, has_won_game);
 
     if (!is_valid) {
         ShootResponse response(game_id, player_id, x, y,
@@ -350,6 +352,19 @@ void ServerRequestHandler::handle_shoot_request_(
         ShotMessage message(game_id, other_player_id, x, y, destroyed_ship);
         ServerNetworkManager::send_message(message.to_string(),
                                            other_player_id);
+
+        if (has_won_game) {
+            // this last ship decided the game
+
+            std::array<ShipData, 5> winner_ships;
+            std::array<ShipData, 5> loser_ships;
+
+            GameOverMessage game_over_message_to_winner(game_id, player_id,
+                                                        true, loser_ships);
+
+            GameOverMessage game_over_message_to_loser(
+                game_id, other_player_id, false, winner_ships);
+        }
     } else {
         ShootResponse response(game_id, player_id, x, y, has_hit);
 

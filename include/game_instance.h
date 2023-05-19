@@ -113,7 +113,8 @@ class GameInstance {
     void handle_shot(const std::string& player_id,
                      std::string& other_player_id, const unsigned short x,
                      const unsigned short y, bool& is_valid, bool& has_hit,
-                     bool& has_destroyed_ship, ShipData& destroyed_ship);
+                     bool& has_destroyed_ship, ShipData& destroyed_ship,
+                     bool& has_won_game);
     /**
      * @brief Validate the prepared ships for a player and set them on the
      * board. Update the player as ‘is prepared’.
@@ -122,7 +123,7 @@ class GameInstance {
      * @return false
      */
     bool set_player_prepared(const std::string& player_id,
-                             const std::vector<ShipData>& ships);
+                             const std::array<ShipData, 5>& ships);
 
     /**
      * @brief Checks if all players are prepared
