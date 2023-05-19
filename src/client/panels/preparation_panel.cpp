@@ -73,11 +73,11 @@ void PreparationPanel::render()
 {
     SDLGui::begin("preparation_panel_context");
 
-    static SDLGui::DraggableImageWidget& carrier = SDLGui::DraggableImage("carrier_ship");
-    static SDLGui::DraggableImageWidget& battleship = SDLGui::DraggableImage("battleship_ship");
-    static SDLGui::DraggableImageWidget& cruiser = SDLGui::DraggableImage("cruiser_ship");
-    static SDLGui::DraggableImageWidget& submarine = SDLGui::DraggableImage("submarine_ship");
-    static SDLGui::DraggableImageWidget& destroyer = SDLGui::DraggableImage("destroyer_ship");
+    static SDLGui::DraggableImageWidget& carrier_widget = SDLGui::DraggableImage("carrier_ship");
+    static SDLGui::DraggableImageWidget& battleship_widget = SDLGui::DraggableImage("battleship_ship");
+    static SDLGui::DraggableImageWidget& cruiser_widget = SDLGui::DraggableImage("cruiser_ship");
+    static SDLGui::DraggableImageWidget& submarine_widget = SDLGui::DraggableImage("submarine_ship");
+    static SDLGui::DraggableImageWidget& destroyer_widget = SDLGui::DraggableImage("destroyer_ship");
 
     static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
 
@@ -85,110 +85,126 @@ void PreparationPanel::render()
     static SDL_FRect grid_hover_cell_data;
     static std::pair<float, float> image_position;
 
-    
+    static OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
 
-    if (carrier.isGrabbed()) {
+    static Ship* carrier = own_board.get_ship_by_name(Carrier);
+    static Ship* battleship = own_board.get_ship_by_name(Battleship);
+    static Ship* cruiser = own_board.get_ship_by_name(Cruiser);
+    static Ship* submarine = own_board.get_ship_by_name(Submarine);
+    static Ship* destroyer = own_board.get_ship_by_name(Destroyer);
+
+    if (carrier_widget.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
             grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            carrier.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            carrier_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
         }
     }
-    if (carrier.onDrop()) {
-        if (!grid.isHovered()) carrier.reset();
+    if (carrier_widget.onDrop()) {
+        if (!grid.isHovered()) carrier_widget.reset();
         else {
-            image_position = carrier.getPosition();
+            image_position = carrier_widget.getPosition();
             grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            bool can_be_placed = 
+                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *carrier);
             if (can_be_placed) {
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                carrier.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                carrier_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Carrier);
             }
-            else carrier.reset();
+            else carrier_widget.reset();
         }
     }
 
-    if (battleship.isGrabbed()) {
+    if (battleship_widget.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
             grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            battleship.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            battleship_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
         }
     }
-    if (battleship.onDrop()) {
-        if (!grid.isHovered()) battleship.reset();
+    if (battleship_widget.onDrop()) {
+        if (!grid.isHovered()) battleship_widget.reset();
         else {
-            image_position = battleship.getPosition();
+            image_position = battleship_widget.getPosition();
             grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            bool can_be_placed = 
+                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *battleship);
             if (can_be_placed) {
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                battleship.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                battleship_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Battleship);
             }
-            else battleship.reset();
+            else battleship_widget.reset();
         }
     }
 
-    if (cruiser.isGrabbed()) {
+    if (cruiser_widget.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
             grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            cruiser.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            cruiser_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
         }
     }
-    if (cruiser.onDrop()) {
-        if (!grid.isHovered()) cruiser.reset();
+    if (cruiser_widget.onDrop()) {
+        if (!grid.isHovered()) cruiser_widget.reset();
         else {
-            image_position = cruiser.getPosition();
+            image_position = cruiser_widget.getPosition();
             grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            bool can_be_placed = 
+                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *cruiser);
             if (can_be_placed) {
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                cruiser.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                cruiser_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Cruiser);
             }
-            else cruiser.reset();
+            else cruiser_widget.reset();
         }
     }
 
-    if (submarine.isGrabbed()) {
+    if (submarine_widget.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
             grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            submarine.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            submarine_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
         }
     }
-    if (submarine.onDrop()) {
-        if (!grid.isHovered()) submarine.reset();
+    if (submarine_widget.onDrop()) {
+        if (!grid.isHovered()) submarine_widget.reset();
         else {
-            image_position = submarine.getPosition();
+            image_position = submarine_widget.getPosition();
             grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            bool can_be_placed = 
+                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *submarine);
             if (can_be_placed) {
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                submarine.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                submarine_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Submarine);
             }
-            else submarine.reset();
+            else submarine_widget.reset();
         }
     }
 
-    if (destroyer.isGrabbed()) {
+    if (destroyer_widget.isGrabbed()) {
         if (grid.isHovered()) {
             grid_cell_coords = grid.getHoverIndices();
             grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            destroyer.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+            destroyer_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
         }
     }
-    if (destroyer.onDrop()) {
-        if (!grid.isHovered()) destroyer.reset();
+    if (destroyer_widget.onDrop()) {
+        if (!grid.isHovered()) destroyer_widget.reset();
         else {
-            image_position = destroyer.getPosition();
+            image_position = destroyer_widget.getPosition();
             grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = true;  //TO BE SUBSTITUTED BY GRID CHECK FUNCTION
+            bool can_be_placed = 
+                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *destroyer);
             if (can_be_placed) {
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                destroyer.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                destroyer_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Destroyer);
             }
-            else destroyer.reset();
+            else destroyer_widget.reset();
         }
     }
 

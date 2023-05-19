@@ -1,0 +1,16 @@
+{
+  "type": "shoot_response",
+  "game_id": "test_shoot_resp_game_id",
+  "player_id": "test_shoot_resp_player_id",
+  "x": 1,
+  "y": 2,
+  "is_valid": true,
+  "has_hit": true,
+  "has_destroyed_ship": true,
+  "destroyed_ship": {
+    "name": 2,
+    "x": 1,
+    "y": 5,
+    "is_horizontal": true
+  }
+}

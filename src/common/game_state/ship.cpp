@@ -36,7 +36,11 @@ const unsigned short category_to_size(const ShipCategory &type) {
 
 // Constructor
 Ship::Ship(const ShipCategory &name_)
-    : name_(name_), is_sunk_(false), is_placed_(false), is_horizontal_(false), length_(category_to_size(name_)){
+    : name_(name_),
+      is_sunk_(false),
+      is_placed_(false),
+      is_horizontal_(false),
+      length_(category_to_size(name_)) {
     // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
@@ -48,7 +52,8 @@ Ship::Ship(const ShipData &data)
       is_placed_(true),
       is_horizontal_(data.is_horizontal),
       x_(data.x),
-      y_(data.y), length_(category_to_size(data.name)){
+      y_(data.y),
+      length_(category_to_size(data.name)) {
     // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
@@ -157,4 +162,11 @@ void from_json(const json &j, ShipData &data) {
     j.at("is_horizontal").get_to(data.is_horizontal);
     j.at("x").get_to(data.x);
     j.at("y").get_to(data.y);
+}
+
+void to_json(json &j, const ShipData &data) {
+    j = json{{"name", data.name},
+             {"is_horizontal", data.is_horizontal},
+             {"x", data.x},
+             {"y", data.y}};
 }

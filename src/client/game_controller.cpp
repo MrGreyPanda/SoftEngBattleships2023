@@ -38,7 +38,9 @@ void GameController::init() {
     EndPanel::init();
 
     ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
-    game_state_.set_phase(Battle);
+    game_state_.set_phase(Connection);
+
+    printf("All panels initialized\n");
 }
 
 void GameController::run() {
@@ -51,8 +53,8 @@ void GameController::render() {
     while (SDLGui::isRunning()) {
         SDLGui::newFrame();
 
-        if(game_state_.get_phase() == End) EndPanel::render();
-        if(game_state_.get_phase() == Battle) BattlePanel::render();
+        if (game_state_.get_phase() == End) EndPanel::render();
+        if (game_state_.get_phase() == Battle) BattlePanel::render();
         if (game_state_.get_phase() == Preparation) PreparationPanel::render();
         if (game_state_.get_phase() == Lobby) LobbyPanel::render();
         if (game_state_.get_phase() == Connection) ConnectionPanel::render();

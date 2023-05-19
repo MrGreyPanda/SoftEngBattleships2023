@@ -102,15 +102,18 @@ class GameInstance {
      * @return true if succesful
      * @return false else
      */
-    bool start_game();
+    bool start_preparation();
+
+    bool start_battle();
+
     /**
      * @brief Places shot on the corresponding boards and updates the
      * game_state according to the rules
-     *
-     * @return true
-     * @return false
      */
-    bool shoot();
+    void handle_shot(const std::string& player_id,
+                     std::string& other_player_id, const unsigned short x,
+                     const unsigned short y, bool& is_valid, bool& has_hit,
+                     bool& has_destroyed_ship, ShipData& destroyed_ship);
     /**
      * @brief Validate the prepared ships for a player and set them on the
      * board. Update the player as ‘is prepared’.
