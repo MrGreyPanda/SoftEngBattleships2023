@@ -9,7 +9,7 @@ GameState::GameState()
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id_(id), phase_(Connection), turn_player_index_(0), players_(players){}
+    : id_(id), phase_(Connection), turn_player_index_(0), players_(players) {}
 
 GameState::~GameState() {}
 
@@ -73,6 +73,10 @@ unsigned short GameState::get_turn_player_index() const {
     return turn_player_index_;
 }
 
+std::string GameState::get_turn_player_id() const {
+    return players_[turn_player_index_]->get_id();
+}
+
 void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
@@ -95,9 +99,7 @@ std::string GameState::get_other_player_id(std::string id) const {
     return "";
 }
 
-void GameState::set_game_id(const std::string& game_id) {
-    id_ = game_id;
-}
+void GameState::set_game_id(const std::string& game_id) { id_ = game_id; }
 bool GameState::all_players_ready() const {
     for (Player* player : players_) {
         if (!player->get_is_ready()) {

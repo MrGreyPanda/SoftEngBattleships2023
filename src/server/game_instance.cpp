@@ -73,12 +73,24 @@ void GameInstance::handle_shot(const std::string &player_id,
     has_destroyed_ship = false;
     destroyed_ship     = ShipData();
 
+    // 0. check if the game has started and it's this players turn!
     // 1. check if other player own board was already shot at this position
     // 2. check if this players enemy board was already shot at this position
     // 3. Place a shot on both boards
     // 4. Check if the shot hit a ship
     // 5. Check if the shot destroyed a ship
     // 6. If a ship was destroyed, check if the shot decided a game
+
+    // 0. check if the game has started and it's this players turn!
+    if (game_state_->get_phase() != Phase::Battle) {
+        std::cout
+            << "[GameInstance] Error: Battle phase has not started yet\n";
+        return;
+    }
+    if (game_state_->get_turn_player_id() != player_id) {
+        std::cout << "[GameInstance] Error: It's not this players turn\n";
+        return;
+    }
 
     // 1. check if other player own board was already shot at this position
 

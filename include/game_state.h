@@ -113,6 +113,8 @@ class GameState {
      */
     unsigned short get_turn_player_index() const;
 
+    std::string get_turn_player_id() const;
+
     /**
      * @brief change turn player index
      */
