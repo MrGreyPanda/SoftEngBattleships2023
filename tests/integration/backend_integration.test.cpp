@@ -3,6 +3,9 @@
 #include <sstream>
 #include <thread>
 
+#include "gave_up_message.h"
+#include "give_up_request.h"
+#include "give_up_response.h"
 #include "gtest/gtest.h"
 #include "join_message.h"
 #include "join_request.h"
@@ -481,7 +484,29 @@ TEST(Z_BackendIntegrationTest, Shot5From1at2Miss) {
     }
 }
 
-TEST(Z_BackendIntegrationTest, Player1GiveUp) { FAIL() << "Not implemented"; }
+TEST(Z_BackendIntegrationTest, Player1GiveUp) {
+    // player 1 sends a give up request
+    const GiveUpRequest give_up_request(game_id, player_id_1);
+
+    send_request_to_server(connector_1, give_up_request.to_string());
+
+    // player 1 recieves a give up response
+    const GiveUpResponse give_up_response_1(
+        recieve_response_json_from_server(connector_1));
+
+    EXPECT_EQ(give_up_response_1.get_type(), MessageType::GiveUpResponseType);
+    EXPECT_TRUE(give_up_response_1.get_error().empty());
+    EXPECT_EQ(give_up_response_1.get_game_id(), game_id);
+    EXPECT_EQ(give_up_response_1.get_player_id(), player_id_1);
+
+    // player 2 recieves a gave up message
+    const GaveUpMessage gave_up_message_2(
+        recieve_response_json_from_server(connector_2));
+
+    EXPECT_EQ(gave_up_message_2.get_type(), MessageType::GaveUpMessageType);
+    EXPECT_EQ(gave_up_message_2.get_game_id(), game_id);
+    EXPECT_EQ(gave_up_message_2.get_player_id(), player_id_1);
+}
 
 TEST(Z_BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();

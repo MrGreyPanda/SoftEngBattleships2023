@@ -53,20 +53,19 @@ void ServerRequestHandler::handle_request(const MessageType& type,
 
             break;
 
-            // case ClientRequestType::GiveUp:
-            //     // Parse the ready request
-            //     try {
-            //         ClientGiveUpRequest give_up_request;
-            //         give_up_request = ClientGiveUpRequest(data);
-            //         handle_give_up_request_(give_up_request);
-            //     } catch (const std::exception& e) {
-            //         std::cout << "[ServerRequestHandler] Error parsing give
-            //         up request: "
-            //                   << e.what() << std::endl;
-            //         return;
-            //     }
+        case MessageType::GiveUpRequestType:
+            // Parse the give up request
+            try {
+                GiveUpRequest give_up_request(data);
+                handle_give_up_request_(give_up_request);
+            } catch (const std::exception& e) {
+                std::cout << "[ServerRequestHandler] Error parsing give "
+                             "up request: "
+                          << e.what() << std::endl;
+                return;
+            }
 
-            //     break;
+            break;
 
         case MessageType::JoinRequestType:
             throw std::runtime_error(
@@ -312,11 +311,11 @@ void ServerRequestHandler::handle_shoot_request_(
     const ShootRequest& shoot_request) {
     std::cout << "Got shoot request\n";
 
-    std::string game_id = shoot_request.get_game_id();
+    const std::string game_id = shoot_request.get_game_id();
 
     GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
-    std::string player_id       = shoot_request.get_player_id();
+    const std::string player_id = shoot_request.get_player_id();
     std::string other_player_id = "";
     short x                     = shoot_request.get_x();
     short y                     = shoot_request.get_y();
@@ -364,12 +363,32 @@ void ServerRequestHandler::handle_shoot_request_(
 
 void ServerRequestHandler::handle_give_up_request_(
     const GiveUpRequest& give_up_request) {
-    // const GameOverMessage won_message(give_up_request.get_game_id(),
-    //                                   give_up_request.get_player_id(),
-    //                                   true);
+    const std::string game_id   = give_up_request.get_game_id();
+    const std::string player_id = give_up_request.get_player_id();
 
-    // ServerNetworkManager::send_message(won_message.to_string(),
-    //                                     won_message.get_player_id());
+    GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
-    throw std::runtime_error("Not implemented yet");
+    const GiveUpResponse give_up_response(game_id, player_id);
+    ServerNetworkManager::send_message(give_up_response.to_string(),
+                                       player_id);
+
+    const std::string other_player_id =
+        game_ptr->try_get_other_player_id(player_id);
+    if (other_player_id.empty()) {
+        std::cout << "[ServerRequestHandler] Error: Could not find other "
+                     "player ID for game with ID '"
+                  << game_id << "'" << std::endl;
+        // Hint: the other player might have left the game already
+        return;
+    }
+
+    const GaveUpMessage give_up_message(game_id, player_id);
+    ServerNetworkManager::send_message(give_up_message.to_string(),
+                                       other_player_id);
+
+    // remove the game
+    delete game_ptr;  // TODO FIXME check if this is correct, how to talk
+                      // to player manager?
+    PlayerManager::remove_player(player_id);
+    PlayerManager::remove_player(other_player_id);
 }
