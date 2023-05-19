@@ -1,5 +1,5 @@
 {
-  "type": "gave_up_request",
+  "type": "give_up_request",
   "game_id": "1234",
   "player_id": "2345"
 }
