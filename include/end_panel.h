@@ -3,7 +3,8 @@
 #include "SDLGui.hpp"
 #include <string>
 #include "game_state.h"
-
+#include "client_network_manager.h"
+#include "join_request.h"
 
 class EndPanel {
 public:

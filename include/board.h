@@ -98,6 +98,12 @@ class Board {
 
     const Ship* get_ship_by_index(const unsigned short &index) const;
 
+
+    /**
+     * @brief Reset the board to its initial state
+     */
+    void reset_board();
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *

@@ -7,7 +7,7 @@ void EndPanel::init(){
     new SDLGui::SDLGuiContext("endWindow");
 
     SDLGui::TextWidget* winner_or_loser_text = new SDLGui::TextWidget(
-    "winner_or_loser_text", "You won!", .06f, .1f, .4f, .09f, 0.,
+    "winner_or_loser_text", "", .06f, .1f, .4f, .09f, 0.,
     SDLGui::TextFlagsExt_CenterTextVertical |
         SDLGui::TextFlagsExt_NoBackground);
     end_window_context->addWidget(winner_or_loser_text);
@@ -29,6 +29,17 @@ void EndPanel::init(){
 void EndPanel::render() {
     SDLGui::begin("endWindow");
 
+    if(game_state_->get_players()[0]->has_won){
+        SDLGui::Text("winner_or_loser_text").updateText(64, "You Won!");
+    }
+    else{
+        SDLGui::Text("winner_or_loser_text").updateText(64, "You Lost!");
+    }
 
+    if(SDLGui::TextButton("end_play_again_button")){
+        game_state_->reset_state();
+        ClientNetworkManager::send_message(JoinRequest().to_string());
+
+    }
     SDLGui::end();
 }

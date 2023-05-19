@@ -104,5 +104,10 @@ class ClientResponseMessageHandler {
     // Maybe have private static game_state_* here, then, this handler can really handle all stuff
     // Question is, who is updating the GUI? and how?
 
+    // /**
+    //  * @brief Handles the message of a game over
+    // */
+    // static void handle_game_over_message_(const GameOverMessage& message);
+
     static GameState* game_controller_game_state_;
 };

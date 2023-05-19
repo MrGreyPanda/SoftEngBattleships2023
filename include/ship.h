@@ -194,6 +194,12 @@ class Ship {
      */
     ShipData get_data() const;
 
+
+    /**
+     * @brief Resets the ship to its default values
+    */
+    void reset_ship();
+
    private:
     const unsigned short length_;
     bool is_sunk_;

@@ -173,3 +173,12 @@ void to_json(json &j, const ShipData &data) {
              {"x", data.x},
              {"y", data.y}};
 }
+
+void Ship::reset_ship(){
+    is_sunk_ = false;
+    is_placed_ = false;
+    is_horizontal_ = false;
+    damage_ = 0;
+    x_ = 0;
+    y_ = 0;
+}

@@ -79,6 +79,12 @@ void PreparationPanel::render()
     static SDLGui::DraggableImageWidget& submarine_widget = SDLGui::DraggableImage("submarine_ship");
     static SDLGui::DraggableImageWidget& destroyer_widget = SDLGui::DraggableImage("destroyer_ship");
 
+    std::array<SDLGui::DraggableImageWidget, 5> ships = {SDLGui::DraggableImage("destroyer_ship"),
+                                                          SDLGui::DraggableImage("submarine_ship"),
+                                                          SDLGui::DraggableImage("cruiser_ship"),
+                                                          SDLGui::DraggableImage("battleship_ship"),
+                                                          SDLGui::DraggableImage("carrier_ship")};
+
     static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
 
     static std::pair<uint32_t, uint32_t> grid_cell_coords;

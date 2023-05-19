@@ -71,19 +71,19 @@ const Ship* Board::get_ship_by_index(const unsigned short &index) const {
     return ships_[index];
 }
 
-// OwnBoard::OwnBoard() : Board() {}
-
-// OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
+void Board::reset_board(){
+    for(int i = 0; i < grid_size_; i++){
+        for(int j = 0; j < grid_size_; j++){
+            grid_[i][j] = 0;
+            is_shot_[i][j] = false;
+        }
+    }
+    for(int i = 0; i < ships_.size(); i++){
+        ships_[i]->reset_ship();
+    }
+}
 
 // ------------ OwnBoard ------------- //
-
-// OwnBoard::~OwnBoard() {
-//     auto ships_vec = *this->get_ship_vec();
-//     for (int i = 0; i < ships_vec.size(); i++) {
-//         delete ships_vec[i];
-//     }
-//     ships_vec.clear();
-// }
 
 bool OwnBoard::is_valid_placement(const short &x, const short &y,
                                   const Ship &ship) const {

@@ -109,6 +109,8 @@ class Player {
 
     bool has_shot = false;
 
+    bool has_won = true;
+    
    private:
     std::string id_;
     bool is_ready_;

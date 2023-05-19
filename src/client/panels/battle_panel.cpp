@@ -132,6 +132,9 @@ void BattlePanel::render()
 {
     SDLGui::begin("battle_panel_context");
 
+    static SDLGui::GridWidget& own_grid = SDLGui::Grid("own_board");
+    static SDLGui::GridWidget& enemy_grid = SDLGui::Grid("enemy_board");
+
     unsigned short grid_size = player_->get_enemy_board().get_grid_size();
     for(int i = 0; i < grid_size; i++){
         for(int j = 0; j < grid_size; j++){
@@ -185,7 +188,7 @@ void BattlePanel::render()
         if(help_button_counter_ == 0){
             ++help_button_counter_;
             // Set the background
-            SDLGui::Text("helpMessageText").updateText(512, "Click on the enemy board to shoot. Click on the resign button to resign. Press R while holding a ship to rotate it. Click on the help button to close this message.");
+            SDLGui::Text("helpMessageText").updateText(512, "Click on the enemy board to shoot. Click on the resign button to resign. Click on the help button to close this message.");
         }
         else{
             --help_button_counter_;
@@ -194,6 +197,11 @@ void BattlePanel::render()
         }
     }
 
+    if(SDLGui::TextButton("ResignButton")){
+        // Send a resign request to the server
+        GiveUpRequest resign_request(game_state_->get_id(), player_->get_id());
+        ClientNetworkManager::send_message(resign_request.to_string());
+    }
 
     SDLGui::end();
 }

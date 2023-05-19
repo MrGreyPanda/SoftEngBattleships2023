@@ -6,6 +6,7 @@
 #include "shoot_request.h"
 #include "client_network_manager.h"
 #include "game_state.h"
+#include "give_up_request.h"
 class BattlePanel {
 public:
     static void init();

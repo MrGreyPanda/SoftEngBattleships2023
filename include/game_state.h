@@ -145,6 +145,12 @@ class GameState {
      */
     bool all_players_prepared() const;
 
+    /**
+     * @brief Reset all players' states to 'not ready' and set the game phase to 'lobby'.
+     */
+
+    void reset_state();
+
    private:
     std::string id_;
     std::vector<Player*> players_;
