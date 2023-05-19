@@ -198,7 +198,7 @@ void BattlePanel::render()
     }
 
     if(SDLGui::TextButton("ResignButton")){
-        // Send a resign request to the server
+        // Send a resign request to the server -> Pop up a message box to confirm
         GiveUpRequest resign_request(game_state_->get_id(), player_->get_id());
         ClientNetworkManager::send_message(resign_request.to_string());
     }
