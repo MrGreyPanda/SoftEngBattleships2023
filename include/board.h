@@ -104,6 +104,8 @@ class Board {
      */
     void reset_board();
 
+   bool has_been_reset = false;
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *
@@ -222,6 +224,8 @@ class EnemyBoard : public Board {
     bool is_valid_shot(const short &x, const short &y) const;
 
     void update_ship_vec(ShipCategory ship);
+
+    void set_ship_data(const std::array<ShipData, 5> &ships);
 
    private:
 };

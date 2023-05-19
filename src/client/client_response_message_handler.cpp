@@ -67,6 +67,10 @@ void ClientResponseMessageHandler::handle_message_string(
             handle_shot_message_(ShotMessage(json_message));
             break;
 
+        case MessageType::GameOverMessageType:
+            handle_game_over_message_(GameOverMessage(json_message));
+            break;
+
         case MessageType::UnknownType:
             std::cerr << "[ClientResponseMessageHandler] Error: Unknown "
                          "message type"
@@ -128,7 +132,10 @@ void ClientResponseMessageHandler::handle_prepared_response_(
             game_controller_game_state_->set_phase(Battle);
         
     }
-    
+    else{
+        game_controller_game_state_->get_players()[0]->unset_prepared();
+        game_controller_game_state_->get_players()[0]->get_own_board().reset_board();
+    }
 }
 
 // Sets other player as prepared
@@ -205,7 +212,9 @@ void ClientResponseMessageHandler::handle_shot_message_(
     }
 }
 
-// void GameState::handle_game_over_message(const GameOverMessage &message) {
-//     game_controller_game_state_->set_phase(End);
-//     game_controller_game_state_->get_players()[0]->has_won = message.has_won();
-// }
+void ClientResponseMessageHandler::handle_game_over_message_(const GameOverMessage& message) {
+    game_controller_game_state_->set_phase(End);
+    game_controller_game_state_->get_players()[0]->has_won = message.has_won();
+    game_controller_game_state_->get_players()[1]->has_won = !message.has_won();
+    game_controller_game_state_->get_players()[0]->get_enemy_board().set_ship_data(message.get_ship_data());
+}

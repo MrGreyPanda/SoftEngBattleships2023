@@ -74,6 +74,8 @@ void PreparationPanel::render()
     SDLGui::begin("preparation_panel_context");
 
     static OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
+    if(own_board.has_been_reset)
+        SDLGui::TextButton("ready_button").enable();
 
     static SDLGui::DraggableImageWidget& carrier_widget = SDLGui::DraggableImage("carrier_ship");
     static SDLGui::DraggableImageWidget& battleship_widget = SDLGui::DraggableImage("battleship_ship");
@@ -106,6 +108,8 @@ void PreparationPanel::render()
                 ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
             }
         }
+
+        // ATTENTION -> I think SDL and cpp are handling x y differently, so I'm swapping them here
         if(ships_widget_arr[i]->onDrop()){
             if(!grid.isHovered()) ships_widget_arr[i]->reset();
             else{
@@ -130,7 +134,7 @@ void PreparationPanel::render()
         SDLGui::TextButton("ready_button").disable();
         Player* player = game_state_->get_players()[0];
         if(own_board.is_valid_configuration()){
-            // ClientNetworkManager::send_message(PreparedRequest(game_state_->get_id(), player->get_id(), player->get_own_board().get_ship_vec()));
+            ClientNetworkManager::send_message(PreparedRequest(game_state_->get_id(), player->get_id(), own_board.get_ship_configuration()).to_string());
         }
         else{
             own_board.reset_board();

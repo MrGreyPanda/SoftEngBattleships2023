@@ -81,6 +81,7 @@ void Board::reset_board(){
     for(int i = 0; i < ships_.size(); i++){
         ships_[i]->reset_ship();
     }
+    has_been_reset = true;
 }
 
 // ------------ OwnBoard ------------- //
@@ -259,13 +260,13 @@ bool OwnBoard::is_valid_configuration() const {
             }
         }
     }
-    for (int i = 0; i < 6; i++) {
-        if (ship_lengths[i] != 0) {
-            std::cout << "Ship " << (ShipCategory)i << " has wrong length!"
-                      << std::endl;
-            return false;
-        }
-    }
+    // for (int i = 0; i < 6; i++) {
+    //     if (ship_lengths[i] != 0) {
+    //         std::cout << "Ship " << (ShipCategory)i << " has wrong length!"
+    //                   << std::endl;
+    //         return false;
+    //     }
+    // }
 
     return true;
 }
@@ -327,6 +328,22 @@ void EnemyBoard::update_ship_vec(ShipCategory ship) {
         if (ship_vec[i]->get_name() == ship) {
             ship_vec[i]->set_is_sunk(true);
             return;
+        }
+    }
+}
+
+void EnemyBoard::set_ship_data(const std::array<ShipData, 5> &ship_data) {
+    for (const ShipData &ship : ship_data) {
+        Ship *ship_ptr = get_ship_by_name(ship.name);
+        unsigned short x = ship.x;
+        unsigned short y = ship.y;
+        unsigned short length = ship_ptr->get_length();
+        for(int i = 0; i < length; i++){
+            if(ship.is_horizontal){
+                this->set_grid_value(x+i, y, ship.name);
+            }else{
+                this->set_grid_value(x, y+i, ship.name);
+            }
         }
     }
 }
