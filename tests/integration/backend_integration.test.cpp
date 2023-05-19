@@ -301,43 +301,50 @@ TEST(Z_BackendIntegrationTest, Preparation) {
     }
 }
 
-TEST(Z_BackendIntegrationTest, FirstShotFrom1at2) {
-    // try {
-    //     // player 1 shoots at player 2
-    //     const ShootRequest shoot_request_1(game_id_1, player_id_1, 3, 8);
+TEST(Z_BackendIntegrationTest, Shot1From1at2Miss) {
+    try {
+        // player 1 shoots at player 2
+        const ShootRequest shoot_request_1(game_id_1, player_id_1, 3, 8);
 
-    //     send_request_to_server(connector_1, shoot_request_1.to_string());
+        send_request_to_server(connector_1, shoot_request_1.to_string());
 
-    //     // player 1 gets response with shot info and hit or miss
-    //     const ShootResponse shoot_response_1(
-    //         recieve_response_json_from_server(connector_1));
+        // player 1 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_1(
+            recieve_response_json_from_server(connector_1));
 
-    //     EXPECT_EQ(shoot_response_1.get_type(),
-    //     MessageType::ShootResponseType);
-    //     EXPECT_TRUE(shoot_response_1.is_valid());
-    //     EXPECT_TRUE(shoot_response_1.get_error().empty());
-    //     EXPECT_EQ(shoot_response_1.get_game_id(), game_id_1);
-    //     EXPECT_EQ(shoot_response_1.get_player_id(), player_id_1);
-    //     EXPECT_EQ(shoot_response_1.get_x(), 3);
-    //     EXPECT_EQ(shoot_response_1.get_y(), 8);
-    //     EXPECT_FALSE(shoot_response_1.has_hit());
+        EXPECT_EQ(shoot_response_1.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_1.is_valid());
+        EXPECT_TRUE(shoot_response_1.get_error().empty());
+        EXPECT_EQ(shoot_response_1.get_game_id(), game_id_1);
+        EXPECT_EQ(shoot_response_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shoot_response_1.get_x(), 3);
+        EXPECT_EQ(shoot_response_1.get_y(), 8);
+        EXPECT_FALSE(shoot_response_1.has_hit());
 
-    //     // player 2 gets shot message with shot info and hit or miss
-    //     const ShotMessage shot_message_2(
-    //         recieve_response_json_from_server(connector_2));
+        // player 2 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_2(
+            recieve_response_json_from_server(connector_2));
 
-    //     EXPECT_EQ(shot_message_2.get_type(), MessageType::ShotMessageType);
-    //     EXPECT_EQ(shot_message_2.get_game_id(), game_id_2);
-    //     EXPECT_EQ(shot_message_2.get_player_id(), player_id_2);
-    //     EXPECT_EQ(shot_message_2.get_x(), 3);
-    //     EXPECT_EQ(shot_message_2.get_y(), 8);
-    //     EXPECT_FALSE(shot_message_2.has_hit());
-    // } catch (const std::exception& e) {
-    //     FAIL() << "Caught exception: " << e.what();
-    // }
+        EXPECT_EQ(shot_message_2.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_2.get_game_id(), game_id_2);
+        EXPECT_EQ(shot_message_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shot_message_2.get_x(), 3);
+        EXPECT_EQ(shot_message_2.get_y(), 8);
+        EXPECT_FALSE(shot_message_2.has_hit());
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
 }
 
-TEST(Z_BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
+TEST(Z_BackendIntegrationTest, Shot2From2at1Hit) {}
+
+TEST(Z_BackendIntegrationTest, Shot3From2at1Hit) {}
+
+TEST(Z_BackendIntegrationTest, Shot4From2at1Miss) {}
+
+TEST(Z_BackendIntegrationTest, Shot5From1at2Hit) {}
+
+TEST(Z_BackendIntegrationTest, Player1GiveUp) { FAIL() << "Not implemented"; }
 
 TEST(Z_BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();

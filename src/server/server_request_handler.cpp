@@ -375,7 +375,7 @@ void ServerRequestHandler::handle_shoot_request_(
 
         ServerNetworkManager::send_message(response.to_string(), player_id);
 
-        ShotMessage message(game_id, player_id, x, y, has_hit);
+        ShotMessage message(game_id, other_player_id, x, y, has_hit);
         ServerNetworkManager::send_message(message.to_string(),
                                            other_player_id);
     }

@@ -33,6 +33,7 @@ json ShootResponse::to_json() const {
     json j        = Response::to_json();
     j["is_valid"] = is_valid_;
     j.merge_patch(ShotMessage::to_json());
+    j["type"] = "shoot_response";
     return j;
 }
 
