@@ -6,9 +6,13 @@ Board::Board() : grid_size_(10) {
 }
 
 // I should need to use delete here, but I don't know why it doesn't work
-Board::~Board() { ships_.clear(); }
+Board::~Board() {
+    for(int i = 0; i < ships_.size(); i++) {
+        if(ships_[i] != nullptr) delete ships_[i];
+    }
+}
 
-unsigned short Board::get_grid_size() const { return grid_size_; }
+const unsigned short Board::get_grid_size() const { return grid_size_; }
 
 // unsigned short Board::get_num_active_ships() {
 //     unsigned short num_active_ships = 0;
@@ -24,13 +28,12 @@ unsigned short Board::get_grid_value(const short &x, const short &y) const {
 
 unsigned short Board::get_num_ships() const { return ships_.size(); }
 
-std::vector<Ship *> &Board::get_ship_vec() { return ships_; }
+std::array<Ship *, 5> &Board::get_ship_vec() { return ships_; }
 
-const std::vector<const Ship *> Board::get_ship_vec() const {
-    std::vector<const Ship *> const_ships_pointers(0);
-    for (Ship *ship_ptr : ships_) {
-        const Ship *const_ship_ptr = ship_ptr;
-        const_ships_pointers.push_back(const_ship_ptr);
+const std::array<const Ship *, 5> Board::get_ship_vec() const {
+    std::array<const Ship *, 5> const_ships_pointers{nullptr};
+    for (int i = 0; i < 5; i++) {
+        const_ships_pointers[i] = (const Ship*)ships_[i];
     }
     return const_ships_pointers;
 }
@@ -189,7 +192,7 @@ bool OwnBoard::rotate_ship(const ShipCategory &shipname) {
 Ship *OwnBoard::get_ship(const short &x, const short &y) {
     ShipCategory shiptype          = (ShipCategory)get_grid_value(x, y);
     int num_ships                  = get_num_ships();
-    std::vector<Ship *> &ships_vec = get_ship_vec();
+    std::array<Ship *, 5> &ships_vec = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ships_vec[i]->get_name() == shiptype) return ships_vec[i];
     }
@@ -200,7 +203,7 @@ Ship *OwnBoard::get_ship(const short &x, const short &y) {
 
 bool OwnBoard::all_ships_sunk() const {
     int num_ships                              = get_num_ships();
-    const std::vector<const Ship *> &ships_vec = get_ship_vec();
+    const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ships_vec.at(i)->get_is_sunk() == false) return false;
     }
@@ -300,7 +303,7 @@ bool EnemyBoard::is_valid_shot(const short &x, const short &y) const {
 
 void EnemyBoard::update_ship_vec(ShipCategory ship) {
     int num_ships                = this->get_num_ships();
-    std::vector<Ship *> ship_vec = get_ship_vec();
+    std::array<Ship *, 5> ship_vec = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ship_vec[i]->get_name() == ship) {
             ship_vec[i]->set_is_sunk(true);

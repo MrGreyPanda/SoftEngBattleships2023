@@ -25,7 +25,8 @@ enum ShipCategory {
     Submarine  = (short)2,  // size = 3
     Cruiser    = (short)3,  // size = 3
     Battleship = (short)4,  // size = 4
-    Carrier    = (short)5   // size = 5
+    Carrier    = (short)5,   // size = 5
+    ShipPart   = (short)6   // size = 1
 };
 
 /**
@@ -56,7 +57,7 @@ void from_json(const json &j, ShipData &data);
  * @brief Converts a ShipCategory to the size of the ship
  * @param type The ShipCategory to be converted
  */
-unsigned short category_to_size(ShipCategory type);
+const unsigned short category_to_size(const ShipCategory &type);
 
 class Ship {
    public:
@@ -71,7 +72,7 @@ class Ship {
      * @param name_ The name_ of the ship
      * TODO: Add except/assertion to make it safer
      */
-    Ship(ShipCategory name_);
+    Ship(const ShipCategory &name_);
 
     /**
      * @brief Construct a new Ship object from the data struct
@@ -83,15 +84,15 @@ class Ship {
      */
     Ship(const ShipData &data);
 
-    /**
-     * @brief Copy constructor
-     */
-    Ship(const Ship &other);
+    // /**
+    //  * @brief Copy constructor
+    // */
+    // Ship(const Ship &other);
 
-    /**
-     * @brief Copy assignment operator
-     */
-    Ship &operator=(const Ship &other);
+    // /**
+    //  * @brief Copy assignment operator
+    //  */
+    // Ship &operator=(const Ship &other);
 
     /**
      * @brief Destroy the Ship object
@@ -176,7 +177,7 @@ class Ship {
      * @brief Set the x_ of the ship
      * @param x, y The new x_ & y_ of the ship
      */
-    void set_xy(const short &x, const short &y);
+    void set_xy(const unsigned short &x, const unsigned short &y);
 
     /**
      * @brief Get the data object
@@ -186,10 +187,10 @@ class Ship {
     ShipData get_data() const;
 
    private:
-    unsigned short length_;
+    const unsigned short length_;
     bool is_sunk_;
     unsigned short damage_ = 0;
-    ShipCategory name_;
+    const ShipCategory name_;
     bool is_horizontal_;
     bool is_placed_;
 
