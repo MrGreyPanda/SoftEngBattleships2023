@@ -120,7 +120,9 @@ class GameState {
      */
     void change_turn_player_index();
 
-    bool start_game();  // Let's see if this is needed
+    bool start_preparation();
+
+    bool start_battle();
 
     std::string get_other_player_id(std::string id) const;
 

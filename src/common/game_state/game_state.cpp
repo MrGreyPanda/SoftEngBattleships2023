@@ -81,12 +81,20 @@ void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
 
-bool GameState::start_game() {
-    if (players_.size() < 2) {
-        return false;
+bool GameState::start_preparation() {
+    if (players_.size() == 2 && all_players_ready()) {
+        phase_ = Phase::Preparation;
+        return true;
     }
-    phase_ = Preparation;
-    return true;
+    return false;
+}
+
+bool GameState::start_battle() {
+    if (players_.size() == 2 && all_players_prepared()) {
+        phase_ = Phase::Battle;
+        return true;
+    }
+    return false;
 }
 
 std::string GameState::get_other_player_id(std::string id) const {

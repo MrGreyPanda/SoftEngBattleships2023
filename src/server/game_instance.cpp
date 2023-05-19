@@ -16,14 +16,11 @@ bool GameInstance::has_ended() const {
     return game_state_->get_phase() == End;
 }
 
-bool GameInstance::start_game() {
-    Phase phase = Preparation;
-    if (game_state_->get_phase() == Lobby) {
-        game_state_->set_phase(phase);
-        return true;
-    }
-    return false;
+bool GameInstance::start_preparation() {
+    return game_state_->start_preparation();
 }
+
+bool GameInstance::start_battle() { return game_state_->start_battle(); }
 
 bool GameInstance::try_remove_player(Player *player) {
     lock_.lock();

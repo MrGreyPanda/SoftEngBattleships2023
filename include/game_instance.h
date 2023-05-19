@@ -102,7 +102,9 @@ class GameInstance {
      * @return true if succesful
      * @return false else
      */
-    bool start_game();
+    bool start_preparation();
+
+    bool start_battle();
 
     /**
      * @brief Places shot on the corresponding boards and updates the

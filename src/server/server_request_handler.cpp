@@ -100,7 +100,8 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
         const JoinResponse join_response("", "",
                                          "Error: Could not add player to "
-                                         "PlayerManager", 0);
+                                         "PlayerManager",
+                                         0);
 
         return std::make_tuple(nullptr, join_response);
     }
@@ -133,7 +134,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
                 ServerNetworkManager::send_message(join_message.to_string(),
                                                    other_player_id);
-                
+
                 join_response.set_player_amount(2);
             } else {
                 std::cout
@@ -226,20 +227,9 @@ void ServerRequestHandler::handle_ready_request_(
                   << std::endl;
 
         // Start the game
-        game_ptr->start_game();
+        game_ptr->start_preparation();
 
-        // Send a message to both players that the game has started
-        // const GameStartedMessage game_started_message(game_id, player_id);
-        // ServerNetworkManager::send_message(game_started_message.to_string(),
-        //                                    player_id);
-
-        // const std::string other_player_id =
-        //     game_ptr->try_get_other_player_id(player_id);
-
-        // if (!other_player_id.empty()) {
-        //     ServerNetworkManager::send_message(
-        //         game_started_message.to_string(), other_player_id);
-        // }
+        // TODO ? send preparation started message to both players?
     }
 }
 
@@ -312,20 +302,9 @@ void ServerRequestHandler::handle_prepared_request_(
             << std::endl;
 
         // Start the game
-        game_ptr->start_game();
+        game_ptr->start_battle();
 
-        // Send a message to both players that the game has started
-        // const GameStartedMessage game_started_message(game_id, player_id);
-        // ServerNetworkManager::send_message(game_started_message.to_string(),
-        //                                    player_id);
-
-        // const std::string other_player_id =
-        //     game_ptr->try_get_other_player_id(player_id);
-
-        // if (!other_player_id.empty()) {
-        //     ServerNetworkManager::send_message(
-        //         game_started_message.to_string(), other_player_id);
-        // }
+        // TODO ? send battle started message to both players?
     }
 }
 
