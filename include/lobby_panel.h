@@ -5,6 +5,8 @@
 #include "SDLGui.hpp"
 
 #include "game_state.h"
+#include "client_network_manager.h"
+#include "ready_request.h"
 
 class LobbyPanel {
 public:

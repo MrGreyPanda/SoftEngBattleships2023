@@ -85,7 +85,7 @@ void BattlePanel::init()
     // battle_panel_context->addWidget(destroyer_ship);
 
 
-    set_player_ptr(game_state_->get_players()[0]);
+    //set_player_ptr(game_state_->get_players()[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
