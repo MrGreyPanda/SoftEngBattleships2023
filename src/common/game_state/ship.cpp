@@ -116,7 +116,10 @@ ShipCategory Ship::get_name() const { return name_; }
 
 bool Ship::get_is_sunk() const { return is_sunk_; }
 
-void Ship::set_is_sunk(bool is_sunk) { is_sunk_ = is_sunk; }
+void Ship::set_is_sunk(bool is_sunk) { 
+    is_sunk_ = is_sunk;
+    damage_ = length_;
+}
 
 bool Ship::get_is_horizontal() const { return is_horizontal_; }
 

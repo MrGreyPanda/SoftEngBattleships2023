@@ -96,6 +96,7 @@ class ClientResponseMessageHandler {
      * board.
      *
      * @param request
+     * TODO: Throw exception if the ship has been destroyed in server but not in client
      */
     static void handle_shot_message_(const ShotMessage& message);
 

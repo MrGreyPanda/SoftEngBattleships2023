@@ -138,6 +138,21 @@ void ClientResponseMessageHandler::handle_shoot_response_(
             player->is_own_turn = true;
             player->has_shot = false;
             // Check if ship has been sunk
+            if(response.has_destroyed_ship()){
+                ShipData destroyed_ship = response.get_destroyed_ship();
+                unsigned short length = category_to_size(destroyed_ship.name);
+                if(destroyed_ship.is_horizontal){
+                    for(unsigned short i = 0; i < length; i++){
+                        player->get_enemy_board().set_grid_value(destroyed_ship.x + i, destroyed_ship.y, destroyed_ship.name);
+                    }
+                }
+                else {
+                    for(unsigned short i = 0; i < length; i++){
+                        player->get_enemy_board().set_grid_value(destroyed_ship.x, destroyed_ship.y + i, destroyed_ship.name);
+                    }
+                }
+                player->get_enemy_board().get_ship_by_name(destroyed_ship.name)->set_is_sunk(true);
+            }
             player->get_enemy_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
         else{
@@ -165,6 +180,10 @@ void ClientResponseMessageHandler::handle_shot_message_(
         game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->shot_at();
         // Just for safety
         game_controller_game_state_->get_players()[0]->is_own_turn = false;
+
+        // Check up if we get same data
+        bool correct game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->is_sunk() == message.has_destroyed_ship();
+        // TODO: Throw error if not correct
     }
     else{
         // Change turns
