@@ -3,6 +3,7 @@
 #include <sstream>
 #include <thread>
 
+#include "game_over_message.h"
 #include "gave_up_message.h"
 #include "give_up_request.h"
 #include "give_up_response.h"
@@ -42,6 +43,22 @@ std::vector<Ship> ships_1;
 std::vector<Ship> ships_2;
 
 std::chrono::milliseconds timeout(100);
+
+const std::array<ShipData, 5> ships_data_1 = {
+    ShipData(ShipCategory::Destroyer, true, 0, 5),
+    ShipData(ShipCategory::Submarine, true, 6, 8),
+    ShipData(ShipCategory::Cruiser, true, 7, 6),
+    ShipData(ShipCategory::Battleship, true, 6, 0),
+    ShipData(ShipCategory::Carrier, false, 4, 2),
+};
+
+const std::array<ShipData, 5> ships_data_2 = {
+    ShipData(ShipCategory::Destroyer, false, 5, 3),
+    ShipData(ShipCategory::Submarine, true, 4, 0),
+    ShipData(ShipCategory::Cruiser, false, 6, 1),
+    ShipData(ShipCategory::Battleship, true, 6, 9),
+    ShipData(ShipCategory::Carrier, false, 0, 0),
+};
 
 void send_request_to_server(sockpp::tcp_connector& connector,
                             const std::string& request_string) {
@@ -228,13 +245,6 @@ TEST(Z_BackendIntegrationTest, Ready) {
 TEST(Z_BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
-        const std::vector<ShipData> ships_data_1 = {
-            ShipData(ShipCategory::Destroyer, true, 0, 5),
-            ShipData(ShipCategory::Submarine, true, 6, 8),
-            ShipData(ShipCategory::Cruiser, true, 7, 6),
-            ShipData(ShipCategory::Battleship, true, 6, 0),
-            ShipData(ShipCategory::Carrier, false, 4, 2),
-        };
 
         const PreparedRequest prepared_request_1(game_id, player_id_1,
                                                  ships_data_1);
@@ -264,13 +274,6 @@ TEST(Z_BackendIntegrationTest, Preparation) {
         EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
 
         // Place ships for player 2
-        std::vector<ShipData> ships_data_2 = {
-            ShipData(ShipCategory::Destroyer, false, 5, 3),
-            ShipData(ShipCategory::Submarine, true, 4, 0),
-            ShipData(ShipCategory::Cruiser, false, 6, 1),
-            ShipData(ShipCategory::Battleship, true, 6, 9),
-            ShipData(ShipCategory::Carrier, false, 0, 0),
-        };
 
         const PreparedRequest prepared_request_2(game_id, player_id_2,
                                                  ships_data_2);
@@ -506,6 +509,30 @@ TEST(Z_BackendIntegrationTest, Player1GiveUp) {
     EXPECT_EQ(gave_up_message_2.get_type(), MessageType::GaveUpMessageType);
     EXPECT_EQ(gave_up_message_2.get_game_id(), game_id);
     EXPECT_EQ(gave_up_message_2.get_player_id(), player_id_1);
+}
+
+TEST(Z_BackendIntegrationTest, GameOver) {
+    // player 1 recieves a game over message
+    const GameOverMessage game_over_message_1(
+        recieve_response_json_from_server(connector_1));
+
+    EXPECT_EQ(game_over_message_1.get_type(),
+              MessageType::GameOverMessageType);
+    EXPECT_EQ(game_over_message_1.get_game_id(), game_id);
+    EXPECT_EQ(game_over_message_1.get_player_id(), player_id_1);
+    EXPECT_FALSE(game_over_message_1.has_won());
+    EXPECT_EQ(game_over_message_1.get_ship_data(), ships_data_2);
+
+    // player 2 recieves a game over message
+    const GameOverMessage game_over_message_2(
+        recieve_response_json_from_server(connector_2));
+
+    EXPECT_EQ(game_over_message_2.get_type(),
+              MessageType::GameOverMessageType);
+    EXPECT_EQ(game_over_message_2.get_game_id(), game_id);
+    EXPECT_EQ(game_over_message_2.get_player_id(), player_id_2);
+    EXPECT_TRUE(game_over_message_2.has_won());
+    EXPECT_EQ(game_over_message_2.get_ship_data(), ships_data_1);
 }
 
 TEST(Z_BackendIntegrationTest, DisconnectAndShutdownServer) {

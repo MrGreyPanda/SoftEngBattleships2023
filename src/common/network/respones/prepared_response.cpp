@@ -7,7 +7,7 @@ PreparedResponse::PreparedResponse(const json& data)
 
 PreparedResponse::PreparedResponse(const std::string& game_id,
                                    const std::string& player_id,
-                                   const std::vector<ShipData>& ship_data,
+                                   const std::array<ShipData, 5>& ship_data,
                                    const bool& is_valid)
     : Response(MessageType::PreparedResponseType, game_id, player_id),
       PreparedRequest(game_id, player_id, ship_data),
@@ -15,7 +15,7 @@ PreparedResponse::PreparedResponse(const std::string& game_id,
 
 PreparedResponse::PreparedResponse(const std::string& game_id,
                                    const std::string& player_id,
-                                   const std::vector<ShipData>& ship_data,
+                                   const std::array<ShipData, 5>& ship_data,
                                    const bool& is_valid,
                                    const std::string& error)
     : Response(MessageType::PreparedResponseType, game_id, player_id, error),

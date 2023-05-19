@@ -16,16 +16,16 @@ TEST(PreparedResponseTest, JSONConstructor) {
     EXPECT_EQ(prepared_response_from_json.get_player_id(),
               prepared_response_json.at("player_id").get<std::string>());
     EXPECT_EQ(prepared_response_from_json.get_ship_data(),
-              prepared_response_json.at("ships").get<std::vector<ShipData>>());
+              prepared_response_json.at("ships"));
     EXPECT_TRUE(prepared_response_from_json.is_valid());
     EXPECT_EQ(prepared_response_from_json.get_error(),
               prepared_response_json.at("error").get<std::string>());
 }
 
 TEST(PreparedResponseTest, NoErrorConstructor) {
-    std::string game_id             = "test_prep_res_game_id";
-    std::string player_id           = "test_prep_res_player_id";
-    std::vector<ShipData> ship_data = {
+    std::string game_id               = "test_prep_res_game_id";
+    std::string player_id             = "test_prep_res_player_id";
+    std::array<ShipData, 5> ship_data = {
         ShipData(ShipCategory::Destroyer, false, 0, 5),
         ShipData(ShipCategory::Submarine, true, 6, 8),
         ShipData(ShipCategory::Cruiser, true, 7, 6),
@@ -43,9 +43,9 @@ TEST(PreparedResponseTest, NoErrorConstructor) {
 }
 
 TEST(PreparedResponseTest, ErrorConstructor) {
-    std::string game_id             = "test_prep_res_game_id";
-    std::string player_id           = "test_prep_res_player_id";
-    std::vector<ShipData> ship_data = {
+    std::string game_id               = "test_prep_res_game_id";
+    std::string player_id             = "test_prep_res_player_id";
+    std::array<ShipData, 5> ship_data = {
         ShipData(ShipCategory::Destroyer, false, 0, 5),
         ShipData(ShipCategory::Submarine, true, 6, 8),
         ShipData(ShipCategory::Cruiser, true, 7, 6),

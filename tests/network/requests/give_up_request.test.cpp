@@ -9,8 +9,8 @@ TEST(GiveUpRequest, JSONConstructor) {
 
     GiveUpRequest give_up_request(j);
     EXPECT_EQ(give_up_request.get_type(), MessageType::GiveUpRequestType);
-    EXPECT_EQ(give_up_request.get_game_id(), "game_id");
-    EXPECT_EQ(give_up_request.get_player_id(), "player_id");
+    EXPECT_EQ(give_up_request.get_game_id(), j.at("game_id"));
+    EXPECT_EQ(give_up_request.get_player_id(), j.at("player_id"));
 }
 
 TEST(GiveUpRequest, Constructor) {
