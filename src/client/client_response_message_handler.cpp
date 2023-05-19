@@ -86,12 +86,16 @@ void ClientResponseMessageHandler::handle_join_response_(
     assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
     game_controller_game_state_->add_player(new Player(response.get_player_id()));
     game_controller_game_state_->set_game_id(response.get_game_id());
+    if (response.get_player_amount() > 1) {
+        game_controller_game_state_->add_player(new Player(""));
+    }
 }
 
 // TODO: implement
 void ClientResponseMessageHandler::handle_joined_message_(
     const JoinedMessage &message) {
-    assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
+    assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr");
+    game_controller_game_state_->add_player(new Player(""));
 }
 
 // Sets own player as ready

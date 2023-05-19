@@ -3,6 +3,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <ctime>
 
 using json = nlohmann::json;
 
