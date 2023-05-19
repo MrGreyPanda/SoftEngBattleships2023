@@ -122,15 +122,21 @@ void ClientResponseMessageHandler::handle_ready_message_(
 // Sets own player as prepared
 void ClientResponseMessageHandler::handle_prepared_response_(
     const PreparedResponse &response) {
-    game_controller_game_state_->get_players()[0]->set_prepared();
-    game_controller_game_state_->set_phase(Battle);
+    if(response.is_valid()){
+        game_controller_game_state_->get_players()[0]->set_prepared();
+        if(game_controller_game_state_->get_players()[1]->get_is_prepared())
+            game_controller_game_state_->set_phase(Battle);
+        
+    }
+    
 }
 
 // Sets other player as prepared
 void ClientResponseMessageHandler::handle_prepared_message_(
     const PreparedMessage &message) {
     game_controller_game_state_->get_players()[1]->set_prepared();
-    game_controller_game_state_->set_phase(Battle);
+    if(game_controller_game_state_->get_players()[0]->get_is_prepared())
+        game_controller_game_state_->set_phase(Battle);
 }
 
 // Handles shoot response and updates game state
