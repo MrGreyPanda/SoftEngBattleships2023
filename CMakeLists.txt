@@ -99,10 +99,10 @@ target_link_libraries(BattleshipsTests nlohmann_json gtest gtest_main gmock gmoc
 
 add_dependencies(Battleships SDLGui)
 
-target_include_directories(Battleships PUBLIC dependencies/sdlgui/src)
+target_include_directories(Battleships PUBLIC dependencies/sdlgui/include dependencies/sdlgui/include/widgets)
 target_link_libraries(Battleships SDLGui)
 
-target_include_directories(BattleshipsTests PUBLIC dependencies/sdlgui/src)
+target_include_directories(BattleshipsTests PUBLIC dependencies/sdlgui/include dependencies/sdlgui/include/widgets)
 target_link_libraries(BattleshipsTests SDLGui)
 
 gtest_discover_tests(BattleshipsTests)

@@ -19,7 +19,7 @@ void LobbyPanel::init() {
     lobbyWindowContext->addWidget(battleButton);
     battleButton->disable();
 
-    SDLGui::SDLGuiEnvironment::pushContext(lobbyWindowContext);
+    SDLGui::pushContext(lobbyWindowContext);
 }
 
 void LobbyPanel::render() {

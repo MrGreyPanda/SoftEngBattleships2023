@@ -66,7 +66,7 @@ void PreparationPanel::init()
             SDLGui::TextFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(help_message_text);
 
-    SDLGui::SDLGuiEnvironment::pushContext(preparation_panel_context);
+    SDLGui::pushContext(preparation_panel_context);
 }
 
 void PreparationPanel::render()

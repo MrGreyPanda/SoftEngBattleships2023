@@ -39,7 +39,7 @@ void ConnectionPanel::init() {
             SDLGui::TextButtonFlagsExt_CenterText);
     connection_panel_context->addWidget(connection_button);
 
-    SDLGui::SDLGuiEnvironment::pushContext(connection_panel_context);
+    SDLGui::pushContext(connection_panel_context);
 }
 
 void ConnectionPanel::render() {

@@ -7,7 +7,7 @@ void GameController::init() {
                  SDL_WINDOWPOS_UNDEFINED, 1080, 720,
                  SDL_WINDOW_RESIZABLE,
                  SDL_RENDERER_ACCELERATED);
-    assert(SDLGui::SDLGuiCore::isInitialized() && "SDLGui is not initialized");
+    assert(SDLGui::isInitialized() && "SDLGui is not initialized");
 
     ConnectionPanel::set_game_state(&game_state_);
     ConnectionPanel::init();
