@@ -116,11 +116,11 @@ void PreparationPanel::render()
                 image_position = ships_widget_arr[i]->getPosition();
                 grid_cell_coords = grid.getHoverIndices();
                 bool can_be_placed = 
-                    own_board.is_valid_placement(grid_cell_coords.second, grid_cell_coords.first, *ships_ptr_arr[i]);
+                    own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
                     grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
                     ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                    own_board.place_ship(grid_cell_coords.second, grid_cell_coords.first, ships_ptr_arr[i]->get_name());
+                    own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, ships_ptr_arr[i]->get_name());
                 }
                 else{
                     ships_widget_arr[i]->reset();

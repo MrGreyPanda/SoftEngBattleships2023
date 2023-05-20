@@ -38,7 +38,7 @@ void GameController::init() {
     EndPanel::init();
 
     ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
-    game_state_.set_phase(Battle);
+    game_state_.set_phase(Preparation);
 
     printf("All panels initialized\n");
 }
