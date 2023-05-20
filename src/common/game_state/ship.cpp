@@ -39,7 +39,7 @@ Ship::Ship(const ShipCategory &name_)
     : name_(name_),
       is_sunk_(false),
       is_placed_(false),
-      is_horizontal_(false),
+      is_horizontal_(true),
       length_(category_to_size(name_)) {
     // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
@@ -66,7 +66,7 @@ Ship::Ship()
       length_(2),
       damage_(0),
       is_placed_(false),
-      is_horizontal_(false) {}
+      is_horizontal_(true) {}
 
 // Ship::Ship(const Ship &ship)
 //     : name_(ship.name_),
@@ -177,7 +177,7 @@ void to_json(json &j, const ShipData &data) {
 void Ship::reset_ship(){
     is_sunk_ = false;
     is_placed_ = false;
-    is_horizontal_ = false;
+    is_horizontal_ = true;
     damage_ = 0;
     x_ = 0;
     y_ = 0;

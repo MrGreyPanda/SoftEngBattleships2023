@@ -97,10 +97,11 @@ void BattlePanel::init() {
 
     for (int i = 0; i < 5; i++) {
         const Ship* ship = players_board->get_ship_by_index(i);
+        ship_widgets[i]->reset();
         grid_hover_cell_data =
             own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
         ship_widgets[i]->resizeToFit(
-            grid_hover_cell_data.y, grid_hover_cell_data.x,
+            grid_hover_cell_data.x, grid_hover_cell_data.y,
             grid_hover_cell_data.w, grid_hover_cell_data.h);
         ship_widgets[i]->disable();
     }
@@ -115,18 +116,19 @@ void BattlePanel::set_game_state(GameState* game_state) {
 void BattlePanel::set_player_ptr(Player* player) { player_ = player; }
 
 void BattlePanel::handle_shots() {
-    if (SDLGui::GridWidget("enemy_board")) {
-        std::pair<uint32_t, uint32_t> xy =
-            SDLGui::Grid("enemy_board").getClickIndices();
-        short x = (short)xy.first;
-        short y = (short)xy.second;
-        if (player_->get_enemy_board().is_valid_shot(x, y)) {
-            // Send a shoot request to the server
-            ShootRequest shoot_request(game_state_->get_id(),
-                                       player_->get_id(), x, y);
-            ClientNetworkManager::send_message(shoot_request.to_string());
-            player_->has_shot = true;
-        }
+    std::cout << "Handling shots\n";
+    std::pair<uint32_t, uint32_t> xy =
+        SDLGui::Grid("enemy_board").getClickIndices();
+    short x = (short)xy.first;
+    short y = (short)xy.second;
+    if (player_->get_enemy_board().is_valid_shot(x, y)) {
+        // Send a shoot request to the server
+        ShootRequest shoot_request(game_state_->get_id(),
+                                    player_->get_id(), x, y);
+        std::cout << "Sending shoot request\n";
+        ClientNetworkManager::send_message(shoot_request.to_string());
+        player_->has_shot = true;
+    
     }
 }
 
@@ -170,9 +172,9 @@ void BattlePanel::render() {
     if (player_->is_own_turn) {
         /*if(Grid is enabled)*/
         SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
-        if (player_->has_shot) {
-        } else if (!player_->has_shot) {
-            handle_shots();
+        if (!player_->has_shot) {
+            if (SDLGui::GridWidget("enemy_board")) 
+                handle_shots();
         }
 
     } else {

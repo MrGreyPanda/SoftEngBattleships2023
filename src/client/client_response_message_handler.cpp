@@ -93,6 +93,12 @@ void ClientResponseMessageHandler::handle_join_response_(
     game_controller_game_state_->set_phase(Lobby);
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));
+        game_controller_game_state_->get_players()[0]->is_own_turn = false;
+        game_controller_game_state_->get_players()[0]->has_shot = false;
+    }
+    else{
+        game_controller_game_state_->get_players()[0]->is_own_turn = true;
+        game_controller_game_state_->get_players()[0]->has_shot = false;
     }
 }
 
