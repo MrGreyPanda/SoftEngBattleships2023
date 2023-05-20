@@ -100,6 +100,8 @@ void BattlePanel::init() {
         ship_widgets[i]->reset();
         grid_hover_cell_data =
             own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
+        if (!ship->get_is_horizontal())
+            ship_widgets[i]->rotateNoGrab(270.);
         ship_widgets[i]->resizeToFit(
             grid_hover_cell_data.x, grid_hover_cell_data.y,
             grid_hover_cell_data.w, grid_hover_cell_data.h);
@@ -138,30 +140,30 @@ void BattlePanel::render() {
     static SDLGui::GridWidget& own_grid   = SDLGui::Grid("own_board");
     static SDLGui::GridWidget& enemy_grid = SDLGui::Grid("enemy_board");
 
-    unsigned short grid_size = player_->get_enemy_board().get_grid_size();
+    static unsigned short grid_size = player_->get_enemy_board().get_grid_size();
+    static unsigned short grid_value;
     for (int i = 0; i < grid_size; i++) {
         for (int j = 0; j < grid_size; j++) {
             if (player_->get_enemy_board().get_is_shot(i, j)) {
-                unsigned short grid_value =
+                grid_value =
                     player_->get_enemy_board().get_grid_value(i, j);
                 if (grid_value == 6) {
-                    // TODO: set color to red
+                    enemy_grid.setCell(i, j, true);
                 } else if (grid_value > 0 && grid_value < 6) {
-                    // TODO: set color to red with brighter opacity, something
-                    // else
+                    enemy_grid.completeCell(i, j);
                 } else if (grid_value == 0) {
-                    // TODO: set color to blue
+                    enemy_grid.setCell(i, j, false);
                 } else {
                     // Return error
                 }
             }
             if (player_->get_own_board().get_is_shot(i, j)) {
-                unsigned short grid_value =
+                grid_value =
                     player_->get_own_board().get_grid_value(i, j);
                 if (grid_value > 0 && grid_value < 7) {
-                    // TODO: set color to red
+                    own_grid.setCell(i, j, true);
                 } else if (grid_value == 0) {
-                    // TODO: set color to blue
+                    own_grid.setCell(i, j, false);
                 } else {
                     // Return error
                 }
@@ -173,8 +175,8 @@ void BattlePanel::render() {
         /*if(Grid is enabled)*/
         SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
         if (!player_->has_shot) {
-        std::cout << "It is your turn\n";
-            if (SDLGui::GridWidget("enemy_board")) 
+        //std::cout << "It is your turn\n";
+            if (SDLGui::Grid("enemy_board")) 
                 handle_shots();
         }
 

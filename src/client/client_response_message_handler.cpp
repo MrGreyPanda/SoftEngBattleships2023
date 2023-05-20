@@ -177,7 +177,8 @@ void ClientResponseMessageHandler::handle_shoot_response_(
                 }
                 player->get_enemy_board().get_ship_by_name(destroyed_ship.name)->set_is_sunk(true);
             }
-            player->get_enemy_board().set_grid_value(response.get_x(), response.get_y(), 6);
+            else
+                player->get_enemy_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
         else{
             // Change turns

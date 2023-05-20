@@ -116,6 +116,7 @@ void PreparationPanel::render()
             else{
                 image_position = ships_widget_arr[i]->getPosition();
                 grid_cell_coords = grid.getHoverIndices();
+                ships_ptr_arr[i]->set_is_horizontal(!ships_widget_arr[i]->isRotated());
                 bool can_be_placed = 
                     own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
