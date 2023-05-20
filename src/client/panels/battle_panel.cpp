@@ -99,7 +99,7 @@ void BattlePanel::init() {
         grid_hover_cell_data =
             own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
         ship_widgets[i]->resizeToFit(
-            grid_hover_cell_data.x, grid_hover_cell_data.y,
+            grid_hover_cell_data.y, grid_hover_cell_data.x,
             grid_hover_cell_data.w, grid_hover_cell_data.h);
         ship_widgets[i]->disable();
     }
