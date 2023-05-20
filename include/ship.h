@@ -54,6 +54,14 @@ struct ShipData {
 void from_json(const json &j, ShipData &data);
 
 /**
+ * @brief Parses json to ship data.
+ *
+ * @param j
+ * @param data
+ */
+void to_json(json &j, const ShipData &data);
+
+/**
  * @brief Converts a ShipCategory to the size of the ship
  * @param type The ShipCategory to be converted
  */
@@ -185,6 +193,12 @@ class Ship {
      * @return ShipData
      */
     ShipData get_data() const;
+
+
+    /**
+     * @brief Resets the ship to its default values
+    */
+    void reset_ship();
 
    private:
     const unsigned short length_;

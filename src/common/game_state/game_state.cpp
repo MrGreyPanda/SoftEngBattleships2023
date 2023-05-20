@@ -9,7 +9,7 @@ GameState::GameState()
       players_({}) {}
 
 GameState::GameState(std::string id, std::vector<Player*> players)
-    : id_(id), phase_(Connection), turn_player_index_(0), players_(players){}
+    : id_(id), phase_(Connection), turn_player_index_(0), players_(players) {}
 
 GameState::~GameState() {}
 
@@ -73,16 +73,28 @@ unsigned short GameState::get_turn_player_index() const {
     return turn_player_index_;
 }
 
+std::string GameState::get_turn_player_id() const {
+    return players_[turn_player_index_]->get_id();
+}
+
 void GameState::change_turn_player_index() {
     turn_player_index_ = (turn_player_index_ + 1) % players_.size();
 }
 
-bool GameState::start_game() {
-    if (players_.size() < 2) {
-        return false;
+bool GameState::start_preparation() {
+    if (players_.size() == 2 && all_players_ready()) {
+        phase_ = Phase::Preparation;
+        return true;
     }
-    phase_ = Preparation;
-    return true;
+    return false;
+}
+
+bool GameState::start_battle() {
+    if (players_.size() == 2 && all_players_prepared()) {
+        phase_ = Phase::Battle;
+        return true;
+    }
+    return false;
 }
 
 std::string GameState::get_other_player_id(std::string id) const {
@@ -95,9 +107,7 @@ std::string GameState::get_other_player_id(std::string id) const {
     return "";
 }
 
-void GameState::set_game_id(const std::string& game_id) {
-    id_ = game_id;
-}
+void GameState::set_game_id(const std::string& game_id) { id_ = game_id; }
 bool GameState::all_players_ready() const {
     for (Player* player : players_) {
         if (!player->get_is_ready()) {
@@ -114,4 +124,13 @@ bool GameState::all_players_prepared() const {
         }
     }
     return true;
+}
+
+void GameState::reset_state() {
+    for (Player* player : players_) {
+        player->set_ready();
+        player->set_prepared();
+        player->get_own_board().reset_board();
+        player->get_enemy_board().reset_board();
+    }
 }

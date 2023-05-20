@@ -1,7 +1,8 @@
 #include "helper_functions.h"
 
 std::string HelperFunctions::create_random_id() {
-    auto t = std::time(nullptr);
+    auto t =
+        std::chrono::high_resolution_clock::now().time_since_epoch().count();
     return std::to_string(std::hash<std::string>{}(std::to_string(t)));
 }
 

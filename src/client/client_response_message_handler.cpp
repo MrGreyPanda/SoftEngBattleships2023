@@ -67,6 +67,10 @@ void ClientResponseMessageHandler::handle_message_string(
             handle_shot_message_(ShotMessage(json_message));
             break;
 
+        case MessageType::GameOverMessageType:
+            handle_game_over_message_(GameOverMessage(json_message));
+            break;
+
         case MessageType::UnknownType:
             std::cerr << "[ClientResponseMessageHandler] Error: Unknown "
                          "message type"
@@ -86,8 +90,15 @@ void ClientResponseMessageHandler::handle_join_response_(
     assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
     game_controller_game_state_->add_player(new Player(response.get_player_id()));
     game_controller_game_state_->set_game_id(response.get_game_id());
+    game_controller_game_state_->set_phase(Lobby);
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));
+        game_controller_game_state_->get_players()[0]->is_own_turn = false;
+        game_controller_game_state_->get_players()[0]->has_shot = false;
+    }
+    else{
+        game_controller_game_state_->get_players()[0]->is_own_turn = true;
+        game_controller_game_state_->get_players()[0]->has_shot = false;
     }
 }
 
@@ -96,6 +107,8 @@ void ClientResponseMessageHandler::handle_joined_message_(
     const JoinedMessage &message) {
     assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr");
     game_controller_game_state_->add_player(new Player(""));
+    game_controller_game_state_->set_phase(Lobby);
+
 }
 
 // Sets own player as ready
@@ -117,13 +130,24 @@ void ClientResponseMessageHandler::handle_ready_message_(
 // Sets own player as prepared
 void ClientResponseMessageHandler::handle_prepared_response_(
     const PreparedResponse &response) {
-    game_controller_game_state_->get_players()[0]->set_prepared();
+    if(response.is_valid()){
+        game_controller_game_state_->get_players()[0]->set_prepared();
+        if(game_controller_game_state_->get_players()[1]->get_is_prepared())
+            game_controller_game_state_->set_phase(Battle);
+        
+    }
+    else{
+        game_controller_game_state_->get_players()[0]->unset_prepared();
+        game_controller_game_state_->get_players()[0]->get_own_board().reset_board();
+    }
 }
 
 // Sets other player as prepared
 void ClientResponseMessageHandler::handle_prepared_message_(
     const PreparedMessage &message) {
     game_controller_game_state_->get_players()[1]->set_prepared();
+    if(game_controller_game_state_->get_players()[0]->get_is_prepared() && game_controller_game_state_->get_phase() != Battle)
+        game_controller_game_state_->set_phase(Battle);
 }
 
 // Handles shoot response and updates game state
@@ -137,7 +161,23 @@ void ClientResponseMessageHandler::handle_shoot_response_(
             // update the grid value for GUI, don't change turn
             player->is_own_turn = true;
             player->has_shot = false;
-            player->get_own_board().set_grid_value(response.get_x(), response.get_y(), 6);
+            // Check if ship has been sunk
+            if(response.has_destroyed_ship()){
+                ShipData destroyed_ship = response.get_destroyed_ship();
+                unsigned short length = category_to_size(destroyed_ship.name);
+                if(destroyed_ship.is_horizontal){
+                    for(unsigned short i = 0; i < length; i++){
+                        player->get_enemy_board().set_grid_value(destroyed_ship.x + i, destroyed_ship.y, destroyed_ship.name);
+                    }
+                }
+                else {
+                    for(unsigned short i = 0; i < length; i++){
+                        player->get_enemy_board().set_grid_value(destroyed_ship.x, destroyed_ship.y + i, destroyed_ship.name);
+                    }
+                }
+                player->get_enemy_board().get_ship_by_name(destroyed_ship.name)->set_is_sunk(true);
+            }
+            player->get_enemy_board().set_grid_value(response.get_x(), response.get_y(), 6);
         }
         else{
             // Change turns
@@ -164,10 +204,21 @@ void ClientResponseMessageHandler::handle_shot_message_(
         game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->shot_at();
         // Just for safety
         game_controller_game_state_->get_players()[0]->is_own_turn = false;
+
+        // Check up if we get same data
+        bool correct_info =  game_controller_game_state_->get_players()[0]->get_own_board().get_ship(x, y)->get_is_sunk() == message.has_destroyed_ship();
+        // TODO: Throw error if not correct
     }
     else{
         // Change turns
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
         game_controller_game_state_->get_players()[0]->has_shot = false;
     }
+}
+
+void ClientResponseMessageHandler::handle_game_over_message_(const GameOverMessage& message) {
+    game_controller_game_state_->set_phase(End);
+    game_controller_game_state_->get_players()[0]->has_won = message.has_won();
+    game_controller_game_state_->get_players()[1]->has_won = !message.has_won();
+    game_controller_game_state_->get_players()[0]->get_enemy_board().set_ship_data(message.get_ship_data());
 }

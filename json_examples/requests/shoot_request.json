@@ -1,0 +1,7 @@
+{
+  "type": "shoot_request",
+  "game_id": "test_shoot_req_game_id",
+  "player_id": "test_shoot_req_player_id",
+  "x": 2,
+  "y": 5
+}

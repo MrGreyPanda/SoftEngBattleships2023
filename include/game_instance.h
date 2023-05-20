@@ -102,15 +102,19 @@ class GameInstance {
      * @return true if succesful
      * @return false else
      */
-    bool start_game();
+    bool start_preparation();
+
+    bool start_battle();
+
     /**
      * @brief Places shot on the corresponding boards and updates the
      * game_state according to the rules
-     *
-     * @return true
-     * @return false
      */
-    bool shoot();
+    void handle_shot(const std::string& player_id,
+                     std::string& other_player_id, const unsigned short x,
+                     const unsigned short y, bool& is_valid, bool& has_hit,
+                     bool& has_destroyed_ship, ShipData& destroyed_ship,
+                     bool& has_won_game);
     /**
      * @brief Validate the prepared ships for a player and set them on the
      * board. Update the player as ‘is prepared’.
@@ -119,7 +123,7 @@ class GameInstance {
      * @return false
      */
     bool set_player_prepared(const std::string& player_id,
-                             const std::vector<ShipData>& ships);
+                             const std::array<ShipData, 5>& ships);
 
     /**
      * @brief Checks if all players are prepared

@@ -36,7 +36,11 @@ const unsigned short category_to_size(const ShipCategory &type) {
 
 // Constructor
 Ship::Ship(const ShipCategory &name_)
-    : name_(name_), is_sunk_(false), is_placed_(false), is_horizontal_(false), length_(category_to_size(name_)){
+    : name_(name_),
+      is_sunk_(false),
+      is_placed_(false),
+      is_horizontal_(true),
+      length_(category_to_size(name_)) {
     // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
@@ -48,7 +52,8 @@ Ship::Ship(const ShipData &data)
       is_placed_(true),
       is_horizontal_(data.is_horizontal),
       x_(data.x),
-      y_(data.y), length_(category_to_size(data.name)){
+      y_(data.y),
+      length_(category_to_size(data.name)) {
     // length_ = category_to_size(name_);
     // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
     // ShipCategory"));
@@ -61,7 +66,7 @@ Ship::Ship()
       length_(2),
       damage_(0),
       is_placed_(false),
-      is_horizontal_(false) {}
+      is_horizontal_(true) {}
 
 // Ship::Ship(const Ship &ship)
 //     : name_(ship.name_),
@@ -111,7 +116,10 @@ ShipCategory Ship::get_name() const { return name_; }
 
 bool Ship::get_is_sunk() const { return is_sunk_; }
 
-void Ship::set_is_sunk(bool is_sunk) { is_sunk_ = is_sunk; }
+void Ship::set_is_sunk(bool is_sunk) { 
+    is_sunk_ = is_sunk;
+    damage_ = length_;
+}
 
 bool Ship::get_is_horizontal() const { return is_horizontal_; }
 
@@ -157,4 +165,20 @@ void from_json(const json &j, ShipData &data) {
     j.at("is_horizontal").get_to(data.is_horizontal);
     j.at("x").get_to(data.x);
     j.at("y").get_to(data.y);
+}
+
+void to_json(json &j, const ShipData &data) {
+    j = json{{"name", data.name},
+             {"is_horizontal", data.is_horizontal},
+             {"x", data.x},
+             {"y", data.y}};
+}
+
+void Ship::reset_ship(){
+    is_sunk_ = false;
+    is_placed_ = false;
+    is_horizontal_ = true;
+    damage_ = 0;
+    x_ = 0;
+    y_ = 0;
 }

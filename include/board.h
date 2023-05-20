@@ -91,6 +91,21 @@ class Board {
      */
     Ship *get_ship_by_name(const ShipCategory &type);
 
+    /**
+     * @brief Check if all the ships on this board have been destroyed
+     */
+    bool all_ships_sunk() const;
+
+    const Ship* get_ship_by_index(const unsigned short &index) const;
+
+
+    /**
+     * @brief Reset the board to its initial state
+     */
+    void reset_board();
+
+   bool has_been_reset = false;
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *
@@ -148,7 +163,7 @@ class OwnBoard : public Board {
      *
      * @return true if the configuration is valid
      */
-    bool set_ship_configuration(const std::vector<ShipData> &ships);
+    bool set_ship_configuration(const std::array<ShipData, 5> &ships);
 
     /**
      * @brief If ship is on the board, it checks if it can be rotated.
@@ -168,11 +183,6 @@ class OwnBoard : public Board {
     Ship *get_ship(const short &x, const short &y);
 
     /**
-     * @brief Check if all the ships on this board have been destroyed
-     */
-    bool all_ships_sunk() const;
-
-    /**
      * @brief update the ship at a given coordinate
      */
     void update_ship(const short &x, const short &y);
@@ -180,6 +190,8 @@ class OwnBoard : public Board {
     bool is_valid_configuration() const;
 
     bool is_ultimate_configuration() const;
+
+    std::array<ShipData, 5> get_ship_configuration() const;
 
    private:
 };
@@ -212,6 +224,8 @@ class EnemyBoard : public Board {
     bool is_valid_shot(const short &x, const short &y) const;
 
     void update_ship_vec(ShipCategory ship);
+
+    void set_ship_data(const std::array<ShipData, 5> &ships);
 
    private:
 };

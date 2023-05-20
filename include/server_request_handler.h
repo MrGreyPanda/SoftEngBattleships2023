@@ -2,6 +2,7 @@
 
 #include <tuple>
 
+#include "game_instance.h"
 #include "gave_up_message.h"
 #include "give_up_request.h"
 #include "give_up_response.h"
@@ -70,4 +71,8 @@ class ServerRequestHandler {
      * @param request
      */
     static void handle_give_up_request_(const GiveUpRequest& give_up_request);
+
+    static void kill_game_(GameInstance* game_ptr,
+                           const std::string& player_id,
+                           const std::string& other_player_id);
 };

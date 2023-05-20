@@ -1,7 +1,8 @@
 #include "base_message.h"
 
 BaseMessage::BaseMessage(const json& data) {
-    type_ = MessageTypeHelpers::make_message_type_from_string(data["type"]);
+    type_ = MessageTypeHelpers::make_message_type_from_string(
+        data.at("type").get<std::string>());
 }
 
 BaseMessage::BaseMessage(const MessageType& type) : type_(type) {}

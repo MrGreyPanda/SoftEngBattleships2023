@@ -3,6 +3,7 @@
 
 #include "game_instance.h"
 #include "game_instance_manager.h"
+#include "game_over_message.h"
 #include "helper_functions.h"
 #include "join_message.h"
 #include "player_manager.h"
@@ -53,20 +54,19 @@ void ServerRequestHandler::handle_request(const MessageType& type,
 
             break;
 
-            // case ClientRequestType::GiveUp:
-            //     // Parse the ready request
-            //     try {
-            //         ClientGiveUpRequest give_up_request;
-            //         give_up_request = ClientGiveUpRequest(data);
-            //         handle_give_up_request_(give_up_request);
-            //     } catch (const std::exception& e) {
-            //         std::cout << "[ServerRequestHandler] Error parsing give
-            //         up request: "
-            //                   << e.what() << std::endl;
-            //         return;
-            //     }
+        case MessageType::GiveUpRequestType:
+            // Parse the give up request
+            try {
+                GiveUpRequest give_up_request(data);
+                handle_give_up_request_(give_up_request);
+            } catch (const std::exception& e) {
+                std::cout << "[ServerRequestHandler] Error parsing give "
+                             "up request: "
+                          << e.what() << std::endl;
+                return;
+            }
 
-            //     break;
+            break;
 
         case MessageType::JoinRequestType:
             throw std::runtime_error(
@@ -100,7 +100,8 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
         const JoinResponse join_response("", "",
                                          "Error: Could not add player to "
-                                         "PlayerManager", 0);
+                                         "PlayerManager",
+                                         0);
 
         return std::make_tuple(nullptr, join_response);
     }
@@ -133,7 +134,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
 
                 ServerNetworkManager::send_message(join_message.to_string(),
                                                    other_player_id);
-                
+
                 join_response.set_player_amount(2);
             } else {
                 std::cout
@@ -226,20 +227,9 @@ void ServerRequestHandler::handle_ready_request_(
                   << std::endl;
 
         // Start the game
-        game_ptr->start_game();
+        game_ptr->start_preparation();
 
-        // Send a message to both players that the game has started
-        // const GameStartedMessage game_started_message(game_id, player_id);
-        // ServerNetworkManager::send_message(game_started_message.to_string(),
-        //                                    player_id);
-
-        // const std::string other_player_id =
-        //     game_ptr->try_get_other_player_id(player_id);
-
-        // if (!other_player_id.empty()) {
-        //     ServerNetworkManager::send_message(
-        //         game_started_message.to_string(), other_player_id);
-        // }
+        // TODO ? send preparation started message to both players?
     }
 }
 
@@ -248,7 +238,7 @@ void ServerRequestHandler::handle_prepared_request_(
     // Get GameInstance
     const std::string game_id   = prepared_request.get_game_id();
     const std::string player_id = prepared_request.get_player_id();
-    const std::vector<ShipData> ship_data_vec =
+    const std::array<ShipData, 5> ship_data_vec =
         prepared_request.get_ship_data();
     GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
@@ -279,14 +269,14 @@ void ServerRequestHandler::handle_prepared_request_(
     if (is_config_valid) {
         // Send valid response
         const PreparedResponse valid_preparation_response(game_id, player_id,
-                                                          ship_data_vec);
+                                                          ship_data_vec, true);
 
         ServerNetworkManager::send_message(
             valid_preparation_response.to_string(), player_id);
     } else {
         // Send invalid response
         const PreparedResponse invalid_preparation_response(
-            game_id, player_id, ship_data_vec,
+            game_id, player_id, ship_data_vec, false,
             "Error: Invalid ship configuration.");
 
         ServerNetworkManager::send_message(
@@ -312,139 +302,155 @@ void ServerRequestHandler::handle_prepared_request_(
             << std::endl;
 
         // Start the game
-        game_ptr->start_game();
+        game_ptr->start_battle();
 
-        // Send a message to both players that the game has started
-        // const GameStartedMessage game_started_message(game_id, player_id);
-        // ServerNetworkManager::send_message(game_started_message.to_string(),
-        //                                    player_id);
-
-        // const std::string other_player_id =
-        //     game_ptr->try_get_other_player_id(player_id);
-
-        // if (!other_player_id.empty()) {
-        //     ServerNetworkManager::send_message(
-        //         game_started_message.to_string(), other_player_id);
-        // }
+        // TODO ? send battle started message to both players?
     }
 }
 
 void ServerRequestHandler::handle_shoot_request_(
     const ShootRequest& shoot_request) {
-    std::string game_id = shoot_request.get_game_id();
+    std::cout << "Got shoot request\n";
+
+    const std::string game_id = shoot_request.get_game_id();
 
     GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
-    std::string player_id = shoot_request.get_player_id();
-    short x               = shoot_request.get_x();
-    short y               = shoot_request.get_y();
-    bool is_valid         = false;
-    bool has_hit          = false;
-    // Get player from player manager
-    Player* player_ptr = PlayerManager::try_get_player(player_id);
+    const std::string player_id = shoot_request.get_player_id();
+    std::string other_player_id = "";
+    short x                     = shoot_request.get_x();
+    short y                     = shoot_request.get_y();
+    bool is_valid               = false;
+    bool has_hit                = false;
+    bool has_destroyed_ship     = false;
+    ShipData destroyed_ship     = ShipData();
+    bool has_won_game           = false;
 
-    // Check if own players enemy board is already shot at the given coords
-    if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
-        const ShootResponse shoot_response(
-            game_id, player_id, x, y, is_valid, has_hit,
-            "Error: This position was already shot at!");
+    game_ptr->handle_shot(player_id, other_player_id, x, y, is_valid, has_hit,
+                          has_destroyed_ship, destroyed_ship, has_won_game);
 
-        ServerNetworkManager::send_message(shoot_response.to_string(),
-                                           shoot_response.get_player_id());
+    if (!is_valid) {
+        ShootResponse response(game_id, player_id, x, y,
+                               "This shot is not valid!");
+
+        ServerNetworkManager::send_message(response.to_string(), player_id);
+    }
+
+    if (other_player_id.empty()) {
+        ShootResponse response(
+            game_id, player_id, x, y,
+            "Server Error: Other player could not be found!");
+
+        ServerNetworkManager::send_message(response.to_string(), player_id);
         return;
     }
 
-    // Check if other players board is already shot at the given coords
-    // Get other player id from game state via game instance
-    std::string other_player_id =
-        game_ptr->try_get_other_player_id(player_ptr->get_id());
+    if (has_destroyed_ship) {
+        ShootResponse response(game_id, player_id, x, y, destroyed_ship);
+        ServerNetworkManager::send_message(response.to_string(), player_id);
 
-    // Get other player from player manager
-    Player* other_player_ptr = PlayerManager::try_get_player(other_player_id);
+        ShotMessage message(game_id, other_player_id, x, y, destroyed_ship);
+        ServerNetworkManager::send_message(message.to_string(),
+                                           other_player_id);
 
-    if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
-        // Send error message to client
-        const ShootResponse shoot_response(
-            game_id, player_id, x, y, is_valid, has_hit,
-            "Error: This position was already shot at!");
+        if (has_won_game) {
+            // this last ship decided the game
 
-        ServerNetworkManager::send_message(shoot_response.to_string(),
-                                           shoot_response.get_player_id());
-        return;
-    }
-    is_valid = true;
+            std::array<ShipData, 5> winner_ships =
+                game_ptr->get_game_state()
+                    ->get_player_by_id(player_id)
+                    ->get_own_board()
+                    .get_ship_configuration();
 
-    other_player_ptr->get_own_board().set_is_shot(x, y, true);
-    player_ptr->get_enemy_board().set_is_shot(x, y, true);
-    // Check if other players board has a ship at the given coords
-    if (other_player_ptr->get_own_board().get_grid_value(x, y) != 0) {
-        // Send hit message to client
-        has_hit = true;
-        const ShootResponse hit_response(game_id, player_id, x, y, is_valid,
-                                         has_hit);
+            std::array<ShipData, 5> loser_ships =
+                game_ptr->get_game_state()
+                    ->get_player_by_id(other_player_id)
+                    ->get_own_board()
+                    .get_ship_configuration();
 
-        ServerNetworkManager::send_message(hit_response.to_string(),
-                                           hit_response.get_player_id());
+            GameOverMessage game_over_message_to_winner(game_id, player_id,
+                                                        true, loser_ships);
 
-        // Send hit message to other client
-        const ShootResponse got_hit_response(game_id, other_player_id, x, y,
-                                             is_valid, has_hit);
-        // Error message
-        ServerNetworkManager::send_message(got_hit_response.to_string(),
-                                           got_hit_response.get_player_id());
+            GameOverMessage game_over_message_to_loser(
+                game_id, other_player_id, false, winner_ships);
 
-        // Get ship from other players board
-        Ship* ship_ptr = other_player_ptr->get_own_board().get_ship(x, y);
+            ServerNetworkManager::send_message(
+                game_over_message_to_winner.to_string(), player_id);
+            ServerNetworkManager::send_message(
+                game_over_message_to_loser.to_string(), other_player_id);
 
-        // Update the ships health
-        other_player_ptr->get_own_board().update_ship(x, y);
-
-        // Check if ship is destroyed
-        if (ship_ptr->get_is_sunk()) {
-            // Send ship destroyed message to client that shot
-
-            // TODO
-
-            // update enemy boards ship vector
-            player_ptr->get_enemy_board().update_ship_vec(
-                ship_ptr->get_name());
+            // end the game
+            kill_game_(game_ptr, player_id, other_player_id);
         }
-
-        // Check if other player has lost
-        if (other_player_ptr->has_lost()) {
-            // Send win message to client
-            // const GameOverMessage won_message(
-            //     shoot_request.get_game_id(), shoot_request.get_player_id(),
-            //     true);  // This is not how it works, here should go an
-            //             // Error message
-            // ServerNetworkManager::send_message(won_message.to_string(),
-            //                                     won_message.get_player_id());
-
-            // // Send lose message to other client
-            // const GameOverMessageType
-            // lost_message(shoot_request.get_game_id(),
-            //                                        other_player_id, false)
-            //     ServerNetworkManager::send_message(
-            //         lost_message.to_string(), lost_message.get_player_id());
-            // game_ptr->set_phase(End);
-        }
-
-        // Change turn in game state
-
-        return;
     } else {
-        game_ptr->get_game_state()->change_turn_player_index();
+        ShootResponse response(game_id, player_id, x, y, has_hit);
+
+        ServerNetworkManager::send_message(response.to_string(), player_id);
+
+        ShotMessage message(game_id, other_player_id, x, y, has_hit);
+        ServerNetworkManager::send_message(message.to_string(),
+                                           other_player_id);
     }
 }
 
 void ServerRequestHandler::handle_give_up_request_(
     const GiveUpRequest& give_up_request) {
-    // const GameOverMessage won_message(give_up_request.get_game_id(),
-    //                                   give_up_request.get_player_id(),
-    //                                   true);
+    const std::string game_id   = give_up_request.get_game_id();
+    const std::string player_id = give_up_request.get_player_id();
 
-    // ServerNetworkManager::send_message(won_message.to_string(),
-    //                                     won_message.get_player_id());
+    GameInstance* game_ptr = GameInstanceManager::get_game_instance(game_id);
 
-    throw std::runtime_error("Not implemented yet");
+    const GiveUpResponse give_up_response(game_id, player_id);
+    ServerNetworkManager::send_message(give_up_response.to_string(),
+                                       player_id);
+
+    const std::string other_player_id =
+        game_ptr->try_get_other_player_id(player_id);
+    if (other_player_id.empty()) {
+        std::cout << "[ServerRequestHandler] Error: Could not find other "
+                     "player ID for game with ID '"
+                  << game_id << "'" << std::endl;
+        // Hint: the other player might have left the game already
+        return;
+    }
+
+    const GaveUpMessage give_up_message(game_id, player_id);
+    ServerNetworkManager::send_message(give_up_message.to_string(),
+                                       other_player_id);
+
+    // send game over messages
+    std::array<ShipData, 5> winner_ships =
+        game_ptr->get_game_state()
+            ->get_player_by_id(other_player_id)
+            ->get_own_board()
+            .get_ship_configuration();
+
+    std::array<ShipData, 5> loser_ships = game_ptr->get_game_state()
+                                              ->get_player_by_id(player_id)
+                                              ->get_own_board()
+                                              .get_ship_configuration();
+
+    GameOverMessage game_over_message_to_winner(game_id, other_player_id, true,
+                                                loser_ships);
+
+    GameOverMessage game_over_message_to_loser(game_id, player_id, false,
+                                               winner_ships);
+
+    ServerNetworkManager::send_message(game_over_message_to_winner.to_string(),
+                                       other_player_id);
+
+    ServerNetworkManager::send_message(game_over_message_to_loser.to_string(),
+                                       player_id);
+
+    kill_game_(game_ptr, player_id, other_player_id);
+}
+
+void ServerRequestHandler::kill_game_(GameInstance* game_ptr,
+                                      const std::string& player_id,
+                                      const std::string& other_player_id) {
+    // remove the game
+    delete game_ptr;  // TODO FIXME check if this is correct, how to talk
+                      // to player manager?
+    PlayerManager::remove_player(player_id);
+    PlayerManager::remove_player(other_player_id);
 }

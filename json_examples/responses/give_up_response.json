@@ -1,0 +1,5 @@
+{
+  "type": "give_up_response",
+  "game_id": "1234",
+  "player_id": "2345"
+}

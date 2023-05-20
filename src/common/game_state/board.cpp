@@ -7,8 +7,8 @@ Board::Board() : grid_size_(10) {
 
 // I should need to use delete here, but I don't know why it doesn't work
 Board::~Board() {
-    for(int i = 0; i < ships_.size(); i++) {
-        if(ships_[i] != nullptr) delete ships_[i];
+    for (int i = 0; i < ships_.size(); i++) {
+        if (ships_[i] != nullptr) delete ships_[i];
     }
 }
 
@@ -33,7 +33,7 @@ std::array<Ship *, 5> &Board::get_ship_vec() { return ships_; }
 const std::array<const Ship *, 5> Board::get_ship_vec() const {
     std::array<const Ship *, 5> const_ships_pointers{nullptr};
     for (int i = 0; i < 5; i++) {
-        const_ships_pointers[i] = (const Ship*)ships_[i];
+        const_ships_pointers[i] = (const Ship *)ships_[i];
     }
     return const_ships_pointers;
 }
@@ -57,19 +57,34 @@ Ship *Board::get_ship_by_name(const ShipCategory &type) {
     return nullptr;
 }
 
-// OwnBoard::OwnBoard() : Board() {}
+bool Board::all_ships_sunk() const {
+    int num_ships                              = get_num_ships();
+    const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
+    for (int i = 0; i < num_ships; i++) {
+        if (ships_vec.at(i)->get_is_sunk() == false) return false;
+    }
+    return true;
+}
 
-// OwnBoard::OwnBoard(unsigned int grid_size_) : Board(grid_size_) {}
+
+const Ship* Board::get_ship_by_index(const unsigned short &index) const {
+    return ships_[index];
+}
+
+void Board::reset_board(){
+    for(int i = 0; i < grid_size_; i++){
+        for(int j = 0; j < grid_size_; j++){
+            grid_[i][j] = 0;
+            is_shot_[i][j] = false;
+        }
+    }
+    for(int i = 0; i < ships_.size(); i++){
+        ships_[i]->reset_ship();
+    }
+    has_been_reset = true;
+}
 
 // ------------ OwnBoard ------------- //
-
-// OwnBoard::~OwnBoard() {
-//     auto ships_vec = *this->get_ship_vec();
-//     for (int i = 0; i < ships_vec.size(); i++) {
-//         delete ships_vec[i];
-//     }
-//     ships_vec.clear();
-// }
 
 bool OwnBoard::is_valid_placement(const short &x, const short &y,
                                   const Ship &ship) const {
@@ -190,24 +205,15 @@ bool OwnBoard::rotate_ship(const ShipCategory &shipname) {
 }
 
 Ship *OwnBoard::get_ship(const short &x, const short &y) {
-    ShipCategory shiptype          = (ShipCategory)get_grid_value(x, y);
-    int num_ships                  = get_num_ships();
-    std::array<Ship *, 5> &ships_vec = get_ship_vec();
+    ShipCategory shiptype        = (ShipCategory)get_grid_value(x, y);
+    int num_ships                = get_num_ships();
+    std::array<Ship *, 5> &ships = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
-        if (ships_vec[i]->get_name() == shiptype) return ships_vec[i];
+        if (ships[i]->get_name() == shiptype) return ships[i];
     }
 
     // TODO Throw exception here unexpected behaviour
     return nullptr;
-}
-
-bool OwnBoard::all_ships_sunk() const {
-    int num_ships                              = get_num_ships();
-    const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
-    for (int i = 0; i < num_ships; i++) {
-        if (ships_vec.at(i)->get_is_sunk() == false) return false;
-    }
-    return true;
 }
 
 void OwnBoard::update_ship(const short &x, const short &y) {
@@ -216,7 +222,8 @@ void OwnBoard::update_ship(const short &x, const short &y) {
     ship->shot_at();
 }
 
-bool OwnBoard::set_ship_configuration(const std::vector<ShipData> &ships) {
+bool OwnBoard::set_ship_configuration(
+    const std::array<ShipData, 5> &ship_data) {
     // for (Ship *ship_ptr : get_ship_vec()) {
     //     ship_ptr->set_is_placed(false);
     // }
@@ -225,7 +232,7 @@ bool OwnBoard::set_ship_configuration(const std::vector<ShipData> &ships) {
     //         set_grid_value(i, j, 0);
     //     }
     // }
-    for (const ShipData &ship : ships) {
+    for (const ShipData &ship : ship_data) {
         std::cout << "[Board] (debug) before placing ship: " << ship.name
                   << ", x=" << ship.x << ", y=" << ship.y
                   << ", is_horizontal=" << ship.is_horizontal << "\n";
@@ -237,10 +244,10 @@ bool OwnBoard::set_ship_configuration(const std::vector<ShipData> &ships) {
 }
 
 bool OwnBoard::is_valid_configuration() const {
-    int num_ships  = this->get_num_ships();
-    auto ships_vec = this->get_ship_vec();
+    int num_ships = this->get_num_ships();
+    auto ships    = this->get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
-        if (ships_vec[i]->get_is_placed() == false) return false;
+        if (ships[i]->get_is_placed() == false) return false;
     }
     std::array<int, 6> ship_lengths = {0, 2, 3, 3, 4, 5};
     short grid_size                 = this->get_grid_size();
@@ -253,13 +260,13 @@ bool OwnBoard::is_valid_configuration() const {
             }
         }
     }
-    for (int i = 0; i < 6; i++) {
-        if (ship_lengths[i] != 0) {
-            std::cout << "Ship " << (ShipCategory)i << " has wrong length!"
-                      << std::endl;
-            return false;
-        }
-    }
+    // for (int i = 0; i < 6; i++) {
+    //     if (ship_lengths[i] != 0) {
+    //         std::cout << "Ship " << (ShipCategory)i << " has wrong length!"
+    //                   << std::endl;
+    //         return false;
+    //     }
+    // }
 
     return true;
 }
@@ -284,6 +291,19 @@ bool OwnBoard::is_ultimate_configuration() const {
     return true;
 }
 
+std::array<ShipData, 5> OwnBoard::get_ship_configuration() const {
+    std::array<ShipData, 5> ship_data;
+    auto ships = this->get_ship_vec();
+
+    for (int i = 0; i < 5; i++) {
+        ship_data[i].name          = ships[i]->get_name();
+        ship_data[i].x             = ships[i]->get_x();
+        ship_data[i].y             = ships[i]->get_y();
+        ship_data[i].is_horizontal = ships[i]->get_is_horizontal();
+    }
+    return ship_data;
+}
+
 // ------------ EnemyBoard ------------- //
 // EnemyBoard::~EnemyBoard() {
 //     auto ship_vec = *this->get_ship_vec();
@@ -302,12 +322,28 @@ bool EnemyBoard::is_valid_shot(const short &x, const short &y) const {
 }
 
 void EnemyBoard::update_ship_vec(ShipCategory ship) {
-    int num_ships                = this->get_num_ships();
+    int num_ships                  = this->get_num_ships();
     std::array<Ship *, 5> ship_vec = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ship_vec[i]->get_name() == ship) {
             ship_vec[i]->set_is_sunk(true);
             return;
+        }
+    }
+}
+
+void EnemyBoard::set_ship_data(const std::array<ShipData, 5> &ship_data) {
+    for (const ShipData &ship : ship_data) {
+        Ship *ship_ptr = get_ship_by_name(ship.name);
+        unsigned short x = ship.x;
+        unsigned short y = ship.y;
+        unsigned short length = ship_ptr->get_length();
+        for(int i = 0; i < length; i++){
+            if(ship.is_horizontal){
+                this->set_grid_value(x+i, y, ship.name);
+            }else{
+                this->set_grid_value(x, y+i, ship.name);
+            }
         }
     }
 }

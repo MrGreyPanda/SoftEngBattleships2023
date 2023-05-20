@@ -3,6 +3,10 @@
 #include <sstream>
 #include <thread>
 
+#include "game_over_message.h"
+#include "gave_up_message.h"
+#include "give_up_request.h"
+#include "give_up_response.h"
 #include "gtest/gtest.h"
 #include "join_message.h"
 #include "join_request.h"
@@ -15,6 +19,9 @@
 #include "ready_response.h"
 #include "server_network_manager.h"
 #include "ship.h"
+#include "shoot_request.h"
+#include "shoot_response.h"
+#include "shot_message.h"
 #include "sockpp/tcp_connector.h"
 
 using json = nlohmann::json;
@@ -27,8 +34,7 @@ const sockpp::inet_address host_address("localhost", port);
 sockpp::tcp_connector connector_1;
 sockpp::tcp_connector connector_2;
 
-std::string game_id_1;
-std::string game_id_2;
+std::string game_id;
 
 std::string player_id_1;
 std::string player_id_2;
@@ -37,6 +43,22 @@ std::vector<Ship> ships_1;
 std::vector<Ship> ships_2;
 
 std::chrono::milliseconds timeout(100);
+
+const std::array<ShipData, 5> ships_data_1 = {
+    ShipData(ShipCategory::Destroyer, true, 0, 5),
+    ShipData(ShipCategory::Submarine, true, 6, 8),
+    ShipData(ShipCategory::Cruiser, true, 7, 6),
+    ShipData(ShipCategory::Battleship, true, 6, 0),
+    ShipData(ShipCategory::Carrier, false, 4, 2),
+};
+
+const std::array<ShipData, 5> ships_data_2 = {
+    ShipData(ShipCategory::Destroyer, false, 5, 3),
+    ShipData(ShipCategory::Submarine, true, 4, 0),
+    ShipData(ShipCategory::Cruiser, false, 6, 1),
+    ShipData(ShipCategory::Battleship, true, 6, 9),
+    ShipData(ShipCategory::Carrier, false, 0, 0),
+};
 
 void send_request_to_server(sockpp::tcp_connector& connector,
                             const std::string& request_string) {
@@ -78,7 +100,7 @@ void stop() {
     ServerNetworkManager::stop();
 }
 
-TEST(BackendIntegrationTest, StartServer) {
+TEST(Z_BackendIntegrationTest, StartServer) {
     std::thread server_thread(ServerNetworkManager::start, port);
     server_thread.detach();
 
@@ -86,7 +108,7 @@ TEST(BackendIntegrationTest, StartServer) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
-TEST(BackendIntegrationTest, Connect) {
+TEST(Z_BackendIntegrationTest, Connect) {
     // Player 1
     bool connection_1_success = connector_1.connect(host_address);
     EXPECT_TRUE(connection_1_success);
@@ -96,7 +118,7 @@ TEST(BackendIntegrationTest, Connect) {
     EXPECT_TRUE(connection_2_success);
 }
 
-TEST(BackendIntegrationTest, Join) {
+TEST(Z_BackendIntegrationTest, Join) {
     JoinRequest join_request;
 
     // Launch async tasks for sending requests and receiving responses
@@ -129,8 +151,8 @@ TEST(BackendIntegrationTest, Join) {
         // for player 1
         EXPECT_EQ(join_response_1.get_type(), MessageType::JoinResponseType);
 
-        game_id_1 = join_response_1.get_game_id();
-        EXPECT_FALSE(game_id_1.empty());
+        game_id = join_response_1.get_game_id();
+        EXPECT_FALSE(game_id.empty());
 
         player_id_1 = join_response_1.get_player_id();
         EXPECT_FALSE(player_id_1.empty());
@@ -141,21 +163,22 @@ TEST(BackendIntegrationTest, Join) {
 
         EXPECT_EQ(join_response_2.get_type(), MessageType::JoinResponseType);
 
-        game_id_2 = join_response_2.get_game_id();
-        EXPECT_FALSE(game_id_2.empty());
-
         player_id_2 = join_response_2.get_player_id();
         EXPECT_FALSE(player_id_2.empty());
 
+        // Both player ID cannot match
+        EXPECT_NE(player_id_1, player_id_2);
+
         // Both game IDs are expected to match since there are no other players
-        EXPECT_EQ(game_id_1, game_id_2);
+        EXPECT_EQ(join_response_1.get_game_id(),
+                  join_response_2.get_game_id());
 
         // player 1 should have recieved a message that player 2 joined
         const json message_json_1 =
             recieve_response_json_from_server(connector_1);
         const JoinedMessage joined_message_1(message_json_1);
         EXPECT_EQ(joined_message_1.get_type(), MessageType::JoinedMessageType);
-        EXPECT_EQ(joined_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(joined_message_1.get_game_id(), game_id);
         EXPECT_EQ(joined_message_1.get_player_id(), player_id_1);
 
     } catch (const std::exception& e) {
@@ -163,10 +186,10 @@ TEST(BackendIntegrationTest, Join) {
     }
 }
 
-TEST(BackendIntegrationTest, Ready) {
+TEST(Z_BackendIntegrationTest, Ready) {
     // send ready request player 1
     try {
-        ReadyRequest ready_request_1(game_id_1, player_id_1);
+        ReadyRequest ready_request_1(game_id, player_id_1);
         send_request_to_server(connector_1, ready_request_1.to_string());
         const ReadyResponse ready_response_1(
             recieve_response_json_from_server(connector_1));
@@ -177,7 +200,7 @@ TEST(BackendIntegrationTest, Ready) {
                    << ready_response_1.get_error();
         }
         EXPECT_EQ(ready_response_1.get_type(), MessageType::ReadyResponseType);
-        EXPECT_EQ(ready_response_1.get_game_id(), game_id_1);
+        EXPECT_EQ(ready_response_1.get_game_id(), game_id);
         EXPECT_EQ(ready_response_1.get_player_id(), player_id_1);
 
         // Player 2 should have recieved a ready message for player 1
@@ -185,11 +208,11 @@ TEST(BackendIntegrationTest, Ready) {
             recieve_response_json_from_server(connector_2);
         const ReadyMessage ready_message_2(message_json_2);
         EXPECT_EQ(ready_message_2.get_type(), MessageType::ReadyMessageType);
-        EXPECT_EQ(ready_message_2.get_game_id(), game_id_2);
+        EXPECT_EQ(ready_message_2.get_game_id(), game_id);
         EXPECT_EQ(ready_message_2.get_player_id(), player_id_2);
 
         // send ready request player 2
-        ReadyRequest ready_request_2(game_id_2, player_id_2);
+        ReadyRequest ready_request_2(game_id, player_id_2);
         send_request_to_server(connector_2, ready_request_2.to_string());
         // validate response for player 2
         const ReadyResponse ready_response_2(
@@ -199,7 +222,7 @@ TEST(BackendIntegrationTest, Ready) {
                    << ready_response_2.get_error();
         }
         EXPECT_EQ(ready_response_2.get_type(), MessageType::ReadyResponseType);
-        EXPECT_EQ(ready_response_2.get_game_id(), game_id_2);
+        EXPECT_EQ(ready_response_2.get_game_id(), game_id);
         EXPECT_EQ(ready_response_2.get_player_id(), player_id_2);
 
         // Player 1 should have recieved a ready message for player 2
@@ -207,7 +230,7 @@ TEST(BackendIntegrationTest, Ready) {
             recieve_response_json_from_server(connector_1);
         const ReadyMessage ready_message_1(message_json_1);
         EXPECT_EQ(ready_message_1.get_type(), MessageType::ReadyMessageType);
-        EXPECT_EQ(ready_message_1.get_game_id(), game_id_1);
+        EXPECT_EQ(ready_message_1.get_game_id(), game_id);
         EXPECT_EQ(ready_message_1.get_player_id(), player_id_1);
 
     } catch (const std::exception& e) {
@@ -215,26 +238,15 @@ TEST(BackendIntegrationTest, Ready) {
     }
 }
 
-TEST(BackendIntegrationTest, GameStartedMessage) {
-    FAIL() << "Not implemented";
-}
-
 /**
  * @brief Simulate two players having prepared their board and being ready to
  * start the game.
  */
-TEST(BackendIntegrationTest, Preparation) {
+TEST(Z_BackendIntegrationTest, Preparation) {
     try {
         // Place ships for player 1
-        const std::vector<ShipData> ships_data_1 = {
-            ShipData(ShipCategory::Destroyer, true, 0, 5),
-            ShipData(ShipCategory::Submarine, true, 6, 8),
-            ShipData(ShipCategory::Cruiser, true, 7, 6),
-            ShipData(ShipCategory::Battleship, true, 6, 0),
-            ShipData(ShipCategory::Carrier, false, 4, 2),
-        };
 
-        const PreparedRequest prepared_request_1(game_id_1, player_id_1,
+        const PreparedRequest prepared_request_1(game_id, player_id_1,
                                                  ships_data_1);
 
         std::cout << "print: " << prepared_request_1.to_string() << std::endl;
@@ -244,70 +256,286 @@ TEST(BackendIntegrationTest, Preparation) {
         const PreparedResponse prepared_response_1(
             recieve_response_json_from_server(connector_1));
 
-        EXPECT_EQ(prepared_response_1.is_valid(), true);
+        EXPECT_TRUE(prepared_response_1.is_valid());
         EXPECT_TRUE(prepared_response_1.get_error().empty());
         EXPECT_EQ(prepared_response_1.get_type(),
                   MessageType::PreparedResponseType);
-        EXPECT_EQ(prepared_response_1.get_game_id(), game_id_1);
+        EXPECT_EQ(prepared_response_1.get_game_id(), game_id);
         EXPECT_EQ(prepared_response_1.get_player_id(), player_id_1);
         EXPECT_EQ(prepared_response_1.get_ship_data(), ships_data_1);
 
-        // // player 2 should have recieved a prepared message for player 1
-        // const json message_json_2 =
-        //     recieve_response_json_from_server(connector_2);
-        // const PreparedMessage prepared_message_2(message_json_2);
-        // EXPECT_EQ(prepared_message_2.get_type(),
-        //           MessageType::PreparedMessageType);
-        // EXPECT_EQ(prepared_message_2.get_game_id(), game_id_2);
-        // EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
+        // player 2 should have recieved a prepared message for player 1
+        const json message_json_2 =
+            recieve_response_json_from_server(connector_2);
+        const PreparedMessage prepared_message_2(message_json_2);
+        EXPECT_EQ(prepared_message_2.get_type(),
+                  MessageType::PreparedMessageType);
+        EXPECT_EQ(prepared_message_2.get_game_id(), game_id);
+        EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
 
-        // // Place ships for player 2
-        // std::vector<ShipData> ships_data_2 = {
-        //     ShipData(ShipCategory::Destroyer, false, 5, 3),
-        //     ShipData(ShipCategory::Submarine, true, 4, 0),
-        //     ShipData(ShipCategory::Cruiser, false, 6, 1),
-        //     ShipData(ShipCategory::Battleship, true, 6, 9),
-        //     ShipData(ShipCategory::Carrier, false, 0, 0),
-        // };
+        // Place ships for player 2
 
-        // const PreparedRequest prepared_request_2(game_id_2, player_id_2,
-        //                                          ships_data_2);
+        const PreparedRequest prepared_request_2(game_id, player_id_2,
+                                                 ships_data_2);
 
-        // send_request_to_server(connector_2, prepared_request_2.to_string());
+        send_request_to_server(connector_2, prepared_request_2.to_string());
 
-        // const PreparedResponse prepared_response_2(
-        //     recieve_response_json_from_server(connector_2));
+        const PreparedResponse prepared_response_2(
+            recieve_response_json_from_server(connector_2));
 
-        // EXPECT_EQ(prepared_response_2.is_valid(), true);
-        // EXPECT_TRUE(prepared_response_2.get_error().empty());
-        // EXPECT_EQ(prepared_response_2.get_type(),
-        //           MessageType::PreparedResponseType);
-        // EXPECT_EQ(prepared_response_2.get_game_id(), game_id_2);
-        // EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
-        // EXPECT_EQ(prepared_response_2.get_ship_data(), ships_data_2);
+        EXPECT_TRUE(prepared_response_2.is_valid());
+        EXPECT_TRUE(prepared_response_2.get_error().empty());
+        EXPECT_EQ(prepared_response_2.get_type(),
+                  MessageType::PreparedResponseType);
+        EXPECT_EQ(prepared_response_2.get_game_id(), game_id);
+        EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
+        EXPECT_EQ(prepared_response_2.get_ship_data(), ships_data_2);
 
-        // // Player 1 should have recieved a prepared message for player 2
-        // const PreparedMessage prepared_message_1(
-        //     recieve_response_json_from_server(connector_1));
-        // EXPECT_EQ(prepared_message_1.get_type(),
-        //           MessageType::PreparedMessageType);
-        // EXPECT_EQ(prepared_message_1.get_game_id(), game_id_1);
-        // EXPECT_EQ(prepared_message_1.get_player_id(), player_id_1);
+        // Player 1 should have recieved a prepared message for player 2
+        const PreparedMessage prepared_message_1(
+            recieve_response_json_from_server(connector_1));
+        EXPECT_EQ(prepared_message_1.get_type(),
+                  MessageType::PreparedMessageType);
+        EXPECT_EQ(prepared_message_1.get_game_id(), game_id);
+        EXPECT_EQ(prepared_message_1.get_player_id(), player_id_1);
 
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();
     }
 }
 
-TEST(BackendIntegrationTest, BattleStartedMessage) {
-    FAIL() << "Not implemented";
+TEST(Z_BackendIntegrationTest, Shot1From1at2Miss) {
+    try {
+        // player 1 shoots at player 2
+        const ShootRequest shoot_request_1(game_id, player_id_1, 3, 8);
+
+        send_request_to_server(connector_1, shoot_request_1.to_string());
+
+        // player 1 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_1(
+            recieve_response_json_from_server(connector_1));
+
+        EXPECT_EQ(shoot_response_1.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_1.is_valid());
+        EXPECT_TRUE(shoot_response_1.get_error().empty());
+        EXPECT_EQ(shoot_response_1.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shoot_response_1.get_x(), 3);
+        EXPECT_EQ(shoot_response_1.get_y(), 8);
+        EXPECT_FALSE(shoot_response_1.has_hit());
+
+        // player 2 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_EQ(shot_message_2.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_2.get_game_id(), game_id);
+        EXPECT_EQ(shot_message_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shot_message_2.get_x(), 3);
+        EXPECT_EQ(shot_message_2.get_y(), 8);
+        EXPECT_FALSE(shot_message_2.has_hit());
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
 }
 
-TEST(BackendIntegrationTest, Shoot) { FAIL() << "Not implemented"; }
+TEST(Z_BackendIntegrationTest, Shot2From2at1Hit) {
+    try {
+        // player 2 shoots at player 1
+        const ShootRequest shoot_request_2(game_id, player_id_2, 0, 5);
 
-TEST(BackendIntegrationTest, GiveUp) { FAIL() << "Not implemented"; }
+        send_request_to_server(connector_2, shoot_request_2.to_string());
 
-TEST(BackendIntegrationTest, DisconnectAndShutdownServer) {
+        // player 2 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_EQ(shoot_response_2.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_2.is_valid());
+        EXPECT_TRUE(shoot_response_2.get_error().empty());
+        EXPECT_EQ(shoot_response_2.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shoot_response_2.get_x(), 0);
+        EXPECT_EQ(shoot_response_2.get_y(), 5);
+        EXPECT_TRUE(shoot_response_2.has_hit());
+        EXPECT_FALSE(shoot_response_2.has_destroyed_ship());
+
+        // player 1 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_1(
+            recieve_response_json_from_server(connector_1));
+        EXPECT_EQ(shot_message_1.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_1.get_game_id(), game_id);
+        EXPECT_EQ(shot_message_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shot_message_1.get_x(), 0);
+        EXPECT_EQ(shot_message_1.get_y(), 5);
+        EXPECT_TRUE(shot_message_1.has_hit());
+        EXPECT_FALSE(shot_message_1.has_destroyed_ship());
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, Shot3From2at1Hit) {
+    try {
+        ShipData p1_destroyer(ShipCategory::Destroyer, true, 0, 5);
+
+        // player 2 shoots at player 1
+        const ShootRequest shoot_request_2(game_id, player_id_2, 1, 5);
+
+        send_request_to_server(connector_2, shoot_request_2.to_string());
+
+        // player 2 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_EQ(shoot_response_2.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_2.is_valid());
+        EXPECT_TRUE(shoot_response_2.get_error().empty());
+        EXPECT_EQ(shoot_response_2.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shoot_response_2.get_x(), 1);
+        EXPECT_EQ(shoot_response_2.get_y(), 5);
+        EXPECT_TRUE(shoot_response_2.has_hit());
+        EXPECT_TRUE(shoot_response_2.has_destroyed_ship());
+        EXPECT_EQ(shoot_response_2.get_destroyed_ship(), p1_destroyer);
+
+        // player 1 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_1(
+            recieve_response_json_from_server(connector_1));
+        EXPECT_EQ(shot_message_1.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_1.get_game_id(), game_id);
+        EXPECT_EQ(shot_message_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shot_message_1.get_x(), 1);
+        EXPECT_EQ(shot_message_1.get_y(), 5);
+        EXPECT_TRUE(shot_message_1.has_hit());
+        EXPECT_TRUE(shot_message_1.has_destroyed_ship());
+        EXPECT_EQ(shot_message_1.get_destroyed_ship(), p1_destroyer);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, Shot4From2at1Miss) {
+    try {
+        // player 2 shoots at player 1
+        const ShootRequest shoot_request_2(game_id, player_id_2, 2, 5);
+
+        send_request_to_server(connector_2, shoot_request_2.to_string());
+
+        // player 2 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_EQ(shoot_response_2.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_2.is_valid());
+        EXPECT_TRUE(shoot_response_2.get_error().empty());
+        EXPECT_EQ(shoot_response_2.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shoot_response_2.get_x(), 2);
+        EXPECT_EQ(shoot_response_2.get_y(), 5);
+        EXPECT_FALSE(shoot_response_2.has_hit());
+
+        // player 1 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_1(
+            recieve_response_json_from_server(connector_1));
+        EXPECT_EQ(shot_message_1.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_1.get_game_id(), game_id);
+        EXPECT_EQ(shot_message_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shot_message_1.get_x(), 2);
+        EXPECT_EQ(shot_message_1.get_y(), 5);
+        EXPECT_FALSE(shot_message_1.has_hit());
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, Shot5From1at2Miss) {
+    try {
+        // player 1 shoots at player 2
+        const ShootRequest shoot_request_1(game_id, player_id_1, 2, 3);
+
+        send_request_to_server(connector_1, shoot_request_1.to_string());
+
+        // player 1 gets response with shot info and hit or miss
+        const ShootResponse shoot_response_1(
+            recieve_response_json_from_server(connector_1));
+
+        EXPECT_EQ(shoot_response_1.get_type(), MessageType::ShootResponseType);
+        EXPECT_TRUE(shoot_response_1.is_valid());
+        EXPECT_TRUE(shoot_response_1.get_error().empty());
+        EXPECT_EQ(shoot_response_1.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shoot_response_1.get_x(), 2);
+        EXPECT_EQ(shoot_response_1.get_y(), 3);
+        EXPECT_FALSE(shoot_response_1.has_hit());
+
+        // player 2 gets shot message with shot info and hit or miss
+        const ShotMessage shot_message_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_EQ(shot_message_2.get_type(), MessageType::ShotMessageType);
+        EXPECT_EQ(shot_message_2.get_game_id(), game_id);
+        EXPECT_EQ(shot_message_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shot_message_2.get_x(), 2);
+        EXPECT_EQ(shot_message_2.get_y(), 3);
+        EXPECT_FALSE(shot_message_2.has_hit());
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, Player1GiveUp) {
+    // player 1 sends a give up request
+    const GiveUpRequest give_up_request(game_id, player_id_1);
+
+    send_request_to_server(connector_1, give_up_request.to_string());
+
+    // player 1 recieves a give up response
+    const GiveUpResponse give_up_response_1(
+        recieve_response_json_from_server(connector_1));
+
+    EXPECT_EQ(give_up_response_1.get_type(), MessageType::GiveUpResponseType);
+    EXPECT_TRUE(give_up_response_1.get_error().empty());
+    EXPECT_EQ(give_up_response_1.get_game_id(), game_id);
+    EXPECT_EQ(give_up_response_1.get_player_id(), player_id_1);
+
+    // player 2 recieves a gave up message
+    const GaveUpMessage gave_up_message_2(
+        recieve_response_json_from_server(connector_2));
+
+    EXPECT_EQ(gave_up_message_2.get_type(), MessageType::GaveUpMessageType);
+    EXPECT_EQ(gave_up_message_2.get_game_id(), game_id);
+    EXPECT_EQ(gave_up_message_2.get_player_id(), player_id_1);
+}
+
+TEST(Z_BackendIntegrationTest, GameOver) {
+    // player 1 recieves a game over message
+    const GameOverMessage game_over_message_1(
+        recieve_response_json_from_server(connector_1));
+
+    EXPECT_EQ(game_over_message_1.get_type(),
+              MessageType::GameOverMessageType);
+    EXPECT_EQ(game_over_message_1.get_game_id(), game_id);
+    EXPECT_EQ(game_over_message_1.get_player_id(), player_id_1);
+    EXPECT_FALSE(game_over_message_1.has_won());
+    EXPECT_EQ(game_over_message_1.get_ship_data(), ships_data_2);
+
+    // player 2 recieves a game over message
+    const GameOverMessage game_over_message_2(
+        recieve_response_json_from_server(connector_2));
+
+    EXPECT_EQ(game_over_message_2.get_type(),
+              MessageType::GameOverMessageType);
+    EXPECT_EQ(game_over_message_2.get_game_id(), game_id);
+    EXPECT_EQ(game_over_message_2.get_player_id(), player_id_2);
+    EXPECT_TRUE(game_over_message_2.has_won());
+    EXPECT_EQ(game_over_message_2.get_ship_data(), ships_data_1);
+}
+
+TEST(Z_BackendIntegrationTest, DisconnectAndShutdownServer) {
     stop();
 
     EXPECT_FALSE(connector_1.is_open());

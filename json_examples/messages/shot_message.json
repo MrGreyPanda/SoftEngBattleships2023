@@ -1,0 +1,15 @@
+{
+  "type": "shot_message",
+  "game_id": "12345_game",
+  "player_id": "12345_player",
+  "x": 4,
+  "y": 9,
+  "has_hit": true,
+  "has_destroyed_ship": true,
+  "destroyed_ship": {
+    "name": 4,
+    "x": 4,
+    "y": 2,
+    "is_horizontal": false
+  }
+}

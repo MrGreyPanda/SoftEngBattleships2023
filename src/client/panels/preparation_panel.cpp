@@ -73,11 +73,24 @@ void PreparationPanel::render()
 {
     SDLGui::begin("preparation_panel_context");
 
+    static OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
+    if(own_board.has_been_reset)
+        SDLGui::TextButton("ready_button").enable();
+
     static SDLGui::DraggableImageWidget& carrier_widget = SDLGui::DraggableImage("carrier_ship");
     static SDLGui::DraggableImageWidget& battleship_widget = SDLGui::DraggableImage("battleship_ship");
     static SDLGui::DraggableImageWidget& cruiser_widget = SDLGui::DraggableImage("cruiser_ship");
     static SDLGui::DraggableImageWidget& submarine_widget = SDLGui::DraggableImage("submarine_ship");
     static SDLGui::DraggableImageWidget& destroyer_widget = SDLGui::DraggableImage("destroyer_ship");
+
+    Ship* carrier = own_board.get_ship_by_name(Carrier);
+    Ship* battleship = own_board.get_ship_by_name(Battleship);
+    Ship* cruiser = own_board.get_ship_by_name(Cruiser);
+    Ship* submarine = own_board.get_ship_by_name(Submarine);
+    Ship* destroyer = own_board.get_ship_by_name(Destroyer);
+
+    std::array<SDLGui::DraggableImageWidget*, 5> ships_widget_arr = {&destroyer_widget, &submarine_widget, &cruiser_widget, &battleship_widget, &carrier_widget};
+    std::array<Ship*, 5> ships_ptr_arr = {destroyer, submarine, cruiser, battleship, carrier};
 
     static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
 
@@ -85,144 +98,53 @@ void PreparationPanel::render()
     static SDL_FRect grid_hover_cell_data;
     static std::pair<float, float> image_position;
 
-    static OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
 
-    static Ship* carrier = own_board.get_ship_by_name(Carrier);
-    static Ship* battleship = own_board.get_ship_by_name(Battleship);
-    static Ship* cruiser = own_board.get_ship_by_name(Cruiser);
-    static Ship* submarine = own_board.get_ship_by_name(Submarine);
-    static Ship* destroyer = own_board.get_ship_by_name(Destroyer);
-
-    if (carrier_widget.isGrabbed()) {
-        if (grid.isHovered()) {
-            grid_cell_coords = grid.getHoverIndices();
-            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            carrier_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-        }
-    }
-    if (carrier_widget.onDrop()) {
-        if (!grid.isHovered()) carrier_widget.reset();
-        else {
-            image_position = carrier_widget.getPosition();
-            grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = 
-                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *carrier);
-            if (can_be_placed) {
+    // Because we should code DRY
+    for(int i = 0; i < 5; i++){
+        if(ships_widget_arr[i]->isGrabbed()){
+            if(grid.isHovered()){
+                grid_cell_coords = grid.getHoverIndices();
                 grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                carrier_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Carrier);
+                ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
             }
-            else carrier_widget.reset();
+        }
+
+        // ATTENTION -> I think SDL and cpp are handling x y differently, so I'm swapping them here
+        // Okey, sometimes, it just isn't working correctly when checking but I'm too tired to check why
+        if(ships_widget_arr[i]->onDrop()){
+            if(!grid.isHovered()) ships_widget_arr[i]->reset();
+            else{
+                image_position = ships_widget_arr[i]->getPosition();
+                grid_cell_coords = grid.getHoverIndices();
+                bool can_be_placed = 
+                    own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
+                if(can_be_placed){
+                    grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                    ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                    own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, ships_ptr_arr[i]->get_name());
+                }
+                else{
+                    ships_widget_arr[i]->reset();
+                }
+            }
         }
     }
 
-    if (battleship_widget.isGrabbed()) {
-        if (grid.isHovered()) {
-            grid_cell_coords = grid.getHoverIndices();
-            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            battleship_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-        }
-    }
-    if (battleship_widget.onDrop()) {
-        if (!grid.isHovered()) battleship_widget.reset();
-        else {
-            image_position = battleship_widget.getPosition();
-            grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = 
-                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *battleship);
-            if (can_be_placed) {
-                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                battleship_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Battleship);
-            }
-            else battleship_widget.reset();
-        }
-    }
-
-    if (cruiser_widget.isGrabbed()) {
-        if (grid.isHovered()) {
-            grid_cell_coords = grid.getHoverIndices();
-            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            cruiser_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-        }
-    }
-    if (cruiser_widget.onDrop()) {
-        if (!grid.isHovered()) cruiser_widget.reset();
-        else {
-            image_position = cruiser_widget.getPosition();
-            grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = 
-                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *cruiser);
-            if (can_be_placed) {
-                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                cruiser_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Cruiser);
-            }
-            else cruiser_widget.reset();
-        }
-    }
-
-    if (submarine_widget.isGrabbed()) {
-        if (grid.isHovered()) {
-            grid_cell_coords = grid.getHoverIndices();
-            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            submarine_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-        }
-    }
-    if (submarine_widget.onDrop()) {
-        if (!grid.isHovered()) submarine_widget.reset();
-        else {
-            image_position = submarine_widget.getPosition();
-            grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = 
-                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *submarine);
-            if (can_be_placed) {
-                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                submarine_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Submarine);
-            }
-            else submarine_widget.reset();
-        }
-    }
-
-    if (destroyer_widget.isGrabbed()) {
-        if (grid.isHovered()) {
-            grid_cell_coords = grid.getHoverIndices();
-            grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-            destroyer_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-        }
-    }
-    if (destroyer_widget.onDrop()) {
-        if (!grid.isHovered()) destroyer_widget.reset();
-        else {
-            image_position = destroyer_widget.getPosition();
-            grid_cell_coords = grid.getHoverIndices();
-            bool can_be_placed = 
-                own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *destroyer);
-            if (can_be_placed) {
-                grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                destroyer_widget.resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, Destroyer);
-            }
-            else destroyer_widget.reset();
-        }
-    }
 
     if (SDLGui::TextButton("ready_button")) {
         SDLGui::TextButton("ready_button").disable();
         Player* player = game_state_->get_players()[0];
-        //ClientNetworkManager::send_message(PreparedRequest(game_state_->get_id(), player->get_id(), player->get_own_board().get_ship_vec()));
+        if(own_board.is_valid_configuration()){
+            ClientNetworkManager::send_message(PreparedRequest(game_state_->get_id(), player->get_id(), own_board.get_ship_configuration()).to_string());
+        }
+        else{
+            own_board.reset_board();
+            for(int i = 0; i < 5; i++){
+                ships_widget_arr[i]->reset();
+            }
+        }
     }
-        //game_state_->set_phase(Battle);
 
-    static bool both_players_ready = true;
-    if (game_state_->get_players().size() != 2)
-        both_players_ready = false;
-
-    for (auto& player : game_state_->get_players()) {
-        both_players_ready = both_players_ready && player->get_is_prepared();
-    }
-    if (both_players_ready) game_state_->set_phase(Battle);
 
     if(SDLGui::TextButton("helpButton")){
         if(help_button_counter_ == 0){

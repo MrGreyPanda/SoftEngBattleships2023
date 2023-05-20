@@ -1,17 +1,8 @@
 #include "shoot_request.h"
 
 ShootRequest::ShootRequest(const json& data) : Message(data) {
-    if (data.contains("x") && data["x"].is_number_integer()) {
-        x_ = data["x"].get<unsigned short>();
-    } else {
-        throw std::runtime_error("Invalid x");
-    }
-
-    if (data.contains("y") && data["y"].is_number_integer()) {
-        y_ = data["y"].get<unsigned short>();
-    } else {
-        throw std::runtime_error("Invalid y");
-    }
+    x_ = data.at("x").get<unsigned short>();
+    y_ = data.at("y").get<unsigned short>();
 }
 
 ShootRequest::ShootRequest(std::string game_id, std::string player_id,

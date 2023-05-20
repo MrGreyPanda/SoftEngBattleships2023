@@ -113,12 +113,16 @@ class GameState {
      */
     unsigned short get_turn_player_index() const;
 
+    std::string get_turn_player_id() const;
+
     /**
      * @brief change turn player index
      */
     void change_turn_player_index();
 
-    bool start_game();  // Let's see if this is needed
+    bool start_preparation();
+
+    bool start_battle();
 
     std::string get_other_player_id(std::string id) const;
 
@@ -140,6 +144,12 @@ class GameState {
      * @return 'false' else
      */
     bool all_players_prepared() const;
+
+    /**
+     * @brief Reset all players' states to 'not ready' and set the game phase to 'lobby'.
+     */
+
+    void reset_state();
 
    private:
     std::string id_;

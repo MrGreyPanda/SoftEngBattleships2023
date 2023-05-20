@@ -1,0 +1,13 @@
+{
+  "type": "game_over_message",
+  "game_id": "fsdfdsf3fdf",
+  "player_id": "fdféÖÉ++_!",
+  "has_won": true,
+  "ships": [
+    { "is_horizontal": false, "name": 1, "x": 0, "y": 0 },
+    { "is_horizontal": true, "name": 2, "x": 6, "y": 6 },
+    { "is_horizontal": true, "name": 3, "x": 7, "y": 7 },
+    { "is_horizontal": true, "name": 4, "x": 6, "y": 6 },
+    { "is_horizontal": false, "name": 5, "x": 4, "y": 4 }
+  ]
+}

@@ -1,7 +1,7 @@
 #include "response.h"
 
 Response::Response(const json& data) : Message(data) {
-    if (data.contains("error")) error_ = data["error"];
+    if (data.contains("error")) error_ = data.at("error").get<std::string>();
 }
 
 Response::Response(const MessageType& type, const std::string& game_id,
