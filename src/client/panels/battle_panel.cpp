@@ -173,6 +173,7 @@ void BattlePanel::render() {
         /*if(Grid is enabled)*/
         SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
         if (!player_->has_shot) {
+        std::cout << "It is your turn\n";
             if (SDLGui::GridWidget("enemy_board")) 
                 handle_shots();
         }
