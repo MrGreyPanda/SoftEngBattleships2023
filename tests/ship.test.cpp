@@ -42,11 +42,11 @@ TEST(ShipTest, ChangeOrientation){
     EXPECT_EQ(2, Submarine);
     EXPECT_EQ(3, category_to_size(sub));
     EXPECT_EQ(3, category_to_size(my_ship.get_name()));
-    EXPECT_FALSE(my_ship.get_is_horizontal());
-    my_ship.set_is_horizontal(true);
     EXPECT_TRUE(my_ship.get_is_horizontal());
     my_ship.set_is_horizontal(false);
     EXPECT_FALSE(my_ship.get_is_horizontal());
+    my_ship.set_is_horizontal(true);
+    EXPECT_TRUE(my_ship.get_is_horizontal());
 }
 
 TEST(ShipTest, SetIsPlaced){
