@@ -110,6 +110,7 @@ void PreparationPanel::render()
         }
 
         // ATTENTION -> I think SDL and cpp are handling x y differently, so I'm swapping them here
+        // Okey, sometimes, it just isn't working correctly when checking but I'm too tired to check why
         if(ships_widget_arr[i]->onDrop()){
             if(!grid.isHovered()) ships_widget_arr[i]->reset();
             else{

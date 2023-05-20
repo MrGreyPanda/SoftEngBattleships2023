@@ -24,5 +24,8 @@ class GameController {
 
     static GameState game_state_;
 
+    // True if a panel is initialized, false otherwise
+    static std::vector<bool> InitializedPannels_;
+
     //static std::string game_player_id_;   // get player_id in connection panel.
 };

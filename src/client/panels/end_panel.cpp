@@ -61,9 +61,9 @@ void EndPanel::render() {
     }
 
     if(SDLGui::TextButton("end_play_again_button")){
-        game_state_->reset_state();
-        ClientNetworkManager::send_message(JoinRequest().to_string());
-
+        // Need to redesign this
+        // game_state_->reset_state();
+        // ClientNetworkManager::send_message(JoinRequest().to_string());
     }
     SDLGui::end();
 }

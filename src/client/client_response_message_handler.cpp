@@ -111,7 +111,6 @@ void ClientResponseMessageHandler::handle_ready_response_(
     assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
     game_controller_game_state_->set_player_ready(
         game_controller_game_state_->get_player_id_by_index(0));
-    game_controller_game_state_->set_phase(Preparation);
 }
 
 // Sets other player as ready
@@ -120,7 +119,6 @@ void ClientResponseMessageHandler::handle_ready_message_(
     assert(game_controller_game_state_ != nullptr && "game_controller_game_state_ cannot be nullptr"); 
     game_controller_game_state_->set_player_ready(
         game_controller_game_state_->get_player_id_by_index(1));
-    game_controller_game_state_->set_phase(Preparation);
 }
 
 // Sets own player as prepared
@@ -142,7 +140,7 @@ void ClientResponseMessageHandler::handle_prepared_response_(
 void ClientResponseMessageHandler::handle_prepared_message_(
     const PreparedMessage &message) {
     game_controller_game_state_->get_players()[1]->set_prepared();
-    if(game_controller_game_state_->get_players()[0]->get_is_prepared())
+    if(game_controller_game_state_->get_players()[0]->get_is_prepared() && game_controller_game_state_->get_phase() != Battle)
         game_controller_game_state_->set_phase(Battle);
 }
 
