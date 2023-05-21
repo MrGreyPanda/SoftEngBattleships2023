@@ -70,7 +70,7 @@ void BattlePanel::init() {
 
     SDLGui::DraggableImageWidget* battleship_ship =
         new SDLGui::DraggableImageWidget(
-            "battleship_ship", "../assets/ship_test_1.bmp", .6f, .35f, .25f,
+            "battleship_ship", "../assets/battleship.bmp", .6f, .35f, .25f,
             .1f, 0., 4, 1, SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(battleship_ship);
