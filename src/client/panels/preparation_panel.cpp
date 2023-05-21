@@ -31,9 +31,10 @@ void PreparationPanel::init()
     preparation_panel_context->addWidget(carrier_ship);
     
     SDLGui::DraggableImageWidget* battleship_ship = 
-        new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
+        new SDLGui::DraggableImageWidget("battleship_ship", "../assets/ship_test_1.bmp",
         .6f, .35f, .3f, .12f, 0., 4, 1, 
-        SDLGui::DraggableImageFlagsExt_CenterImage);
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+        SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(battleship_ship);
     
     SDLGui::DraggableImageWidget* cruiser_ship = 
