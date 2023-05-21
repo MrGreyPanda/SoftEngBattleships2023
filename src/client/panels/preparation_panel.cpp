@@ -67,6 +67,13 @@ void PreparationPanel::init()
             SDLGui::TextFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(help_message_text);
 
+    SDLGui::TextWidget* enemy_prepared_text =
+        new SDLGui::TextWidget("enemy_prepared_text", "Second player is preparing...",
+                               .06f, .82f, .33f, .06f, 0.,
+                               SDLGui::TextFlagsExt_CenterHorizontal |
+                                   SDLGui::TextFlagsExt_NoBackground | SDLGui::TextFlagsExt_CenterText);
+    preparation_panel_context->addWidget(enemy_prepared_text);
+
     SDLGui::pushContext(preparation_panel_context);
 }
 
@@ -159,6 +166,10 @@ void PreparationPanel::render()
             // Set the background to nothing
             SDLGui::Text("helpMessageText").updateText(512, "");
         }
+    }
+
+    if(game_state_->get_players()[1]->get_is_prepared()){
+        SDLGui::Text("enemy_prepared_text").updateText(32, "Second player is prepared!");
     }
 
     SDLGui::end();

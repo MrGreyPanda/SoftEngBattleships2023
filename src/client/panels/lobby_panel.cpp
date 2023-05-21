@@ -35,6 +35,9 @@ void LobbyPanel::render() {
     if (check_is_full()) {
         SDLGui::TextButton("battle_button").enable();
         SDLGui::Text("waiting_text").updateText(32, "Second player joined!");
+        if (game_state_->get_players()[1]->get_is_ready()){
+            SDLGui::Text("waiting_text").updateText(32, "Second player is ready!");
+        }
     }
 
     if (SDLGui::TextButton("battle_button")) {
