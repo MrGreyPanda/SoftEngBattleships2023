@@ -35,25 +35,29 @@ void PreparationPanel::init()
     SDLGui::DraggableImageWidget* battleship_ship = 
         new SDLGui::DraggableImageWidget("battleship_ship", "../assets/battleship.bmp",
         .6f, .33f, .24f, .105f, 0., 4, 1, 
-        SDLGui::DraggableImageFlagsExt_CenterImage);
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+        SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(battleship_ship);
     
     SDLGui::DraggableImageWidget* cruiser_ship = 
         new SDLGui::DraggableImageWidget("cruiser_ship", "../assets/cruiser.bmp",
         .6f, .455f, .18f, .1f, 0., 3, 1, 
-        SDLGui::DraggableImageFlagsExt_CenterImage);
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+        SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(cruiser_ship);
     
     SDLGui::DraggableImageWidget* submarine_ship = 
         new SDLGui::DraggableImageWidget("submarine_ship", "../assets/submarine.bmp",
         .6f, .575f, .18f, .1f, 0., 3, 1, 
-        SDLGui::DraggableImageFlagsExt_CenterImage);
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+        SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(submarine_ship);
 
     SDLGui::DraggableImageWidget* destroyer_ship = 
         new SDLGui::DraggableImageWidget("destroyer_ship", "../assets/destroyer.bmp",
         .6f, .695f, .14f, .1f, 0., 2, 1, 
-        SDLGui::DraggableImageFlagsExt_CenterImage);
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+        SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(destroyer_ship);
 
     SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
