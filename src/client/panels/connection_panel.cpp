@@ -11,20 +11,20 @@ void ConnectionPanel::init() {
         new SDLGui::SDLGuiContext("connection_panel_context");
 
     SDLGui::TextWidget* connect_to_server_text = new SDLGui::TextWidget(
-        "connect_to_server_text", "Connect to Server", .06f, .1f, .4f, .09f, 0.,
-        SDLGui::TextFlagsExt_CenterTextVertical |
-            SDLGui::TextFlagsExt_NoBackground);
+        "connect_to_server_text", "Connect to Server", .0f, .05f, .6f, .1f, 0.,
+        SDLGui::TextFlagsExt_CenterText | 
+            SDLGui::TextFlagsExt_CenterHorizontal);
     connection_panel_context->addWidget(connect_to_server_text);
 
     SDLGui::TextWidget* server_address_text = new SDLGui::TextWidget(
         "server_address_text", "Server Address", .1f, .4f, .3f, .06f, 0.,
-        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground);
+        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_CenterVertical | SDLGui::TextFlagsExt_NoBackground);
     connection_panel_context->addWidget(server_address_text);
 
     SDLGui::TextInputWidget* server_address_text_input =
         new SDLGui::TextInputWidget(
             server_address_input_, "server_address_input", 32, .55f, .4f, .4f,
-            .06f, 0., SDLGui::TextInputFlagsExt_CenterText);
+            .06f, 0., SDLGui::TextInputFlagsExt_CenterText | SDLGui::TextInputFlagsExt_CenterVertical);
     connection_panel_context->addWidget(server_address_text_input);
 
     SDLGui::TextWidget* server_message_text = new SDLGui::TextWidget(
@@ -34,7 +34,7 @@ void ConnectionPanel::init() {
     connection_panel_context->addWidget(server_message_text);
 
     SDLGui::TextButtonWidget* connection_button = new SDLGui::TextButtonWidget(
-        "server_connection_button", "Connect", 0.f, .8f, .3f, .08f, 0.,
+        "server_connection_button", "Connect", 0.f, .88f, .4f, .08f, 0.f,
         SDLGui::TextButtonFlagsExt_CenterHorizontal |
             SDLGui::TextButtonFlagsExt_CenterText);
     connection_panel_context->addWidget(connection_button);
