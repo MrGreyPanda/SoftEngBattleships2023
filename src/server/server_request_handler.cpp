@@ -449,7 +449,7 @@ void ServerRequestHandler::kill_game_(GameInstance* game_ptr,
                                       const std::string& player_id,
                                       const std::string& other_player_id) {
     // remove the game
-    delete game_ptr;  // TODO FIXME check if this is correct, how to talk
+    GameInstanceManager::delete_game_(game_ptr->get_id());  // TODO FIXME check if this is correct, how to talk
                       // to player manager?
     PlayerManager::remove_player(player_id);
     PlayerManager::remove_player(other_player_id);

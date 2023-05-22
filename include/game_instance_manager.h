@@ -60,6 +60,14 @@ class GameInstanceManager {
     static bool try_remove_player(Player* player_ptr,
                                   GameInstance*& game_instance_ptr);
 
+    /**
+     * @brief Deletes a GameInstance
+     * 
+     * @param game_id 
+     * @return true if successful, false otherwise
+     */
+    static bool delete_game_(const std::string& game_id);
+
    private:
     /**
      * @brief Creates a new GameInstance and adds it to games_.
