@@ -4,7 +4,7 @@ GameState* LobbyPanel::game_state_ = nullptr;
 
 void LobbyPanel::init() {
     SDLGui::SDLGuiContext* lobby_panel_context =
-        new SDLGui::SDLGuiContext("lobbyWindow");
+        new SDLGui::SDLGuiContext("lobby_window");
 
     SDLGui::TextWidget* lobby_phase_title = new SDLGui::TextWidget(
         "lobby_title", "Lobby", .0f, .05f, .6f, .1f, 0.,
@@ -26,11 +26,16 @@ void LobbyPanel::init() {
     lobby_panel_context->addWidget(battle_button);
     battle_button->disable();
 
+    SDLGui::TextButtonWidget* disconnect_button = new SDLGui::TextButtonWidget(
+        "disconnect_button", "Disconnect", 0.05f, .05f, .1f, .05f, 0.,
+        SDLGui::TextButtonFlagsExt_CenterText);
+    lobby_panel_context->addWidget(disconnect_button);
+
     SDLGui::pushContext(lobby_panel_context);
 }
 
 void LobbyPanel::render() {
-    SDLGui::begin("lobbyWindow");
+    SDLGui::begin("lobby_window");
 
     if (check_is_full()) {
         SDLGui::TextButton("battle_button").enable();
@@ -51,6 +56,10 @@ void LobbyPanel::render() {
         SDLGui::TextButton("battle_button").disable();
 
     if (game_state_->all_players_ready()) game_state_->set_phase(Preparation);
+
+    if(SDLGui::TextButton("disconnect_button")){
+        // TO DO
+    }
 
     SDLGui::end();
 }

@@ -37,17 +37,17 @@ void BattlePanel::init() {
     battle_panel_context->addWidget(turn_message_text);
 
     SDLGui::TextButtonWidget* resign_button = new SDLGui::TextButtonWidget(
-        "resignButton", "Resign", 0.05f, .05f, .1f, .05f, 0.,
+        "resign_button", "Resign", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(resign_button);
 
     SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
-        "helpButton", "?", 0.85f, .05f, .1f, .05f, 0.,
+        "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(help_button);
 
     SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
-        "helpMessageText", "", .01f, .1f, .8f, .8f, 0.,
+        "help_message_text", "", .01f, .1f, .8f, .8f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(help_message_text);
@@ -190,11 +190,11 @@ void BattlePanel::render() {
             .updateText(64, "It is the enemy' turn.");
     }
 
-    if (SDLGui::TextButton("helpButton")) {
+    if (SDLGui::TextButton("help_button")) {
         if (help_button_counter_ == 0) {
             ++help_button_counter_;
             // Set the background
-            SDLGui::Text("helpMessageText")
+            SDLGui::Text("help_message_text")
                 .updateText(512,
                             "Click on the enemy board to shoot. Click on the "
                             "resign button to resign. Click on the help "
@@ -202,11 +202,11 @@ void BattlePanel::render() {
         } else {
             --help_button_counter_;
             // Set the background to nothing
-            SDLGui::Text("helpMessageText").updateText(512, "");
+            SDLGui::Text("help_message_text").updateText(512, "");
         }
     }
 
-    if (SDLGui::TextButton("resignButton")) {
+    if (SDLGui::TextButton("resign_button")) {
         // Send a resign request to the server -> Pop up a message box to
         // confirm
         GiveUpRequest resign_request(game_state_->get_id(), player_->get_id());

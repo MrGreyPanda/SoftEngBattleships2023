@@ -61,16 +61,21 @@ void PreparationPanel::init()
     preparation_panel_context->addWidget(destroyer_ship);
 
     SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
-        "helpButton", "?", 0.85f, .05f, .1f, .05f, 0.,
+        "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
          SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(help_button);
 
 
     SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
-        "helpMessageText", "", .01f, .1f, .8f, .8f, 0.,
+        "help_message_text", "", .01f, .1f, .8f, .8f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(help_message_text);
+
+    SDLGui::TextButtonWidget* disconnect_button = new SDLGui::TextButtonWidget(
+        "disconnect_button", "Disconnect", 0.05f, .05f, .1f, .05f, 0.,
+        SDLGui::TextButtonFlagsExt_CenterText);
+    preparation_panel_context->addWidget(disconnect_button);
 
     SDLGui::TextWidget* enemy_prepared_text =
         new SDLGui::TextWidget("enemy_prepared_text", "Second player is preparing...",
@@ -160,21 +165,25 @@ void PreparationPanel::render()
     }
 
 
-    if(SDLGui::TextButton("helpButton")){
+    if(SDLGui::TextButton("help_button")){
         if(help_button_counter_ == 0){
             ++help_button_counter_;
             // Set the background
-            SDLGui::Text("helpMessageText").updateText(512, "Press R while holding a ship to rotate it. Click on the help button to close this message.");
+            SDLGui::Text("help_message_text").updateText(512, "Press R while holding a ship to rotate it. Click on the help button to close this message.");
         }
         else{
             --help_button_counter_;
             // Set the background to nothing
-            SDLGui::Text("helpMessageText").updateText(512, "");
+            SDLGui::Text("help_message_text").updateText(512, "");
         }
     }
 
     if(game_state_->get_players()[1]->get_is_prepared()){
         SDLGui::Text("enemy_prepared_text").updateText(32, "Second player is prepared!");
+    }
+
+    if(SDLGui::TextButton("disconnect_button")){
+        // TO DO
     }
 
     SDLGui::end();

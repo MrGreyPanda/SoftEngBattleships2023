@@ -4,7 +4,7 @@ GameState* EndPanel::game_state_ = nullptr;
 
 void EndPanel::init(){
     SDLGui::SDLGuiContext* end_panel_context =
-    new SDLGui::SDLGuiContext("endWindow");
+    new SDLGui::SDLGuiContext("end_window");
 
     SDLGui::TextWidget* winner_or_loser_text = new SDLGui::TextWidget(
     "winner_or_loser_text", "", .06f, .1f, .4f, .09f, 0.,
@@ -50,7 +50,7 @@ void EndPanel::init(){
 }
 
 void EndPanel::render() {
-    SDLGui::begin("endWindow");
+    SDLGui::begin("end_window");
 
 
     if(game_state_->get_players()[0]->has_won){
