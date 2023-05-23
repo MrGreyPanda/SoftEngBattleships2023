@@ -51,6 +51,19 @@ bool ClientNetworkManager::connect(const std::string& address_string,
     }
 }
 
+bool ClientNetworkManager::disconnect() {
+    const bool was_successfully_disconnected = connection_->shutdown();
+
+    if (!was_successfully_disconnected) {
+        std::cout << "[ClientNetworkManager] Failed to close connection. "
+                  << connection_->last_error_str() << std::endl;
+    } else {
+        delete connection_;
+    }
+
+    return was_successfully_disconnected;
+}
+
 bool ClientNetworkManager::connect_to_host_(const std::string& address_string,
                                             const uint16_t& port) {
     // create sockpp address and catch any errors
@@ -115,8 +128,9 @@ void ClientNetworkManager::handle_incoming_messages_() {
     unsigned msg_length;
     char msg_buffer[512];
 
-    while ((msg_length = connection_->read(msg_buffer, sizeof(msg_buffer))) >
-           0) {
+    while (connection_ != nullptr && connection_->is_open() &&
+           (msg_length = connection_->read(msg_buffer, sizeof(msg_buffer))) >
+               0) {
         try {
             std::stringstream str_stream;
             str_stream.write(msg_buffer, msg_length);

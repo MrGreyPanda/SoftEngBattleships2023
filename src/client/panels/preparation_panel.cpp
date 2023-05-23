@@ -1,5 +1,7 @@
 #include "preparation_panel.h"
 
+#include "give_up_request.h"
+
 GameState* PreparationPanel::game_state_              = nullptr;
 unsigned short PreparationPanel::help_button_counter_ = 0;
 
@@ -83,7 +85,7 @@ void PreparationPanel::init() {
     preparation_panel_context->addWidget(help_message_text);
 
     SDLGui::TextButtonWidget* disconnect_button = new SDLGui::TextButtonWidget(
-        "disconnect_button", "Disconnect", 0.05f, .05f, .1f, .05f, 0.,
+        "resign_button", "Surrender", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(disconnect_button);
 
@@ -223,8 +225,11 @@ void PreparationPanel::render() {
             .updateText(32, "Second player is prepared!");
     }
 
-    if (SDLGui::TextButton("disconnect_button")) {
-        // TO DO
+    if (SDLGui::TextButton("resign_button")) {
+        ClientNetworkManager::send_message(
+            GiveUpRequest(game_state_->get_id(),
+                          game_state_->get_players()[0]->get_id())
+                .to_string());
     }
 
     SDLGui::end();

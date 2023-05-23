@@ -27,6 +27,8 @@ class ClientNetworkManager {
     static bool connect(const std::string& address_string,
                         const uint16_t& port);
 
+    static bool disconnect();
+
     /**
      * @brief client sends a request to connected host
      * @param request the request to be sent
