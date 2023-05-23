@@ -35,6 +35,8 @@ class Example {
         int example_member_1;
 
     private:
+        void example_private_function_();
+
         int example_member_2_;
 };
 
