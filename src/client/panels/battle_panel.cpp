@@ -23,13 +23,13 @@ void BattlePanel::init() {
     battle_panel_context->addWidget(enemy_board);
 
     SDLGui::TextWidget* battle_phase_title = new SDLGui::TextWidget(
-        "battle_title", "Battle Phase", .0f, .05f, .6f, .1f, 0.,
+        "battle_title", "Battle Phase", 0, .0f, .05f, .6f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterText |
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(battle_phase_title);
 
     SDLGui::TextWidget* turn_message_text =
-        new SDLGui::TextWidget("turn_message_text", "", .0f, .9f, .3f, .1f, 0.,
+        new SDLGui::TextWidget("turn_message_text", "", 0, .0f, .9f, .3f, .1f, 0.,
                                SDLGui::TextFlagsExt_CenterTextHorizontal |
                                    SDLGui::TextFlagsExt_NoBackground |
                                    SDLGui::TextFlagsExt_CenterHorizontal);
@@ -40,16 +40,23 @@ void BattlePanel::init() {
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(resign_button);
 
-    SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
+    /*SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
         "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(help_button);
 
     SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
-        "help_message_text", "", .01f, .1f, .8f, .8f, 0.,
+        "help_message_text", "", 0, .01f, .1f, .8f, .8f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
-    battle_panel_context->addWidget(help_message_text);
+    battle_panel_context->addWidget(help_message_text);*/
+
+    SDLGui::HelpMarkerWidget* battle_help = new SDLGui::HelpMarkerWidget(
+        "battle_help", "?", .9f, .02f, .08f, .08f, 0.,
+        SDLGui::HelpMarkerFlagsExt_CenterText);
+    battle_help->addHelperText("Click on the enemy board to shoot. Click on the resign button to resign",
+        32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
+    battle_panel_context->addWidget(battle_help);
 
     /**
      * @brief The following widgets are used to display the ships that the
@@ -179,7 +186,7 @@ void BattlePanel::render() {
 
     if (player_->is_own_turn) {
         /*if(Grid is enabled)*/
-        SDLGui::Text("turn_message_text").updateText(64, "It is your turn.");
+        SDLGui::Text("turn_message_text").updateText(64, 0, "It is your turn.");
         if (!player_->has_shot) {
             // std::cout << "It is your turn\n";
             if (SDLGui::Grid("enemy_board")) handle_shots();
@@ -187,10 +194,10 @@ void BattlePanel::render() {
 
     } else {
         SDLGui::Text("turn_message_text")
-            .updateText(64, "It is the enemy' turn.");
+            .updateText(64, 0, "It is the enemy' turn.");
     }
 
-    if (SDLGui::TextButton("help_button")) {
+    /*if (SDLGui::TextButton("help_button")) {
         if (help_button_counter_ == 0) {
             ++help_button_counter_;
             // Set the background
@@ -204,7 +211,7 @@ void BattlePanel::render() {
             // Set the background to nothing
             SDLGui::Text("help_message_text").updateText(512, "");
         }
-    }
+    }*/
 
     if (SDLGui::TextButton("resign_button")) {
         // Send a resign request to the server -> Pop up a message box to

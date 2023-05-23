@@ -11,24 +11,24 @@ void ConnectionPanel::init() {
         new SDLGui::SDLGuiContext("connection_panel_context");
 
     SDLGui::TextWidget* connect_to_server_text = new SDLGui::TextWidget(
-        "connect_to_server_text", "Connect to Server", .0f, .05f, .6f, .1f, 0.,
+        "connect_to_server_text", "Connect to Server", 0, .0f, .05f, .6f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterText | 
             SDLGui::TextFlagsExt_CenterHorizontal);
     connection_panel_context->addWidget(connect_to_server_text);
 
     SDLGui::TextWidget* server_address_text = new SDLGui::TextWidget(
-        "server_address_text", "Server Address", .1f, .4f, .3f, .06f, 0.,
+        "server_address_text", "Server Address", 0, .1f, .4f, .3f, .06f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_CenterVertical | SDLGui::TextFlagsExt_NoBackground);
     connection_panel_context->addWidget(server_address_text);
 
     SDLGui::TextInputWidget* server_address_text_input =
         new SDLGui::TextInputWidget(
-            server_address_input_, "server_address_input", 32, .55f, .4f, .4f,
+            server_address_input_, "server_address_input", 32, 0, .55f, .4f, .4f,
             .06f, 0., SDLGui::TextInputFlagsExt_CenterText | SDLGui::TextInputFlagsExt_CenterVertical);
     connection_panel_context->addWidget(server_address_text_input);
 
     SDLGui::TextWidget* server_message_text = new SDLGui::TextWidget(
-        "server_message_text", "", .0f, .7f, .3f, .04f, 0.,
+        "server_message_text", "", 0, .0f, .7f, .3f, .04f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
     connection_panel_context->addWidget(server_message_text);
@@ -52,24 +52,24 @@ void ConnectionPanel::render() {
             if (!ClientNetworkManager::connect(server_address_,
                                                server_port_))
                 SDLGui::Text("server_message_text")
-                    .updateText(64, "Failed to connect to %s:%hu",
+                    .updateText(64, 0, "Failed to connect to %s:%hu",
                                 server_address_.c_str(), server_port_);
             else {
                 SDLGui::Text("server_message_text")
-                    .updateText(64, "Connecting to %s:%hu...",
+                    .updateText(64, 0, "Connecting to %s:%hu...",
                                 server_address_.c_str(), server_port_);
                 SDLGui::TextButton("server_connection_button").disable();
                 SDLGui::TextInput("server_address_input").disable();
             }
         }
         else
-            SDLGui::Text("server_message_text").updateText(64, "Invalid address %s", server_address_input_.c_str());
+            SDLGui::Text("server_message_text").updateText(64, 0, "Invalid address %s", server_address_input_.c_str());
     }
 
     if (ClientNetworkManager::get_connection_status() ==
         ClientNetworkConnectionStatus::CONNECTED) {
         SDLGui::Text("server_message_text")
-            .updateText(64, "Connected to %s:%hu", server_address_.c_str(),
+            .updateText(64, 0, "Connected to %s:%hu", server_address_.c_str(),
                         server_port_);
         if (send_join_request) {
             ClientNetworkManager::send_message(JoinRequest().to_string());
