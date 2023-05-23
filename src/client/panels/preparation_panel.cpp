@@ -127,14 +127,12 @@ void PreparationPanel::render()
             }
         }
 
-        // ATTENTION -> I think SDL and cpp are handling x y differently, so I'm swapping them here
-        // Okey, sometimes, it just isn't working correctly when checking but I'm too tired to check why
         if(ships_widget_arr[i]->onDrop()){
             if(!grid.isHovered()) ships_widget_arr[i]->reset();
             else{
                 image_position = ships_widget_arr[i]->getPosition();
                 grid_cell_coords = grid.getHoverIndices();
-                ships_ptr_arr[i]->set_is_horizontal(!ships_widget_arr[i]->isRotated());
+                ships_ptr_arr[i]->set_is_horizontal(!ships_widget_arr[i]->isRotated());         // isRotated != is_horizontal
                 bool can_be_placed = 
                     own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
