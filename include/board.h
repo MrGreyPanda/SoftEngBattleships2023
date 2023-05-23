@@ -165,14 +165,14 @@ class OwnBoard : public Board {
      */
     bool set_ship_configuration(const std::array<ShipData, 5> &ships);
 
-    /**
-     * @brief If ship is on the board, it checks if it can be rotated.
-     * @brief If not, it returns false. If it can, it rotates the ship and
-     * returns true. If not on board, it returns rotates it and returns true.
-     * @param ship The ship to be rotated
-     * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
-     */
-    bool rotate_ship(const unsigned short x, const unsigned short y, const ShipCategory &shipname);
+   //  /**
+   //   * @brief If ship is on the board, it checks if it can be rotated.
+   //   * @brief If not, it returns false. If it can, it rotates the ship and
+   //   * returns true. If not on board, it returns rotates it and returns true.
+   //   * @param ship The ship to be rotated
+   //   * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
+   //   */
+   //  bool rotate_ship(const unsigned short x, const unsigned short y, const ShipCategory &shipname);
 
     /**
      * @brief Get the ship at a given coordinate
