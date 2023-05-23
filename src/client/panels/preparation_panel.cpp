@@ -143,6 +143,7 @@ void PreparationPanel::render()
                 }
                 else{
                     ships_widget_arr[i]->reset();
+                    ships_ptr_arr[i]->reset_ship();
                 }
             }
         }

@@ -89,13 +89,17 @@ void Board::reset_board(){
 bool OwnBoard::is_valid_placement(const short &x, const short &y,
                                   const Ship &ship) const {
     int grid_size_ = this->get_grid_size();
-    if (x >= grid_size_ || y >= grid_size_ || x < 0 || y < 0) return false;
+    if (x >= grid_size_ || y >= grid_size_ || x < 0 || y < 0) {
+        std::cout << "Invalid coordinates\n";
+        return false;
+    }
 
     bool is_horizontal = ship.get_is_horizontal();
     short ship_length  = ship.get_length();
     if (is_horizontal) {
         if (x + ship_length > grid_size_) {
             // the ship doesn't fit in the grid
+            std::cout << "Ship doesn't fit in the grid\n";
             return false;
         }
         ShipCategory shiptype = ship.get_name();
@@ -111,17 +115,25 @@ bool OwnBoard::is_valid_placement(const short &x, const short &y,
     }
 
     else if (!is_horizontal) {
-        if (y + ship_length > grid_size_) return false;
+        if (y + ship_length > grid_size_){
+            std::cout << "Ship to long: " << ship_length + y << "\n";
+            return false;
+        }
         ShipCategory shiptype = ship.get_name();
 
         for (int i = 0; i < ship_length; i++) {
             if (get_grid_value(x, y + i) != 0 &&
                 get_grid_value(x, y + i) != shiptype)
+                std::cout << shiptype << "\n"
+                          << "grid value = " << get_grid_value(x, y) << "\n";
                 return false;
         }
         return true;
     }
-    return false;  // Throw exception here
+    else {
+        std::cout << "Something wrong is going on\n";
+        return false;  // Throw exception here
+    }
 }
 
 bool OwnBoard::place_ship(const short &x, const short &y, const bool &is_horizontal,
@@ -131,7 +143,7 @@ bool OwnBoard::place_ship(const short &x, const short &y, const bool &is_horizon
     ship->set_is_horizontal(is_horizontal);
     if (!this->is_valid_placement(x, y, *ship)) {
         std::cout << "Invalid placement\n"
-                  << shipname << "\nx = " << x << "\ny = " << y << "\n";
+                  << "Shiptype = " << shipname << "\nx = " << x << "\ny = " << y << "\n";
         return false;
     }
     short ship_length  = ship->get_length();
