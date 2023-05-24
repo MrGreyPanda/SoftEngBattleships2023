@@ -61,6 +61,8 @@ bool ClientNetworkManager::disconnect() {
         delete connection_;
     }
 
+    connection_status_ = ClientNetworkConnectionStatus::NOT_CONNECTED;
+
     return was_successfully_disconnected;
 }
 
