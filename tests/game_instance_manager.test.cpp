@@ -54,13 +54,13 @@ TEST(GameInstanceManagerTest, FindGameByPlayerId) {
     Player *player1               = player_manager->add_or_get_player("Johan");
     GameInstanceManager *game_manager = new GameInstanceManager();
     GameInstance *game                = game_manager->create_new_game_();
-    EXPECT_TRUE(game_manager->find_game_by_player_id_("Johan") == nullptr);
+    EXPECT_TRUE(game_manager->find_game_by_player_id("Johan") == nullptr);
     game_manager->try_add_player(player1, game);
     Player *player2 = player_manager->add_or_get_player("Lukas");
     game_manager->try_add_player(player2, game);
-    GameInstance *found_game = game_manager->find_game_by_player_id_("Johan");
+    GameInstance *found_game = game_manager->find_game_by_player_id("Johan");
     EXPECT_TRUE(found_game == game &&
-                game_manager->find_game_by_player_id_("Lukas") == game);
+                game_manager->find_game_by_player_id("Lukas") == game);
     delete game_manager;
     delete player_manager;
 }

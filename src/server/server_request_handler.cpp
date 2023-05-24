@@ -164,6 +164,90 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
     }
 }
 
+void ServerRequestHandler::handle_player_disconnect(
+    const std::string& player_id) {
+    std::cout << "[ServerRequestHandler] Handling player disconnect for "
+                 "player with ID '"
+              << player_id << "'" << std::endl;
+
+    // get player instance
+    Player* player_ptr = PlayerManager::try_get_player(player_id);
+
+    if (player_ptr == nullptr) {
+        std::cout << "[ServerRequestHandler] Error handling player "
+                     "disconnect: Could not find player "
+                     "with ID '"
+                  << player_id << "'" << std::endl;
+        return;
+    }
+
+    // get game the player is in
+    GameInstance* game_ptr =
+        GameInstanceManager::find_game_by_player_id(player_id);
+
+    if (game_ptr == nullptr) {
+        std::cout << "[ServerRequestHandler] Error handling player "
+                     "disconnect: Could not find game "
+                     "with player ID '"
+                  << player_id << "'" << std::endl;
+        return;
+    }
+
+    const Phase current_game_phase = game_ptr->get_game_state()->get_phase();
+
+    if (current_game_phase == Phase::Preparation ||
+        current_game_phase == Phase::Battle) {
+        // remove the player and let the other one win
+
+        if (game_ptr->try_remove_player(player_ptr)) {
+            // notify the other player that he won
+            const std::string other_player_id =
+                game_ptr->try_get_other_player_id(player_id);
+
+            if (!other_player_id.empty()) {
+                if (current_game_phase == Phase::Preparation) {
+                    const GameOverMessage won_message(game_ptr->get_id(),
+                                                      other_player_id, true);
+
+                    ServerNetworkManager::send_message(won_message.to_string(),
+                                                       other_player_id);
+                } else {
+                    const GameOverMessage won_message(
+                        game_ptr->get_id(), other_player_id, false,
+                        player_ptr->get_own_board().get_ship_configuration());
+
+                    ServerNetworkManager::send_message(won_message.to_string(),
+                                                       other_player_id);
+                }
+
+            } else {
+                std::cout << "[ServerRequestHandler] Error handling player "
+                             "disconnect: Could not find other "
+                             "player for game with ID '"
+                          << game_ptr->get_id() << "'" << std::endl;
+            }
+        } else {
+            std::cout << "[ServerRequestHandler] Error handling player "
+                         "disconnect: Could not remove player "
+                         "with ID '"
+                      << player_id << "' from game with ID '"
+                      << game_ptr->get_id() << "'" << std::endl;
+            return;
+        }
+    } else {
+        // simply remove the player and notify the other one, if one is there
+        if (game_ptr->try_remove_player(player_ptr)) {
+        } else {
+            std::cout << "[ServerRequestHandler] Error handling player "
+                         "disconnect: Could not remove player "
+                         "with ID '"
+                      << player_id << "' from game with ID '"
+                      << game_ptr->get_id() << "'" << std::endl;
+            return;
+        }
+    }
+}
+
 void ServerRequestHandler::handle_ready_request_(
     const ReadyRequest& ready_request) {
     std::cout << "[ServerRequestHandler] (Debug) Handling a ready request!"
@@ -449,8 +533,9 @@ void ServerRequestHandler::kill_game_(GameInstance* game_ptr,
                                       const std::string& player_id,
                                       const std::string& other_player_id) {
     // remove the game
-    GameInstanceManager::delete_game_(game_ptr->get_id());  // TODO FIXME check if this is correct, how to talk
-                      // to player manager?
+    GameInstanceManager::delete_game_(
+        game_ptr->get_id());  // TODO FIXME check if this is correct, how
+                              // to talk to player manager?
     PlayerManager::remove_player(player_id);
     PlayerManager::remove_player(other_player_id);
 }

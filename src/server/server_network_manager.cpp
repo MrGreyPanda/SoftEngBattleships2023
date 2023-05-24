@@ -181,6 +181,24 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     std::cout
         << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
         << socket.peer_address() << std::endl;
+
+    // first get the player id from the peer_address in player_addresses_
+    std::string player_id = "";
+    for (auto& player_address : player_addresses_) {
+        if (player_address.second == peer_address) {
+            player_id = player_address.first;
+            break;
+        }
+    }
+
+    // notify the request handler that a player disconnected.
+    ServerRequestHandler::handle_player_disconnect(player_id);
+
+    if (!player_id.empty()) {
+        player_addr_mutex_.lock();
+        player_addresses_.erase(player_id);
+        player_addr_mutex_.unlock();
+    }
 }
 
 void ServerNetworkManager::handle_incoming_message_(

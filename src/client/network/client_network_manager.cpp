@@ -18,6 +18,8 @@ ClientNetworkConnectionStatus ClientNetworkManager::connection_status_ =
 
 bool ClientNetworkManager::connect(const std::string& address_string,
                                    const uint16_t& port) {
+    std::cout << "[ClientNetworkManager] (Debug) Connecting to server at "
+              << address_string << ":" << port << std::endl;
     // initialise sockpp framework
     // sockpp::socket_initializer sock_init;
     sockpp::initialize();
@@ -27,10 +29,10 @@ bool ClientNetworkManager::connect(const std::string& address_string,
         ClientNetworkConnectionStatus::NOT_CONNECTED;
 
     // delete exiting connection and create new one
-    if (ClientNetworkManager::connection_ != nullptr) {
-        ClientNetworkManager::connection_->shutdown();
-        delete ClientNetworkManager::connection_;
-    }
+    // if (ClientNetworkManager::connection_ != nullptr) {
+    //     ClientNetworkManager::connection_->shutdown();
+    //     delete ClientNetworkManager::connection_;
+    // }
     ClientNetworkManager::connection_ = new sockpp::tcp_connector();
 
     // try connecting to server
@@ -61,12 +63,15 @@ bool ClientNetworkManager::disconnect() {
         delete connection_;
     }
 
+    connection_status_ = ClientNetworkConnectionStatus::NOT_CONNECTED;
+
     return was_successfully_disconnected;
 }
 
 bool ClientNetworkManager::connect_to_host_(const std::string& address_string,
                                             const uint16_t& port) {
     // create sockpp address and catch any errors
+
     sockpp::inet_address address;
     try {
         address = sockpp::inet_address(address_string, port);

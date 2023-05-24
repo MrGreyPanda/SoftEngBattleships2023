@@ -62,11 +62,19 @@ class GameInstanceManager {
 
     /**
      * @brief Deletes a GameInstance
-     * 
-     * @param game_id 
+     *
+     * @param game_id
      * @return true if successful, false otherwise
      */
     static bool delete_game_(const std::string& game_id);
+
+    /**
+     * @brief Finds the GameInstance with player_id in it.
+     *
+     * @param player_id
+     * @return GameInstance*, nullptr if no such GameInstance exists.
+     */
+    static GameInstance* find_game_by_player_id(const std::string& player_id);
 
    private:
     /**
@@ -75,14 +83,6 @@ class GameInstanceManager {
      * @return Pointer to added GameInstance.
      */
     static GameInstance* create_new_game_();
-
-    /**
-     * @brief Finds the GameInstance with player_id in it.
-     *
-     * @param player_id
-     * @return GameInstance*, nullptr if no such GameInstance exists.
-     */
-    static GameInstance* find_game_by_player_id_(const std::string& player_id);
 
     /**
      * @brief Finds a game with less than 2 players
