@@ -6,17 +6,19 @@ void LobbyPanel::init() {
     SDLGui::SDLGuiContext* lobby_panel_context =
         new SDLGui::SDLGuiContext("lobby_window");
 
-    SDLGui::TextWidget* lobby_phase_title = new SDLGui::TextWidget(
-        "lobby_title", "Lobby", .0f, .05f, .6f, .1f, 0.,
-        SDLGui::TextFlagsExt_CenterText |
-            SDLGui::TextFlagsExt_CenterHorizontal);
+    SDLGui::TextWidget* lobby_phase_title =
+        new SDLGui::TextWidget("lobby_title", "Lobby", 0, .0f, .05f, .6f, .1f, 0.,
+                               SDLGui::TextFlagsExt_CenterText |
+                                   SDLGui::TextFlagsExt_CenterHorizontal);
     lobby_panel_context->addWidget(lobby_phase_title);
 
     SDLGui::TextWidget* waiting_text =
-        new SDLGui::TextWidget("waiting_text", "Waiting for second player...",
+        new SDLGui::TextWidget("waiting_text", "Waiting for second player...", 0,
                                .06f, .1f, .6f, .06f, 0.,
-                               SDLGui::TextFlagsExt_CenterVertical | SDLGui::TextFlagsExt_CenterHorizontal |
-                                   SDLGui::TextFlagsExt_NoBackground | SDLGui::TextFlagsExt_CenterText);
+                               SDLGui::TextFlagsExt_CenterVertical |
+                                   SDLGui::TextFlagsExt_CenterHorizontal |
+                                   SDLGui::TextFlagsExt_NoBackground |
+                                   SDLGui::TextFlagsExt_CenterText);
     lobby_panel_context->addWidget(waiting_text);
 
     SDLGui::TextButtonWidget* battle_button = new SDLGui::TextButtonWidget(
@@ -39,9 +41,10 @@ void LobbyPanel::render() {
 
     if (check_is_full()) {
         SDLGui::TextButton("battle_button").enable();
-        SDLGui::Text("waiting_text").updateText(32, "Second player joined!");
-        if (game_state_->get_players()[1]->get_is_ready()){
-            SDLGui::Text("waiting_text").updateText(32, "Second player is ready!");
+        SDLGui::Text("waiting_text").updateText(32, 0, "Second player joined!");
+        if (game_state_->get_players()[1]->get_is_ready()) {
+            SDLGui::Text("waiting_text")
+                .updateText(32, 0, "Second player is ready!");
         }
     }
 
@@ -57,8 +60,14 @@ void LobbyPanel::render() {
 
     if (game_state_->all_players_ready()) game_state_->set_phase(Preparation);
 
-    if(SDLGui::TextButton("disconnect_button")){
-        // TO DO
+    if (SDLGui::TextButton("disconnect_button")) {
+        if (ClientNetworkManager::disconnect()) {
+            game_state_->reset_state();
+            game_state_->set_phase(Connection);
+        } else {
+            // Could not disconnect
+            std::cout << "Could not disconnect" << std::endl;
+        }
     }
 
     SDLGui::end();

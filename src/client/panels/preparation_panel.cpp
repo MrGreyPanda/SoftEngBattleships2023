@@ -1,5 +1,7 @@
 #include "preparation_panel.h"
 
+#include "give_up_request.h"
+
 GameState* PreparationPanel::game_state_              = nullptr;
 unsigned short PreparationPanel::help_button_counter_ = 0;
 
@@ -15,7 +17,7 @@ void PreparationPanel::init() {
     preparation_panel_context->addWidget(preparation_grid);
 
     SDLGui::TextWidget* preparation_phase_title = new SDLGui::TextWidget(
-        "preparation_title", "Preparation Phase", .0f, .05f, .6f, .1f, 0.,
+        "preparation_title", "Preparation Phase", 0, .0f, .05f, .6f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterText |
             SDLGui::TextFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(preparation_phase_title);
@@ -71,7 +73,7 @@ void PreparationPanel::init() {
     preparation_panel_context->addWidget(destroyer_ship);
     destroyer_ship->reset();
 
-    SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
+    /*SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
         "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(help_button);
@@ -80,15 +82,22 @@ void PreparationPanel::init() {
         "help_message_text", "", .01f, .1f, .8f, .8f, 0.,
         SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
             SDLGui::TextFlagsExt_CenterHorizontal);
-    preparation_panel_context->addWidget(help_message_text);
+    preparation_panel_context->addWidget(help_message_text);*/
+
+    SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
+        "preparation_help", "?", .9f, .02f, .08f, .08f, 0.,
+        SDLGui::HelpMarkerFlagsExt_CenterText);
+    preparation_help->addHelperText("Press and hold on a ship to move it to the grid, and release to place it. Press R while holding a ship to rotate it",
+        32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
+    preparation_panel_context->addWidget(preparation_help);
 
     SDLGui::TextButtonWidget* disconnect_button = new SDLGui::TextButtonWidget(
-        "disconnect_button", "Disconnect", 0.05f, .05f, .1f, .05f, 0.,
+        "resign_button", "Surrender", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(disconnect_button);
 
     SDLGui::TextWidget* enemy_prepared_text = new SDLGui::TextWidget(
-        "enemy_prepared_text", "Second player is preparing...", .06f, .82f,
+        "enemy_prepared_text", "Second player is preparing...", 0, .06f, .82f,
         .33f, .06f, 0.,
         SDLGui::TextFlagsExt_CenterHorizontal |
             SDLGui::TextFlagsExt_NoBackground |
@@ -204,7 +213,7 @@ void PreparationPanel::render() {
         }
     }
 
-    if (SDLGui::TextButton("help_button")) {
+    /*if (SDLGui::TextButton("help_button")) {
         if (help_button_counter_ == 0) {
             ++help_button_counter_;
             // Set the background
@@ -217,15 +226,18 @@ void PreparationPanel::render() {
             // Set the background to nothing
             SDLGui::Text("help_message_text").updateText(512, "");
         }
-    }
+    }*/
 
     if (game_state_->get_players()[1]->get_is_prepared()) {
         SDLGui::Text("enemy_prepared_text")
-            .updateText(32, "Second player is prepared!");
+            .updateText(32, 0, "Second player is prepared!");
     }
 
-    if (SDLGui::TextButton("disconnect_button")) {
-        // TO DO
+    if (SDLGui::TextButton("resign_button")) {
+        ClientNetworkManager::send_message(
+            GiveUpRequest(game_state_->get_id(),
+                          game_state_->get_players()[0]->get_id())
+                .to_string());
     }
 
     SDLGui::end();
