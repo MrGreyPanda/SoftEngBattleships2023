@@ -8,6 +8,7 @@ unsigned short PreparationPanel::help_button_counter_ = 0;
 bool PreparationPanel::was_reset = false;
 
 void PreparationPanel::init() {
+    game_state_->reset_state();
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
 
@@ -109,6 +110,8 @@ void PreparationPanel::init() {
 
 void PreparationPanel::render() {
     SDLGui::begin("preparation_panel_context");
+    static OwnBoard& own_board =
+        game_state_->get_players()[0]->get_own_board();
 
     if (!was_reset) {
         // reset stuff
@@ -120,12 +123,10 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("destroyer_ship").reset();
         game_state_->get_players()[0]->get_own_board().reset();
         game_state_->get_players()[0]->get_enemy_board().reset();
+        own_board.reset();
         was_reset = true;
-
     }
 
-    static OwnBoard& own_board =
-        game_state_->get_players()[0]->get_own_board();
 
     static SDLGui::DraggableImageWidget& carrier_widget =
         SDLGui::DraggableImage("carrier_ship");
@@ -158,6 +159,7 @@ void PreparationPanel::render() {
 
     // Because we should code DRY
     for (int i = 0; i < 5; i++) {
+        ShipCategory ship_name = ships_ptr_arr[i]->get_name();
         if (ships_widget_arr[i]->isGrabbed()) {
             if (grid.isHovered()) {
                 grid_cell_coords     = grid.getHoverIndices();
@@ -172,6 +174,7 @@ void PreparationPanel::render() {
         if(ships_widget_arr[i]->onDrop()){
             if(!grid.isHovered()){
                 ships_widget_arr[i]->reset();
+                own_board.riddle_the_shiple(ship_name);
                 ships_ptr_arr[i]->reset_ship();
             }
             else{
@@ -184,7 +187,7 @@ void PreparationPanel::render() {
                 if(can_be_placed){
                     grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
                     ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
-                    own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ships_ptr_arr[i]->get_name());
+                    own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ship_name);
                 }
                 else if(!can_be_placed){
                     std::cout << "Can't place ship here" << std::endl;
@@ -192,6 +195,7 @@ void PreparationPanel::render() {
                     std::cout << "is_valid_placement: " << own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]) << std::endl;
                     ships_widget_arr[i]->reset();
                     ships_ptr_arr[i]->reset_ship();
+                    own_board.riddle_the_shiple(ship_name);
                 }
             }
         }

@@ -20,6 +20,8 @@ public:
 
     static void set_game_state(GameState* game_state);
 
+    static bool was_reset;
+
 private:
     static GameState* game_state_;
     static Player* player_;

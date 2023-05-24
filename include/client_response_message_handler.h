@@ -23,6 +23,9 @@
 
 #include "game_state.h"
 
+#include "battle_panel.h"
+#include "end_panel.h"
+
 // other messages
 
 /**

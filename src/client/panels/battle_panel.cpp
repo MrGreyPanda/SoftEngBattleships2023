@@ -3,6 +3,7 @@
 GameState* BattlePanel::game_state_              = nullptr;
 unsigned short BattlePanel::help_button_counter_ = 0;
 Player* BattlePanel::player_                     = nullptr;
+bool BattlePanel::was_reset                      = false;
 
 void BattlePanel::init() {
     static SDL_FRect grid_hover_cell_data;
@@ -150,6 +151,13 @@ void BattlePanel::handle_shots() {
 
 void BattlePanel::render() {
     SDLGui::begin("battle_panel_context");
+
+    // if(!was_reset){
+    //     game_state_->get_players()[0]->get_enemy_board().reset();
+    // //     game_state_->get_players()[0]->get_own_board().reset();
+    // //     was_reset = true;
+    // }
+
 
     static SDLGui::GridWidget& own_grid   = SDLGui::Grid("own_board");
     static SDLGui::GridWidget& enemy_grid = SDLGui::Grid("enemy_board");

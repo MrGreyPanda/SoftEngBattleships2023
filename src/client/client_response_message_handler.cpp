@@ -102,6 +102,8 @@ void ClientResponseMessageHandler::handle_join_response_(
     game_controller_game_state_->set_phase(Lobby);
 
     PreparationPanel::was_reset = false;
+    BattlePanel::was_reset      = false;
+    EndPanel::was_reset         = false;
 
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));

@@ -20,6 +20,7 @@ void GameController::init() {
     // printf("All panels initialized\n");
 }
 
+
 void GameController::run() {
     GameController::render();
     SDLGui::quit();

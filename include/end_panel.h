@@ -6,6 +6,8 @@
 #include "client_network_manager.h"
 #include "join_request.h"
 
+#include "game_controller.h"
+
 class EndPanel {
 public:
     /// @brief Initializes all the widgets in the window
@@ -18,6 +20,9 @@ public:
     // static void set_winner(std::string winner);
 
     static void set_game_state(GameState* game_state) { game_state_ = game_state; };
+
+    static bool was_reset;
+
 private:
     static GameState* game_state_;
 };

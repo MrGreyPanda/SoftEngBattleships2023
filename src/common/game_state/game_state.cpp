@@ -127,12 +127,15 @@ bool GameState::all_players_prepared() const {
 }
 
 void GameState::reset_state() {
-    players_.clear();
-    phase_ = Phase::Connection;
-    // for (Player* player : players_) {
-    //     player->set_ready();
-    //     player->set_prepared();
-    //     player->get_own_board().reset_board();
-    //     player->get_enemy_board().reset_board();
-    // }
+    // players_.clear();
+    // phase_ = Phase::Connection;
+    
+    for (Player* player : players_) {
+        // player->set_ready();
+        // player->set_prepared();
+        if(player != nullptr){
+            player->get_own_board().reset();
+            player->get_enemy_board().reset();
+        }
+    }
 }

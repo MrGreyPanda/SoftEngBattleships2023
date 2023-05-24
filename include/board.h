@@ -106,6 +106,13 @@ class Board {
 
    bool has_been_reset = false;
 
+   /**
+    * @brief riddle the shiple
+    * @param shipname name of the ship to get rid of
+   */
+   void riddle_the_shiple(const ShipCategory &shipname);
+
+
    private:
     /**
      * @brief The grid_size_ of the board, default is 10 -> grid_size_ *

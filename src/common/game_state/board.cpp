@@ -84,6 +84,16 @@ void Board::reset(){
     has_been_reset = true;
 }
 
+
+void Board::riddle_the_shiple(const ShipCategory &shipname){
+    for(int i = 0; i < grid_size_; i++){
+        for(int j = 0; j < grid_size_; j++){
+            if(grid_[i][j] == shipname){
+               grid_[i][j] = 0;
+            }
+        }
+    }
+}
 // ------------ OwnBoard ------------- //
 
 bool OwnBoard::is_valid_placement(const short &x, const short &y,
@@ -348,17 +358,22 @@ void EnemyBoard::update_ship_vec(ShipCategory ship) {
 }
 
 void EnemyBoard::set_ship_data(const std::array<ShipData, 5> &ship_data) {
+    
+    
     for (const ShipData &ship : ship_data) {
         Ship *ship_ptr = get_ship_by_name(ship.name);
-        unsigned short x = ship.x;
-        unsigned short y = ship.y;
-        unsigned short length = ship_ptr->get_length();
-        for(int i = 0; i < length; i++){
-            if(ship.is_horizontal){
-                this->set_grid_value(x+i, y, ship.name);
-            }else{
-                this->set_grid_value(x, y+i, ship.name);
-            }
-        }
+        ship_ptr->set_is_horizontal(ship.is_horizontal);
+        ship_ptr->set_xy(ship.x, ship.y);
+        ship_ptr->set_is_placed(true);
+        // unsigned short x = ship.x;
+        // unsigned short y = ship.y;
+        // unsigned short length = ship_ptr->get_length();
+        // for(int i = 0; i < length; i++){
+        //     if(ship.is_horizontal){
+        //         this->set_grid_value(x+i, y, ship.name);
+        //     }else{
+        //         this->set_grid_value(x, y+i, ship.name);
+        //     }
+        // }
     }
 }
