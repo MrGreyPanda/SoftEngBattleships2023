@@ -84,6 +84,7 @@ void ConnectionPanel::render() {
     } else {
         SDLGui::TextButton("server_connection_button").enable();
         SDLGui::TextInput("server_address_input").enable();
+        send_join_request = true;
     }
 
     SDLGui::end();
