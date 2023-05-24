@@ -1,1 +1,6 @@
-{ "type": "joined_message" }
+{
+  "type": "joined_message",
+  "game_id": "",
+  "player_id": "",
+  "number_of_players": 2
+}

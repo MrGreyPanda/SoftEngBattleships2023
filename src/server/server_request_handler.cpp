@@ -130,7 +130,7 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
                 game_ptr->try_get_other_player_id(new_player_id);
 
             if (!other_player_id.empty()) {
-                const JoinedMessage join_message(game_id, other_player_id);
+                const JoinedMessage join_message(game_id, other_player_id, 2);
 
                 ServerNetworkManager::send_message(join_message.to_string(),
                                                    other_player_id);
@@ -195,14 +195,15 @@ void ServerRequestHandler::handle_player_disconnect(
 
     const Phase current_game_phase = game_ptr->get_game_state()->get_phase();
 
+    const std::string other_player_id =
+        game_ptr->try_get_other_player_id(player_id);
+
     if (current_game_phase == Phase::Preparation ||
         current_game_phase == Phase::Battle) {
         // remove the player and let the other one win
 
         if (game_ptr->try_remove_player(player_ptr)) {
             // notify the other player that he won
-            const std::string other_player_id =
-                game_ptr->try_get_other_player_id(player_id);
 
             if (!other_player_id.empty()) {
                 if (current_game_phase == Phase::Preparation) {
@@ -245,6 +246,12 @@ void ServerRequestHandler::handle_player_disconnect(
                       << game_ptr->get_id() << "'" << std::endl;
             return;
         }
+
+        // notify the other player that the other one disconnected
+        const JoinedMessage leave_message(game_ptr->get_id(), player_id, 1);
+
+        ServerNetworkManager::send_message(leave_message.to_string(),
+                                           other_player_id);
     }
 }
 

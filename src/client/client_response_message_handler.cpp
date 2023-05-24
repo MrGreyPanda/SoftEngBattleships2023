@@ -117,7 +117,16 @@ void ClientResponseMessageHandler::handle_joined_message_(
     const JoinedMessage &message) {
     assert(game_controller_game_state_ != nullptr &&
            "game_controller_game_state_ cannot be nullptr");
-    game_controller_game_state_->add_player(new Player(""));
+    if (message.get_number_of_players() == 2 &&
+        game_controller_game_state_->get_players().size() == 1) {
+        game_controller_game_state_->add_player(new Player(""));
+    } else if (message.get_number_of_players() == 1 &&
+               game_controller_game_state_->get_players().size() == 2) {
+        Player *player_to_rm_ptr =
+            game_controller_game_state_->get_players()[2];
+        game_controller_game_state_->remove_player(player_to_rm_ptr);
+    }
+
     game_controller_game_state_->set_phase(Lobby);
 }
 
