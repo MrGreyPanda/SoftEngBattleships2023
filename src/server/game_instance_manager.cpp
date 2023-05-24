@@ -113,7 +113,7 @@ bool GameInstanceManager::delete_game_(const std::string &game_id) {
     return false;
 }
 
-GameInstance *GameInstanceManager::find_game_by_player_id_(
+GameInstance *GameInstanceManager::find_game_by_player_id(
     const std::string &player_id) {
     GameInstance *game_instance_ptr = nullptr;
     games_lock_.lock_shared();

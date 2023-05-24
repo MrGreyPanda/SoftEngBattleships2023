@@ -1,8 +1,17 @@
 #include "game_over_message.h"
 
+#include "helper_functions.h"
+
 GameOverMessage::GameOverMessage(const json& data) : PreparedRequest(data) {
     has_won_ = data.at("has_won");
 }
+
+GameOverMessage::GameOverMessage(const std::string& game_id,
+                                 const std::string& player_id,
+                                 const bool& has_won)
+    : PreparedRequest(game_id, player_id,
+                      HelperFunctions::get_funny_ship_configuration()),
+      has_won_(has_won) {}
 
 GameOverMessage::GameOverMessage(const std::string& game_id,
                                  const std::string& player_id,

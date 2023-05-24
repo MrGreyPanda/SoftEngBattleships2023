@@ -35,6 +35,13 @@ class ServerRequestHandler {
     static std::tuple<Player*, JoinResponse> handle_join_request(
         const JoinRequest& join_request);
 
+    /**
+     * @brief Handle a player disconnecting from the game.
+     *
+     * @param player_id
+     */
+    static void handle_player_disconnect(const std::string& player_id);
+
    private:
     /**
      * @brief Handle a ready request. Creates a ServerResponse and calls the
