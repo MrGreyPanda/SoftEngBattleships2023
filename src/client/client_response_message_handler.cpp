@@ -151,7 +151,7 @@ void ClientResponseMessageHandler::handle_prepared_response_(
         game_controller_game_state_->get_players()[0]->unset_prepared();
         game_controller_game_state_->get_players()[0]
             ->get_own_board()
-            .reset_board();
+            .reset();
     }
 }
 

@@ -102,7 +102,7 @@ class Board {
     /**
      * @brief Reset the board to its initial state
      */
-    void reset_board();
+    void reset();
 
    bool has_been_reset = false;
 

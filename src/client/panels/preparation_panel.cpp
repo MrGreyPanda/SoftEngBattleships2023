@@ -109,7 +109,10 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("cruiser_ship").reset();
         SDLGui::DraggableImage("submarine_ship").reset();
         SDLGui::DraggableImage("destroyer_ship").reset();
+        game_state_->get_players()[0]->get_own_board().reset();
+        game_state_->get_players()[0]->get_enemy_board().reset();
         was_reset = true;
+
     }
 
     static OwnBoard& own_board =
@@ -158,12 +161,15 @@ void PreparationPanel::render() {
         }
 
         if(ships_widget_arr[i]->onDrop()){
-            if(!grid.isHovered()) ships_widget_arr[i]->reset();
+            if(!grid.isHovered()){
+                ships_widget_arr[i]->reset();
+                ships_ptr_arr[i]->reset_ship();
+            }
             else{
                 image_position = ships_widget_arr[i]->getPosition();
                 grid_cell_coords = grid.getHoverIndices();
-                ships_ptr_arr[i]->set_is_horizontal(!ships_widget_arr[i]->isRotated());
                 bool is_horizontal = !ships_widget_arr[i]->isRotated();         // isRotated != is_horizontal
+                ships_ptr_arr[i]->set_is_horizontal(is_horizontal);
                 bool can_be_placed = 
                     own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
@@ -171,7 +177,10 @@ void PreparationPanel::render() {
                     ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
                     own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ships_ptr_arr[i]->get_name());
                 }
-                else{
+                else if(!can_be_placed){
+                    std::cout << "Can't place ship here" << std::endl;
+                    std::cout << "is_horizontal: " << is_horizontal << "\n x: " << grid_cell_coords.first << "\n y: " << grid_cell_coords.second << "\n name: " << ships_ptr_arr[i]->get_name() << std::endl;
+                    std::cout << "is_valid_placement: " << own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]) << std::endl;
                     ships_widget_arr[i]->reset();
                     ships_ptr_arr[i]->reset_ship();
                 }
@@ -188,7 +197,7 @@ void PreparationPanel::render() {
                                 own_board.get_ship_configuration())
                     .to_string());
         } else {
-            own_board.reset_board();
+            own_board.reset();
             for (int i = 0; i < 5; i++) {
                 ships_widget_arr[i]->reset();
             }
