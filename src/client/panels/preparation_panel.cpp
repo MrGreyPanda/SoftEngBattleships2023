@@ -8,7 +8,7 @@ unsigned short PreparationPanel::help_button_counter_ = 0;
 bool PreparationPanel::was_reset = false;
 
 void PreparationPanel::init() {
-    game_state_->reset_state();
+    // game_state_->reset_state();
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
 

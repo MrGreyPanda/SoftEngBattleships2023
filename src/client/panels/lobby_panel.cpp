@@ -65,7 +65,10 @@ void LobbyPanel::render() {
     if (game_state_->get_players()[0]->get_is_ready())
         SDLGui::TextButton("battle_button").disable();
 
-    if (game_state_->all_players_ready()) game_state_->set_phase(Preparation);
+    if (game_state_->all_players_ready()){
+        game_state_->set_phase(Preparation); 
+        PreparationPanel::set_game_state(game_state_);
+    }
 
     if (SDLGui::TextButton("disconnect_button")) {
         if (ClientNetworkManager::disconnect()) {

@@ -7,6 +7,7 @@
 #include "game_state.h"
 #include "client_network_manager.h"
 #include "ready_request.h"
+#include "preparation_panel.h"
 
 class LobbyPanel {
 public:

@@ -126,7 +126,6 @@ void EndPanel::render() {
 
     if (SDLGui::TextButton("end_play_again_button")) {
         game_state_->reset_state();
-        GameController::reset_panells_at_play_again();
         ClientNetworkManager::send_message(JoinRequest().to_string());
     }
     SDLGui::end();

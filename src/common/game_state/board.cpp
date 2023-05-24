@@ -79,7 +79,8 @@ void Board::reset(){
         }
     }
     for(int i = 0; i < ships_.size(); i++){
-        ships_[i]->reset_ship();
+        if(ships_[i] != nullptr)
+            ships_[i]->reset_ship();
     }
     has_been_reset = true;
 }
