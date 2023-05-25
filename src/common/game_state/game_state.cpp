@@ -128,6 +128,7 @@ bool GameState::all_players_prepared() const {
     return true;
 }
 
+// I think here is the culprit
 void GameState::reset_state() {
     for (Player* player : players_) {
     //     // player->set_ready();
