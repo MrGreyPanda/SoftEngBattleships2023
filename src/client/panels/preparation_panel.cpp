@@ -87,7 +87,9 @@ void PreparationPanel::init() {
     SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
         "preparation_help", "?", .85f, .05f, .1f, .05f, 0.,
         SDLGui::HelpMarkerFlagsExt_CenterText);
-    preparation_help->addHelperText("Press and hold on a ship to move it to the grid, and release to place it. Press R while holding a ship to rotate it",
+    preparation_help->addHelperText(
+        "Press and hold on a ship to move it to the grid, and release to "
+        "place it. Press R while holding a ship to rotate it",
         32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
     preparation_panel_context->addWidget(preparation_help);
 
@@ -118,6 +120,8 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("cruiser_ship").reset();
         SDLGui::DraggableImage("submarine_ship").reset();
         SDLGui::DraggableImage("destroyer_ship").reset();
+        SDLGui::Text("enemy_prepared_text")
+            .updateText(32, 0, "Second player is preparing...");
         was_reset = true;
     }
 
@@ -157,9 +161,10 @@ void PreparationPanel::render() {
     for (int i = 0; i < 5; i++) {
         if (ships_widget_arr[i]->isGrabbed()) {
             if (grid.isHovered()) {
-                grid_cell_coords     = grid.getHoverIndices();
-                ships_widget_arr[i]->resizeToFit(
-                    &grid, grid_cell_coords.first, grid_cell_coords.second, false);
+                grid_cell_coords = grid.getHoverIndices();
+                ships_widget_arr[i]->resizeToFit(&grid, grid_cell_coords.first,
+                                                 grid_cell_coords.second,
+                                                 false);
             }
         }
 
@@ -178,10 +183,11 @@ void PreparationPanel::render() {
                     grid_cell_coords.first, grid_cell_coords.second,
                     *ships_ptr_arr[i]);
                 if (can_be_placed) {
-                    //grid_hover_cell_data = grid.getIndexCellCoordinates(
-                    //    grid_cell_coords.first, grid_cell_coords.second);
+                    // grid_hover_cell_data = grid.getIndexCellCoordinates(
+                    //     grid_cell_coords.first, grid_cell_coords.second);
                     ships_widget_arr[i]->resizeToFit(
-                        &grid, grid_cell_coords.first, grid_cell_coords.second, true);
+                        &grid, grid_cell_coords.first, grid_cell_coords.second,
+                        true);
                     own_board.place_ship(grid_cell_coords.first,
                                          grid_cell_coords.second,
                                          ships_ptr_arr[i]->get_name());
