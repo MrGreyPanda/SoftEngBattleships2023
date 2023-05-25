@@ -10,6 +10,13 @@ void ConnectionPanel::init() {
     SDLGui::SDLGuiContext* connection_panel_context =
         new SDLGui::SDLGuiContext("connection_panel_context");
 
+    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f, 1.f,
+        0.,
+        SDLGui::ImageFlagsExt_CenterImageVertical |
+            SDLGui::ImageFlagsExt_CenterImageHorizontal | SDLGui::ImageFlagsExt_NoBackground);
+    connection_panel_context->addWidget(background_image);
+
     SDLGui::TextWidget* connect_to_server_text =
         new SDLGui::TextWidget("connect_to_server_text", "Connect to Server",
                                0, .0f, .05f, .6f, .1f, 0.,
