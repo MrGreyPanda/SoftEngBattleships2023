@@ -260,9 +260,6 @@ bool OwnBoard::set_ship_configuration(
     //     }
     // }
     for (const ShipData &ship : ship_data) {
-        std::cout << "[Board] (debug) before placing ship: " << ship.name
-                  << ", x=" << ship.x << ", y=" << ship.y
-                  << ", is_horizontal=" << ship.is_horizontal << "\n";
         Ship *ship_ptr = get_ship_by_name(ship.name);
         ship_ptr->set_is_horizontal(ship.is_horizontal);
         if (!place_ship(ship.x, ship.y, ship.is_horizontal, ship.name)) return false;

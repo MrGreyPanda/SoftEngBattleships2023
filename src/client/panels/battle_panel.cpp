@@ -133,7 +133,6 @@ void BattlePanel::set_game_state(GameState* game_state) {
 void BattlePanel::set_player_ptr(Player* player) { player_ = player; }
 
 void BattlePanel::handle_shots() {
-    std::cout << "Handling shots\n";
     std::pair<uint32_t, uint32_t> xy =
         SDLGui::Grid("enemy_board").getClickIndices();
     short x = (short)xy.first;
@@ -153,8 +152,8 @@ void BattlePanel::render() {
 
     // if(!was_reset){
     //     game_state_->get_players()[0]->get_enemy_board().reset();
-    // //     game_state_->get_players()[0]->get_own_board().reset();
-    // //     was_reset = true;
+    //     game_state_->get_players()[0]->get_own_board().reset();
+    //     was_reset = true;
     // }
 
 
