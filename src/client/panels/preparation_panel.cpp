@@ -158,11 +158,8 @@ void PreparationPanel::render() {
         if (ships_widget_arr[i]->isGrabbed()) {
             if (grid.isHovered()) {
                 grid_cell_coords     = grid.getHoverIndices();
-                grid_hover_cell_data = grid.getIndexCellCoordinates(
-                    grid_cell_coords.first, grid_cell_coords.second);
                 ships_widget_arr[i]->resizeToFit(
-                    grid_hover_cell_data.x, grid_hover_cell_data.y,
-                    grid_hover_cell_data.w, grid_hover_cell_data.h);
+                    &grid, grid_cell_coords.first, grid_cell_coords.second, false);
             }
         }
 
@@ -181,11 +178,10 @@ void PreparationPanel::render() {
                     grid_cell_coords.first, grid_cell_coords.second,
                     *ships_ptr_arr[i]);
                 if (can_be_placed) {
-                    grid_hover_cell_data = grid.getIndexCellCoordinates(
-                        grid_cell_coords.first, grid_cell_coords.second);
+                    //grid_hover_cell_data = grid.getIndexCellCoordinates(
+                    //    grid_cell_coords.first, grid_cell_coords.second);
                     ships_widget_arr[i]->resizeToFit(
-                        grid_hover_cell_data.x, grid_hover_cell_data.y,
-                        grid_hover_cell_data.w, grid_hover_cell_data.h);
+                        &grid, grid_cell_coords.first, grid_cell_coords.second, true);
                     own_board.place_ship(grid_cell_coords.first,
                                          grid_cell_coords.second,
                                          ships_ptr_arr[i]->get_name());
