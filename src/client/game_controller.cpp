@@ -45,7 +45,7 @@ void GameController::render() {
                 break;
             case Preparation:
                 if(InitializedPannels_.at(2) == false){
-                    PreparationPanel::set_game_state(&game_state_);
+                    // PreparationPanel::set_game_state(&game_state_);
                     PreparationPanel::init();
                     InitializedPannels_.at(2) = true;
                 }
@@ -53,7 +53,7 @@ void GameController::render() {
                 break;
             case Battle:
                 if(InitializedPannels_.at(3) == false){
-                    BattlePanel::set_game_state(&game_state_);
+                    // BattlePanel::set_game_state(&game_state_);
                     BattlePanel::init();
                     InitializedPannels_.at(3) = true;
                 }
@@ -61,7 +61,7 @@ void GameController::render() {
                 break;
             case End:
                 if(InitializedPannels_.at(4) == false){
-                    EndPanel::set_game_state(&game_state_);
+                    // EndPanel::set_game_state(&game_state_);
                     EndPanel::init();
                     InitializedPannels_.at(4) = true;
                 }
