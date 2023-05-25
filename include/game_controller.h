@@ -3,13 +3,13 @@
 #include <cassert>
 
 #include "SDLGui.hpp"
-#include "game_state.h"
+#include "battle_panel.h"
 #include "client_response_message_handler.h"
 #include "connection_panel.h"
+#include "end_panel.h"
+#include "game_state.h"
 #include "lobby_panel.h"
 #include "preparation_panel.h"
-#include "battle_panel.h"
-#include "end_panel.h"
 
 class GameController {
    public:
@@ -19,6 +19,8 @@ class GameController {
     static std::string get_player_id();
     static void set_player_id(std::string player_id);
 
+    static void disconnect_from_server();
+
    private:
     static void render();
 
@@ -27,5 +29,6 @@ class GameController {
     // True if a panel is initialized, false otherwise
     static std::vector<bool> InitializedPannels_;
 
-    //static std::string game_player_id_;   // get player_id in connection panel.
+    // static std::string game_player_id_;   // get player_id in connection
+    // panel.
 };

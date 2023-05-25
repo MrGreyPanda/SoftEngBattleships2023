@@ -1,5 +1,7 @@
 #include "lobby_panel.h"
 
+#include "game_controller.h"
+
 GameState* LobbyPanel::game_state_ = nullptr;
 
 void LobbyPanel::init() {
@@ -7,10 +9,11 @@ void LobbyPanel::init() {
         new SDLGui::SDLGuiContext("lobby_window");
 
     SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f, 1.f,
-        0.,
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
+        1.f, 0.,
         SDLGui::ImageFlagsExt_CenterImageVertical |
-            SDLGui::ImageFlagsExt_CenterImageHorizontal | SDLGui::ImageFlagsExt_NoBackground);
+            SDLGui::ImageFlagsExt_CenterImageHorizontal |
+            SDLGui::ImageFlagsExt_NoBackground);
     lobby_panel_context->addWidget(background_image);
 
     SDLGui::TextWidget* lobby_phase_title = new SDLGui::TextWidget(
@@ -78,13 +81,7 @@ void LobbyPanel::render() {
     }
 
     if (SDLGui::TextButton("disconnect_button")) {
-        if (ClientNetworkManager::disconnect()) {
-            game_state_->reset_state();
-            game_state_->set_phase(Connection);
-        } else {
-            // Could not disconnect
-            std::cout << "Could not disconnect" << std::endl;
-        }
+        GameController::disconnect_from_server();
     }
 
     SDLGui::end();

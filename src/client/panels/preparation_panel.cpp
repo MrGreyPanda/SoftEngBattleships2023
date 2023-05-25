@@ -88,7 +88,9 @@ void PreparationPanel::init() {
     SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
         "preparation_help", "?", .85f, .05f, .1f, .05f, 0.,
         SDLGui::HelpMarkerFlagsExt_CenterText);
-    preparation_help->addHelperText("Press and hold on a ship to move it to the grid, and release to place it. Press R while holding a ship to rotate it",
+    preparation_help->addHelperText(
+        "Press and hold on a ship to move it to the grid, and release to "
+        "place it. Press R while holding a ship to rotate it",
         32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
     preparation_panel_context->addWidget(preparation_help);
 
@@ -121,9 +123,8 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("cruiser_ship").reset();
         SDLGui::DraggableImage("submarine_ship").reset();
         SDLGui::DraggableImage("destroyer_ship").reset();
-        game_state_->get_players()[0]->get_own_board().reset();
-        game_state_->get_players()[0]->get_enemy_board().reset();
-        own_board.reset();
+        SDLGui::Text("enemy_prepared_text")
+            .updateText(32, 0, "Second player is preparing...");
         was_reset = true;
     }
 
@@ -162,9 +163,10 @@ void PreparationPanel::render() {
         ShipCategory ship_name = ships_ptr_arr[i]->get_name();
         if (ships_widget_arr[i]->isGrabbed()) {
             if (grid.isHovered()) {
-                grid_cell_coords     = grid.getHoverIndices();
-                ships_widget_arr[i]->resizeToFit(
-                    &grid, grid_cell_coords.first, grid_cell_coords.second, false);
+                grid_cell_coords = grid.getHoverIndices();
+                ships_widget_arr[i]->resizeToFit(&grid, grid_cell_coords.first,
+                                                 grid_cell_coords.second,
+                                                 false);
             }
         }
 
@@ -177,16 +179,21 @@ void PreparationPanel::render() {
             else{
                 image_position = ships_widget_arr[i]->getPosition();
                 grid_cell_coords = grid.getHoverIndices();
-                bool is_horizontal = !ships_widget_arr[i]->isRotated();         // isRotated != is_horizontal
-                ships_ptr_arr[i]->set_is_horizontal(is_horizontal);
-                bool can_be_placed = 
-                    own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
-                if(can_be_placed){
-                    // grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                    ships_widget_arr[i]->resizeToFit(&grid ,grid_cell_coords.first, grid_cell_coords.second, true);
-                    own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ship_name);
-                }
-                else if(!can_be_placed){
+                ships_ptr_arr[i]->set_is_horizontal(
+                    !ships_widget_arr[i]->isRotated());
+                bool can_be_placed = own_board.is_valid_placement(
+                    grid_cell_coords.first, grid_cell_coords.second,
+                    *ships_ptr_arr[i]);
+                if (can_be_placed) {
+                    // grid_hover_cell_data = grid.getIndexCellCoordinates(
+                    //     grid_cell_coords.first, grid_cell_coords.second);
+                    ships_widget_arr[i]->resizeToFit(
+                        &grid, grid_cell_coords.first, grid_cell_coords.second,
+                        true);
+                    own_board.place_ship(grid_cell_coords.first,
+                                         grid_cell_coords.second,
+                                         ships_ptr_arr[i]->get_name());
+                } else {
                     ships_widget_arr[i]->reset();
                     ships_ptr_arr[i]->reset_ship();
                     own_board.riddle_the_shiple(ship_name);

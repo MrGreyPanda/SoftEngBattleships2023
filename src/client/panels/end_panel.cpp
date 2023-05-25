@@ -1,5 +1,7 @@
 #include "end_panel.h"
 
+#include "game_controller.h"
+
 GameState* EndPanel::game_state_ = nullptr;
 bool EndPanel::was_reset = false;
 
@@ -122,6 +124,10 @@ void EndPanel::render() {
         SDLGui::Text("winner_or_loser_text").updateText(64, 0, "You Won!");
     } else {
         SDLGui::Text("winner_or_loser_text").updateText(64, 0, "You Lost!");
+    }
+
+    if (SDLGui::TextButton("end_disconnect_button")) {
+        GameController::disconnect_from_server();
     }
 
     if (SDLGui::TextButton("end_play_again_button")) {
