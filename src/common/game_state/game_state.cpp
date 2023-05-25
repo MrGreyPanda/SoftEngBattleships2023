@@ -135,9 +135,10 @@ void GameState::reset_state() {
         if(player != nullptr){
             player->get_own_board().reset();
             player->get_enemy_board().reset();
+            // delete player;
         }
     }
-    players_.clear();
+    // players_.clear();
     // phase_ = Phase::Connection;
     
 }

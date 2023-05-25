@@ -357,20 +357,20 @@ void EnemyBoard::update_ship_vec(ShipCategory ship) {
 }
 
 void EnemyBoard::set_ship_data(const std::array<ShipData, 5> &ship_data) {
-    std::cout << "[Board] (debug) set_ship_data" << std::endl;
-
     for (const ShipData &ship : ship_data) {
         Ship *ship_ptr   = get_ship_by_name(ship.name);
-        unsigned short x = ship.x;
-        unsigned short y = ship.y;
-        assert(ship_ptr != nullptr);
-        unsigned short length = ship_ptr->get_length();
-        for (int i = 0; i < length; i++) {
-            if (ship.is_horizontal) {
-                set_grid_value(x + i, y, ship.name);
-            } else {
-                set_grid_value(x, y + i, ship.name);
-            }
-        }
+        // unsigned short x = ship.x;
+        // unsigned short y = ship.y;
+        // assert(ship_ptr != nullptr);
+        // unsigned short length = ship_ptr->get_length();
+        // for (int i = 0; i < length; i++) {
+        //     if (ship.is_horizontal) {
+        //         set_grid_value(x + i, y, ship.name);
+        //     } else {
+        //         set_grid_value(x, y + i, ship.name);
+        //     }
+        // }
+        ship_ptr->set_xy(ship.x, ship.y);
+        ship_ptr->set_is_horizontal(ship.is_horizontal);
     }
 }

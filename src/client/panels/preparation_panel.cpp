@@ -191,7 +191,7 @@ void PreparationPanel::render() {
                         &grid, grid_cell_coords.first, grid_cell_coords.second,
                         true);
                     own_board.place_ship(grid_cell_coords.first,
-                                         grid_cell_coords.second,
+                                         grid_cell_coords.second,ships_ptr_arr[i]->get_is_horizontal(),
                                          ships_ptr_arr[i]->get_name());
                 } else {
                     ships_widget_arr[i]->reset();
