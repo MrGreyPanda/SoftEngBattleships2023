@@ -86,7 +86,7 @@ void PreparationPanel::init() {
     preparation_panel_context->addWidget(help_message_text);*/
 
     SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
-        "preparation_help", "?", .9f, .02f, .08f, .08f, 0.,
+        "preparation_help", "?", .85f, .05f, .1f, .05f, 0.,
         SDLGui::HelpMarkerFlagsExt_CenterText);
     preparation_help->addHelperText("Press and hold on a ship to move it to the grid, and release to place it. Press R while holding a ship to rotate it",
         32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
