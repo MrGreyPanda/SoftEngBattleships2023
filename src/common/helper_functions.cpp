@@ -14,9 +14,9 @@ json HelperFunctions::load_json_from_file(std::string path_from_executable) {
 }
 
 std::array<ShipData, 5> HelperFunctions::get_funny_ship_configuration() {
-    return {ShipData{ShipCategory::Carrier, 0, 0, true},
-            ShipData{ShipCategory::Battleship, 0, 1, true},
-            ShipData{ShipCategory::Cruiser, 0, 2, true},
-            ShipData{ShipCategory::Submarine, 0, 3, true},
-            ShipData{ShipCategory::Destroyer, 0, 4, true}};
+    return {ShipData{ShipCategory::Destroyer, true, 6, 7},
+            ShipData{ShipCategory::Submarine, true, 2, 7},
+            ShipData{ShipCategory::Cruiser, true, 4, 5},
+            ShipData{ShipCategory::Battleship, false, 7, 2},
+            ShipData{ShipCategory::Carrier, true, 3, 6}};
 }
