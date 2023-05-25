@@ -69,6 +69,13 @@ void ClientResponseMessageHandler::handle_message_string(
             handle_shot_message_(ShotMessage(json_message));
             break;
 
+        case MessageType::GiveUpResponseType:
+            // do nothing and wait for the game over message.
+            break;
+        case MessageType::GaveUpMessageType:
+            // do nothing and wait for game over message
+            break;
+
         case MessageType::GameOverMessageType:
             handle_game_over_message_(GameOverMessage(json_message));
             break;
@@ -80,7 +87,9 @@ void ClientResponseMessageHandler::handle_message_string(
             break;
         default:
             std::cerr << "[ClientResponseMessageHandler] Error: Unhandled "
-                         "message type"
+                         "message type: "
+                      << MessageTypeHelpers::make_string_from_message_type(
+                             message_type)
                       << std::endl;
             break;
     }
@@ -123,7 +132,7 @@ void ClientResponseMessageHandler::handle_joined_message_(
     } else if (message.get_number_of_players() == 1 &&
                game_controller_game_state_->get_players().size() == 2) {
         Player *player_to_rm_ptr =
-            game_controller_game_state_->get_players()[2];
+            game_controller_game_state_->get_players()[1];
         game_controller_game_state_->remove_player(player_to_rm_ptr);
     }
 
@@ -252,11 +261,27 @@ void ClientResponseMessageHandler::handle_shot_message_(
 
 void ClientResponseMessageHandler::handle_game_over_message_(
     const GameOverMessage &message) {
+    std::cout
+        << "[ClientResponseMessageHandler] (Debug) Game over message received"
+        << std::endl;
+    assert(game_controller_game_state_ != nullptr);
+    assert(game_controller_game_state_->get_players().size() == 2);
+    assert(game_controller_game_state_->get_players()[0] != nullptr);
+    assert(game_controller_game_state_->get_players()[1] != nullptr);
+
     game_controller_game_state_->set_phase(End);
     game_controller_game_state_->get_players()[0]->has_won = message.has_won();
     game_controller_game_state_->get_players()[1]->has_won =
         !message.has_won();
+
+    std::cout
+        << "[ClientResponseMessageHandler] Game over message setting ship data"
+        << std::endl;
+
     game_controller_game_state_->get_players()[0]
         ->get_enemy_board()
         .set_ship_data(message.get_ship_data());
+
+    std::cout << "[ClientResponseMessageHandler] Game over message handled"
+              << std::endl;
 }

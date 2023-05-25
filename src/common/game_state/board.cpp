@@ -39,6 +39,7 @@ const std::array<const Ship *, 5> Board::get_ship_vec() const {
 }
 
 void Board::set_grid_value(const short &x, const short &y, int value) {
+    assert(x >= 0 && y >= 0 && x < grid_size_ && y < grid_size_);
     grid_[x][y] = value;
 }
 
@@ -51,6 +52,8 @@ void Board::set_is_shot(const short &x, const short &y, bool value) {
 }
 
 Ship *Board::get_ship_by_name(const ShipCategory &type) {
+    std::cout << "[Board] (Debug) get_ship_by_name\n";
+
     for (int i = 0; i < ships_.size(); i++) {
         if (ships_[i]->get_name() == type) return ships_[i];
     }
@@ -58,7 +61,7 @@ Ship *Board::get_ship_by_name(const ShipCategory &type) {
 }
 
 bool Board::all_ships_sunk() const {
-    int num_ships                              = get_num_ships();
+    int num_ships                                = get_num_ships();
     const std::array<const Ship *, 5> &ships_vec = get_ship_vec();
     for (int i = 0; i < num_ships; i++) {
         if (ships_vec.at(i)->get_is_sunk() == false) return false;
@@ -66,19 +69,18 @@ bool Board::all_ships_sunk() const {
     return true;
 }
 
-
-const Ship* Board::get_ship_by_index(const unsigned short &index) const {
+const Ship *Board::get_ship_by_index(const unsigned short &index) const {
     return ships_[index];
 }
 
-void Board::reset_board(){
-    for(int i = 0; i < grid_size_; i++){
-        for(int j = 0; j < grid_size_; j++){
-            grid_[i][j] = 0;
+void Board::reset_board() {
+    for (int i = 0; i < grid_size_; i++) {
+        for (int j = 0; j < grid_size_; j++) {
+            grid_[i][j]    = 0;
             is_shot_[i][j] = false;
         }
     }
-    for(int i = 0; i < ships_.size(); i++){
+    for (int i = 0; i < ships_.size(); i++) {
         ships_[i]->reset_ship();
     }
     has_been_reset = true;
@@ -333,16 +335,19 @@ void EnemyBoard::update_ship_vec(ShipCategory ship) {
 }
 
 void EnemyBoard::set_ship_data(const std::array<ShipData, 5> &ship_data) {
+    std::cout << "[Board] (debug) set_ship_data" << std::endl;
+
     for (const ShipData &ship : ship_data) {
-        Ship *ship_ptr = get_ship_by_name(ship.name);
+        Ship *ship_ptr   = get_ship_by_name(ship.name);
         unsigned short x = ship.x;
         unsigned short y = ship.y;
+        assert(ship_ptr != nullptr);
         unsigned short length = ship_ptr->get_length();
-        for(int i = 0; i < length; i++){
-            if(ship.is_horizontal){
-                this->set_grid_value(x+i, y, ship.name);
-            }else{
-                this->set_grid_value(x, y+i, ship.name);
+        for (int i = 0; i < length; i++) {
+            if (ship.is_horizontal) {
+                set_grid_value(x + i, y, ship.name);
+            } else {
+                set_grid_value(x, y + i, ship.name);
             }
         }
     }

@@ -15,7 +15,7 @@ GameState::~GameState() {}
 
 std::string GameState::get_id() const { return id_; }
 
-void GameState::set_phase(Phase phase) { this->phase_ = phase; }
+void GameState::set_phase(Phase phase) { phase_ = phase; }
 
 Phase GameState::get_phase() const { return phase_; }
 
@@ -98,9 +98,11 @@ bool GameState::start_battle() {
 }
 
 std::string GameState::get_other_player_id(std::string id) const {
-    for (unsigned i = 0; i < players_.size(); i++) {
-        if (players_.at(i)->get_id() == id) {
-            return players_.at((i + 1) % 2)->get_id();
+    if (players_.size() >= 2) {
+        for (unsigned i = 0; i < players_.size(); i++) {
+            if (players_.at(i)->get_id() == id) {
+                return players_.at((i + 1) % 2)->get_id();
+            }
         }
     }
 

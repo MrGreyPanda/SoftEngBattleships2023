@@ -170,6 +170,10 @@ void ServerRequestHandler::handle_player_disconnect(
                  "player with ID '"
               << player_id << "'" << std::endl;
 
+    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
+                 "Getting player pointer"
+              << std::endl;
+
     // get player instance
     Player* player_ptr = PlayerManager::try_get_player(player_id);
 
@@ -180,6 +184,10 @@ void ServerRequestHandler::handle_player_disconnect(
                   << player_id << "'" << std::endl;
         return;
     }
+
+    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
+                 "Getting game pointer"
+              << std::endl;
 
     // get game the player is in
     GameInstance* game_ptr =
@@ -195,12 +203,20 @@ void ServerRequestHandler::handle_player_disconnect(
 
     const Phase current_game_phase = game_ptr->get_game_state()->get_phase();
 
+    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
+                 "Getting other player id"
+              << std::endl;
+
     const std::string other_player_id =
         game_ptr->try_get_other_player_id(player_id);
 
     if (current_game_phase == Phase::Preparation ||
         current_game_phase == Phase::Battle) {
         // remove the player and let the other one win
+
+        std::cout << "[ServerRequestHandler] Handling player disconnect: "
+                     "current phase: "
+                  << current_game_phase << std::endl;
 
         if (game_ptr->try_remove_player(player_ptr)) {
             // notify the other player that he won
@@ -253,6 +269,8 @@ void ServerRequestHandler::handle_player_disconnect(
         ServerNetworkManager::send_message(leave_message.to_string(),
                                            other_player_id);
     }
+
+    PlayerManager::remove_player(player_id);
 }
 
 void ServerRequestHandler::handle_ready_request_(
@@ -510,28 +528,41 @@ void ServerRequestHandler::handle_give_up_request_(
                                        other_player_id);
 
     // send game over messages
-    std::array<ShipData, 5> winner_ships =
-        game_ptr->get_game_state()
-            ->get_player_by_id(other_player_id)
-            ->get_own_board()
-            .get_ship_configuration();
+    if (game_ptr->get_game_state()->get_phase() == Phase::Preparation) {
+        GameOverMessage game_over_message_to_winner(game_id, other_player_id,
+                                                    true);
 
-    std::array<ShipData, 5> loser_ships = game_ptr->get_game_state()
-                                              ->get_player_by_id(player_id)
-                                              ->get_own_board()
-                                              .get_ship_configuration();
+        GameOverMessage game_over_message_to_loser(game_id, player_id, false);
 
-    GameOverMessage game_over_message_to_winner(game_id, other_player_id, true,
-                                                loser_ships);
+        ServerNetworkManager::send_message(
+            game_over_message_to_winner.to_string(), other_player_id);
 
-    GameOverMessage game_over_message_to_loser(game_id, player_id, false,
-                                               winner_ships);
+        ServerNetworkManager::send_message(
+            game_over_message_to_loser.to_string(), player_id);
+    } else {
+        std::array<ShipData, 5> winner_ships =
+            game_ptr->get_game_state()
+                ->get_player_by_id(other_player_id)
+                ->get_own_board()
+                .get_ship_configuration();
 
-    ServerNetworkManager::send_message(game_over_message_to_winner.to_string(),
-                                       other_player_id);
+        std::array<ShipData, 5> loser_ships = game_ptr->get_game_state()
+                                                  ->get_player_by_id(player_id)
+                                                  ->get_own_board()
+                                                  .get_ship_configuration();
 
-    ServerNetworkManager::send_message(game_over_message_to_loser.to_string(),
-                                       player_id);
+        GameOverMessage game_over_message_to_winner(game_id, other_player_id,
+                                                    true, loser_ships);
+
+        GameOverMessage game_over_message_to_loser(game_id, player_id, false,
+                                                   winner_ships);
+
+        ServerNetworkManager::send_message(
+            game_over_message_to_winner.to_string(), other_player_id);
+
+        ServerNetworkManager::send_message(
+            game_over_message_to_loser.to_string(), player_id);
+    }
 
     kill_game_(game_ptr, player_id, other_player_id);
 }
