@@ -163,11 +163,8 @@ void PreparationPanel::render() {
         if (ships_widget_arr[i]->isGrabbed()) {
             if (grid.isHovered()) {
                 grid_cell_coords     = grid.getHoverIndices();
-                grid_hover_cell_data = grid.getIndexCellCoordinates(
-                    grid_cell_coords.first, grid_cell_coords.second);
                 ships_widget_arr[i]->resizeToFit(
-                    grid_hover_cell_data.x, grid_hover_cell_data.y,
-                    grid_hover_cell_data.w, grid_hover_cell_data.h);
+                    &grid, grid_cell_coords.first, grid_cell_coords.second, false);
             }
         }
 
@@ -186,13 +183,10 @@ void PreparationPanel::render() {
                     own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
                     grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
-                    ships_widget_arr[i]->resizeToFit(grid_hover_cell_data.x, grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+                    ships_widget_arr[i]->resizeToFit(&grid ,grid_cell_coords.first, grid_cell_coords.second, true);
                     own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ship_name);
                 }
                 else if(!can_be_placed){
-                    std::cout << "Can't place ship here" << std::endl;
-                    std::cout << "is_horizontal: " << is_horizontal << "\n x: " << grid_cell_coords.first << "\n y: " << grid_cell_coords.second << "\n name: " << ships_ptr_arr[i]->get_name() << std::endl;
-                    std::cout << "is_valid_placement: " << own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]) << std::endl;
                     ships_widget_arr[i]->reset();
                     ships_ptr_arr[i]->reset_ship();
                     own_board.riddle_the_shiple(ship_name);

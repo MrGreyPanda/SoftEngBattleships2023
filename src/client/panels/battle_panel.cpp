@@ -119,8 +119,7 @@ void BattlePanel::init() {
             own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
         if (!ship->get_is_horizontal()) ship_widgets[i]->rotateNoGrab(270.);
         ship_widgets[i]->resizeToFit(
-            grid_hover_cell_data.x, grid_hover_cell_data.y,
-            grid_hover_cell_data.w, grid_hover_cell_data.h);
+            own_board, ship->get_x(), ship->get_y(), true);
         ship_widgets[i]->disable();
     }
 
