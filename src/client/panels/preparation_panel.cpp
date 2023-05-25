@@ -182,7 +182,7 @@ void PreparationPanel::render() {
                 bool can_be_placed = 
                     own_board.is_valid_placement(grid_cell_coords.first, grid_cell_coords.second, *ships_ptr_arr[i]);
                 if(can_be_placed){
-                    grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
+                    // grid_hover_cell_data = grid.getIndexCellCoordinates(grid_cell_coords.first, grid_cell_coords.second);
                     ships_widget_arr[i]->resizeToFit(&grid ,grid_cell_coords.first, grid_cell_coords.second, true);
                     own_board.place_ship(grid_cell_coords.first, grid_cell_coords.second, is_horizontal, ship_name);
                 }
