@@ -125,6 +125,9 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("destroyer_ship").reset();
         SDLGui::Text("enemy_prepared_text")
             .updateText(32, 0, "Second player is preparing...");
+        own_board.reset();
+        game_state_->get_players()[0]->get_enemy_board().reset();
+        BattlePanel::set_game_state(game_state_);
         was_reset = true;
     }
 

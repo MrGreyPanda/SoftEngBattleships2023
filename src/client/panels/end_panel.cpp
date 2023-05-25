@@ -50,7 +50,7 @@ void EndPanel::init() {
 
     SDLGui::DraggableImageWidget* enemy_carrier_ship =
         new SDLGui::DraggableImageWidget(
-            "enemy_carrier_ship", "../assets/carrier.bmp", .6f, .2f, .3f, .11f, 0.,
+            "enemy_carrier_ship", "../assets/carrier_red.bmp", .6f, .2f, .3f, .11f, 0.,
             5, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -59,7 +59,7 @@ void EndPanel::init() {
 
     SDLGui::DraggableImageWidget* enemy_battleship_ship =
         new SDLGui::DraggableImageWidget(
-            "enemy_battleship_ship", "../assets/battleship.bmp", .6f, .33f, .24f,
+            "enemy_battleship_ship", "../assets/battleship_red.bmp", .6f, .33f, .24f,
             .105f, 0., 4, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -68,7 +68,7 @@ void EndPanel::init() {
 
     SDLGui::DraggableImageWidget* enemy_cruiser_ship =
         new SDLGui::DraggableImageWidget(
-            "enemy_cruiser_ship", "../assets/cruiser.bmp", .6f, .455f, .18f, .1f, 0.,
+            "enemy_cruiser_ship", "../assets/cruiser_red.bmp", .6f, .455f, .18f, .1f, 0.,
             3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -77,7 +77,7 @@ void EndPanel::init() {
 
     SDLGui::DraggableImageWidget* enemy_submarine_ship =
         new SDLGui::DraggableImageWidget(
-            "enemy_submarine_ship", "../assets/submarine.bmp", .6f, .575f, .18f, .1f,
+            "enemy_submarine_ship", "../assets/submarine_red.bmp", .6f, .575f, .18f, .1f,
             0., 3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -86,7 +86,7 @@ void EndPanel::init() {
 
     SDLGui::DraggableImageWidget* enemy_destroyer_ship =
         new SDLGui::DraggableImageWidget(
-            "enemy_destroyer_ship", "../assets/destroyer.bmp", .6f, .695f, .14f, .1f,
+            "enemy_destroyer_ship", "../assets/destroyer_red.bmp", .6f, .695f, .14f, .1f,
             0., 2, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);

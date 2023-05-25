@@ -49,4 +49,6 @@ bool Player::has_lost() const { return own_board_.all_ships_sunk(); }
 
 Player::~Player() {
     // std::cout << "Player " << id_ << " destroyed" << std::endl;
+    // own_board_.reset();
+    // enemy_board_.reset();
 }

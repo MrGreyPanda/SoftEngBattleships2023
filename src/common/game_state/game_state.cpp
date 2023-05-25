@@ -130,16 +130,16 @@ bool GameState::all_players_prepared() const {
 
 // I think here is the culprit
 void GameState::reset_state() {
-    for (Player* player : players_) {
-    //     // player->set_ready();
-    //     // player->set_prepared();
-        if(player != nullptr){
-            player->get_own_board().reset();
-            player->get_enemy_board().reset();
-            // delete player;
-        }
-    }
-    // players_.clear();
+    // for (Player* player : players_) {
+    // //     // player->set_ready();
+    // //     // player->set_prepared();
+    //     if(player != nullptr){
+    //         player->get_own_board().reset();
+    //         player->get_enemy_board().reset();
+    //         // delete player;
+    //     }
+    // }
+    players_.clear();
     // phase_ = Phase::Connection;
     
 }

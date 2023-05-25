@@ -7,6 +7,8 @@
 #include "game_state.h"
 #include "prepared_request.h"
 
+#include "battle_panel.h"
+
 class PreparationPanel {
    public:
     static void init();
