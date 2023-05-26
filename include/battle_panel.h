@@ -11,6 +11,10 @@ class BattlePanel {
 public:
     static void init();
 
+    static void reset();
+
+    static void update_board();
+
     static void render();
 
     static void handle_shots();
@@ -26,4 +30,9 @@ private:
     static GameState* game_state_;
     static Player* player_;
     static unsigned short help_button_counter_;
+
+    static SDLGui::GridWidget* own_board_;
+    static SDLGui::GridWidget* enemy_board_;
+    static SDLGui::TextWidget* turn_message_text_;
+    static std::array<SDLGui::DraggableImageWidget*, 5> ship_widget_arr_;
 };

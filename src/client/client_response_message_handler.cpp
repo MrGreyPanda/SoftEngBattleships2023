@@ -110,10 +110,9 @@ void ClientResponseMessageHandler::handle_join_response_(
         new Player(response.get_player_id()));
     game_controller_game_state_->set_game_id(response.get_game_id());
     // LobbyPanel::set_game_state(game_controller_game_state_);
-    PreparationPanel::was_reset = false;
-    BattlePanel::was_reset      = false;
-    EndPanel::was_reset         = false;
-    game_controller_game_state_->set_phase(Lobby);
+    PreparationPanel::reset();
+    BattlePanel::reset();
+    EndPanel::reset();
 
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));
@@ -123,6 +122,11 @@ void ClientResponseMessageHandler::handle_join_response_(
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
         game_controller_game_state_->get_players()[0]->has_shot    = false;
     }
+
+    PreparationPanel::update_board();
+    BattlePanel::update_board();
+
+    game_controller_game_state_->set_phase(Lobby);
 }
 
 void ClientResponseMessageHandler::handle_joined_message_(
@@ -166,8 +170,10 @@ void ClientResponseMessageHandler::handle_prepared_response_(
     const PreparedResponse &response) {
     if (response.is_valid()) {
         game_controller_game_state_->get_players()[0]->set_prepared();
-        if (game_controller_game_state_->get_players()[1]->get_is_prepared())
+        if (game_controller_game_state_->get_players()[1]->get_is_prepared()) {
+            BattlePanel::update_board();
             game_controller_game_state_->set_phase(Battle);
+        }
             // BattlePanel::set_game_state(game_controller_game_state_);
 
     } else {
@@ -183,8 +189,10 @@ void ClientResponseMessageHandler::handle_prepared_message_(
     const PreparedMessage &message) {
     game_controller_game_state_->get_players()[1]->set_prepared();
     if (game_controller_game_state_->get_players()[0]->get_is_prepared() &&
-        game_controller_game_state_->get_phase() != Battle)
-        game_controller_game_state_->set_phase(Battle);
+        game_controller_game_state_->get_phase() != Battle) {
+            BattlePanel::update_board();
+            game_controller_game_state_->set_phase(Battle);
+    }
         // BattlePanel::set_game_state(game_controller_game_state_);
 }
 
@@ -277,7 +285,6 @@ void ClientResponseMessageHandler::handle_game_over_message_(
     assert(game_controller_game_state_->get_players()[0] != nullptr);
     assert(game_controller_game_state_->get_players()[1] != nullptr);
 
-    game_controller_game_state_->set_phase(End);
     // EndPanel::set_game_state(game_controller_game_state_);
     game_controller_game_state_->get_players()[0]->has_won = message.has_won();
     game_controller_game_state_->get_players()[1]->has_won =
@@ -293,4 +300,6 @@ void ClientResponseMessageHandler::handle_game_over_message_(
 
     std::cout << "[ClientResponseMessageHandler] Game over message handled"
               << std::endl;
+    EndPanel::update_board();
+    game_controller_game_state_->set_phase(End);
 }
