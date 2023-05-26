@@ -109,11 +109,11 @@ void ClientResponseMessageHandler::handle_join_response_(
     game_controller_game_state_->add_player(
         new Player(response.get_player_id()));
     game_controller_game_state_->set_game_id(response.get_game_id());
-    game_controller_game_state_->set_phase(Lobby);
     // LobbyPanel::set_game_state(game_controller_game_state_);
     PreparationPanel::was_reset = false;
     BattlePanel::was_reset      = false;
     EndPanel::was_reset         = false;
+    game_controller_game_state_->set_phase(Lobby);
 
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));
@@ -191,8 +191,10 @@ void ClientResponseMessageHandler::handle_prepared_message_(
 // Handles shoot response and updates game state
 void ClientResponseMessageHandler::handle_shoot_response_(
     const ShootResponse &response) {
-    Player *player = game_controller_game_state_->get_player_by_id(
-        response.get_player_id());
+    //Player *player = game_controller_game_state_->get_player_by_id(
+    //    response.get_player_id());
+    Player* player = game_controller_game_state_->get_players()[0];
+    if (player == nullptr) std::cout << "Player is nullptr" << std::endl;
     if (response.is_valid()) {
         player->get_enemy_board().set_is_shot(response.get_x(),
                                               response.get_y(), true);

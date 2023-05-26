@@ -139,6 +139,8 @@ void GameState::reset_state() {
     //         // delete player;
     //     }
     // }
+    //for (size_t i = 0; i < players_.size(); ++i)
+    //    if (players_[i]) delete players_[i];
     players_.clear();
     // phase_ = Phase::Connection;
     

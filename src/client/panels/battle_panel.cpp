@@ -9,7 +9,7 @@ void BattlePanel::init() {
     static SDL_FRect grid_hover_cell_data;
 
     set_player_ptr(game_state_->get_players()[0]);
-    OwnBoard* players_board = &player_->get_own_board();
+    //OwnBoard* players_board = &player_->get_own_board();
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
 
@@ -108,20 +108,20 @@ void BattlePanel::init() {
                 SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(destroyer_ship);
 
-    std::array<SDLGui::DraggableImageWidget*, 5> ship_widgets = {
+    /*std::array<SDLGui::DraggableImageWidget*, 5> ship_widgets = {
         destroyer_ship, submarine_ship, cruiser_ship, battleship_ship,
         carrier_ship};
 
     for (int i = 0; i < 5; i++) {
         const Ship* ship = players_board->get_ship_by_index(i);
         ship_widgets[i]->reset();
-        grid_hover_cell_data =
-            own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
+        //grid_hover_cell_data =
+        //    own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
         if (!ship->get_is_horizontal()) ship_widgets[i]->rotateNoGrab(270.);
         ship_widgets[i]->resizeToFit(
             own_board, ship->get_x(), ship->get_y(), true);
         ship_widgets[i]->disable();
-    }
+    }*/
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
@@ -150,15 +150,41 @@ void BattlePanel::handle_shots() {
 void BattlePanel::render() {
     SDLGui::begin("battle_panel_context");
 
-    // if(!was_reset){
-    //     game_state_->get_players()[0]->get_enemy_board().reset();
-    //     game_state_->get_players()[0]->get_own_board().reset();
-    //     was_reset = true;
-    // }
-
-
     static SDLGui::GridWidget& own_grid   = SDLGui::Grid("own_board");
     static SDLGui::GridWidget& enemy_grid = SDLGui::Grid("enemy_board");
+
+    static SDLGui::DraggableImageWidget& carrier_widget = SDLGui::DraggableImage("carrier_ship");
+    static SDLGui::DraggableImageWidget& battleship_widget = SDLGui::DraggableImage("battleship_ship");
+    static SDLGui::DraggableImageWidget& cruiser_widget = SDLGui::DraggableImage("cruiser_ship");
+    static SDLGui::DraggableImageWidget& submarine_widget = SDLGui::DraggableImage("submarine_ship");
+    static SDLGui::DraggableImageWidget& destroyer_widget = SDLGui::DraggableImage("destroyer_ship");
+
+    if(!was_reset){
+        player_->get_enemy_board().reset();
+        //game_state_->get_players()[0]->get_own_board().reset();
+        own_grid.reset();
+        own_grid.enable();
+        enemy_grid.reset();
+        enemy_grid.enable();
+
+        std::array<SDLGui::DraggableImageWidget*, 5> ship_widgets = {
+            destroyer_widget.getPtr(), submarine_widget.getPtr(), cruiser_widget.getPtr(), battleship_widget.getPtr(),
+            carrier_widget.getPtr()};
+
+        for (int i = 0; i < 5; i++) {
+            const Ship* ship = player_->get_own_board().get_ship_by_index(i);
+            ship_widgets[i]->reset();
+            //grid_hover_cell_data =
+            //    own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
+            if (!ship->get_is_horizontal()) ship_widgets[i]->rotateNoGrab(270.);
+            ship_widgets[i]->resizeToFit(
+                &own_grid, ship->get_x(), ship->get_y(), true);
+            printf("Ship pos: [%hu,%hu]\n", ship->get_x(), ship->get_y());
+            ship_widgets[i]->disable();
+        }
+        was_reset = true;
+    }
+
 
     static unsigned short grid_size =
         player_->get_enemy_board().get_grid_size();
