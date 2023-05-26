@@ -115,22 +115,7 @@ void PreparationPanel::render() {
     static OwnBoard& own_board =
         game_state_->get_players()[0]->get_own_board();
 
-    if (!was_reset) {
-        // reset stuff
-        SDLGui::TextButton("ready_button").enable();
-        SDLGui::DraggableImage("carrier_ship").reset();
-        SDLGui::DraggableImage("battleship_ship").reset();
-        SDLGui::DraggableImage("cruiser_ship").reset();
-        SDLGui::DraggableImage("submarine_ship").reset();
-        SDLGui::DraggableImage("destroyer_ship").reset();
-        SDLGui::Text("enemy_prepared_text")
-            .updateText(32, 0, "Second player is preparing...");
-        own_board.reset();
-        game_state_->get_players()[0]->get_enemy_board().reset();
-        was_reset = true;
-    }
-
-
+    // Static function bound members (first) initialization
     static SDLGui::DraggableImageWidget& carrier_widget =
         SDLGui::DraggableImage("carrier_ship");
     static SDLGui::DraggableImageWidget& battleship_widget =
@@ -141,12 +126,50 @@ void PreparationPanel::render() {
         SDLGui::DraggableImage("submarine_ship");
     static SDLGui::DraggableImageWidget& destroyer_widget =
         SDLGui::DraggableImage("destroyer_ship");
+    
+    static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
 
-    Ship* carrier    = own_board.get_ship_by_name(Carrier);
-    Ship* battleship = own_board.get_ship_by_name(Battleship);
-    Ship* cruiser    = own_board.get_ship_by_name(Cruiser);
-    Ship* submarine  = own_board.get_ship_by_name(Submarine);
-    Ship* destroyer  = own_board.get_ship_by_name(Destroyer);
+    static Ship* carrier    = own_board.get_ship_by_name(Carrier);
+    static Ship* battleship = own_board.get_ship_by_name(Battleship);
+    static Ship* cruiser    = own_board.get_ship_by_name(Cruiser);
+    static Ship* submarine  = own_board.get_ship_by_name(Submarine);
+    static Ship* destroyer  = own_board.get_ship_by_name(Destroyer);
+
+    if (!was_reset) {
+        // reset stuff
+        // Static function bound members update
+        carrier_widget =
+            SDLGui::DraggableImage("carrier_ship");
+        battleship_widget =
+            SDLGui::DraggableImage("battleship_ship");
+        cruiser_widget =
+            SDLGui::DraggableImage("cruiser_ship");
+        submarine_widget =
+            SDLGui::DraggableImage("submarine_ship");
+        destroyer_widget =
+            SDLGui::DraggableImage("destroyer_ship");
+
+        SDLGui::TextButton("ready_button").enable();
+        carrier_widget.reset();
+        battleship_widget.reset();
+        cruiser_widget.reset();
+        submarine_widget.reset();
+        destroyer_widget.reset();
+        SDLGui::Text("enemy_prepared_text")
+            .updateText(32, 0, "Second player is preparing...");
+
+        grid = SDLGui::Grid("preparation_grid");
+        
+        own_board.reset();
+        carrier    = own_board.get_ship_by_name(Carrier);
+        battleship = own_board.get_ship_by_name(Battleship);
+        cruiser    = own_board.get_ship_by_name(Cruiser);
+        submarine  = own_board.get_ship_by_name(Submarine);
+        destroyer  = own_board.get_ship_by_name(Destroyer);
+        game_state_->get_players()[0]->get_enemy_board().reset();
+        was_reset = true;
+    }
+
 
     std::array<SDLGui::DraggableImageWidget*, 5> ships_widget_arr = {
         &destroyer_widget, &submarine_widget, &cruiser_widget,
@@ -154,7 +177,6 @@ void PreparationPanel::render() {
     std::array<Ship*, 5> ships_ptr_arr = {destroyer, submarine, cruiser,
                                           battleship, carrier};
 
-    static SDLGui::GridWidget& grid = SDLGui::Grid("preparation_grid");
 
     static std::pair<uint32_t, uint32_t> grid_cell_coords;
     static SDL_FRect grid_hover_cell_data;
