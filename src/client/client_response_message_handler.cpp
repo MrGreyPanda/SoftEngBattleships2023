@@ -212,17 +212,22 @@ void ClientResponseMessageHandler::handle_shoot_response_(
             if (response.has_destroyed_ship()) {
                 ShipData destroyed_ship = response.get_destroyed_ship();
                 unsigned short length = category_to_size(destroyed_ship.name);
+                unsigned short x = destroyed_ship.x;
+                unsigned short y = destroyed_ship.y;
                 if (destroyed_ship.is_horizontal) {
                     for (unsigned short i = 0; i < length; i++) {
                         player->get_enemy_board().set_grid_value(
-                            destroyed_ship.x + i, destroyed_ship.y,
-                            destroyed_ship.name);
+                            x + i, y,
+                            (unsigned short)destroyed_ship.name);
+                        player->get_enemy_board().set_is_shot(
+                            x + i, y, true);
                     }
                 } else {
                     for (unsigned short i = 0; i < length; i++) {
                         player->get_enemy_board().set_grid_value(
-                            destroyed_ship.x, destroyed_ship.y + i,
-                            destroyed_ship.name);
+                            x, y + i,
+                            (unsigned short)destroyed_ship.name);
+                        player->get_enemy_board().set_is_shot(x, y + i, true);
                     }
                 }
                 Ship* dest_ship = player->get_enemy_board().get_ship_by_name(destroyed_ship.name);

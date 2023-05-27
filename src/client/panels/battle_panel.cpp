@@ -161,6 +161,8 @@ void BattlePanel::update_board()
         ship_widget_arr_[i]->resizeToFit(
             own_board_, ship->get_x(), ship->get_y(), true);
         ship_widget_arr_[i]->disable();
+        enemy_ship_widget_arr_[i]->reset();
+        enemy_ship_widget_arr_[i]->disable();
     }
 }
 
@@ -190,15 +192,16 @@ void BattlePanel::render() {
 
     static unsigned short grid_size =
         player_->get_enemy_board().get_grid_size();
-    static unsigned short grid_value;
+    unsigned short grid_value;
     for (int i = 0; i < grid_size; i++) {
         for (int j = 0; j < grid_size; j++) {
             if (player_->get_enemy_board().get_is_shot(i, j)) {
                 grid_value = player_->get_enemy_board().get_grid_value(i, j);
-                if (grid_value == 6) {
+                if (grid_value == 6){
                     enemy_board_->setCell(i, j, true);
                 } else if (grid_value > 0 && grid_value < 6) {
-                    enemy_board_->completeCell(i, j);
+                    std::cout << "Cell " << i << ", " << j << " has value " << grid_value << "\n";
+                    enemy_board_->unsetCell(i, j);
                 } else if (grid_value == 0) {
                     enemy_board_->setCell(i, j, false);
                 } else {

@@ -33,7 +33,7 @@ const std::array<const Ship *, 5> Board::get_ship_arr() const {
 void Board::set_grid_value(const unsigned short &x, const unsigned short &y,
                            unsigned short value) {
     assert(x >= 0 && y >= 0 && x < grid_size_ && y < grid_size_);
-    grid_[y][x] = value;
+    grid_[y][x] = (unsigned short)value;
 }
 
 bool Board::get_is_shot(const unsigned short &x,

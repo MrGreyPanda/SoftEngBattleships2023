@@ -113,6 +113,8 @@ void GameInstance::handle_shot(const std::string &player_id,
     }
 
     if (other_player_ptr->get_own_board().get_is_shot(x, y)) {
+        std::cout << "[GameInstance] Invalid shot: Other player own board was "
+                     "already shot at this position\n";
         return;
     }
 
