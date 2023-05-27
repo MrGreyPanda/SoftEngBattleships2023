@@ -106,7 +106,7 @@ bool GameInstanceManager::try_remove_player(Player *player_ptr,
 }
 
 bool GameInstanceManager::delete_game_(const std::string &game_id) {
-    if(GameInstanceManager::get_game_instance(game_id) != nullptr){
+    if (GameInstanceManager::get_game_instance(game_id) != nullptr) {
         games_.erase(game_id);
         return true;
     }
