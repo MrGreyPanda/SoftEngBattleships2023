@@ -122,7 +122,7 @@ class Ship {
 
     /**
      * @brief Get the damage_ of the ship
-     * @return The damage_ of the ship
+     * @return The damage_ of the ship, just for testing purposes
      */
     unsigned short get_damage() const;
 
@@ -141,7 +141,7 @@ class Ship {
     bool get_is_sunk() const;
 
     /**
-     * @brief Set the is_sunk_ of the ship
+     * @brief Set the is_sunk_ of the ship, for the client side
      */
     void set_is_sunk(bool is_sunk);
 

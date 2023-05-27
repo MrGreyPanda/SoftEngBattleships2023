@@ -41,9 +41,6 @@ Ship::Ship(const ShipCategory &name_)
       is_placed_(false),
       is_horizontal_(true),
       length_(category_to_size(name_)) {
-    // length_ = category_to_size(name_);
-    // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
-    // ShipCategory"));
 }
 
 Ship::Ship(const ShipData &data)
@@ -54,9 +51,6 @@ Ship::Ship(const ShipData &data)
       x_(data.x),
       y_(data.y),
       length_(category_to_size(data.name)) {
-    // length_ = category_to_size(name_);
-    // if(length_ == 0) throw std::runtime_error(std::string("Not a valid
-    // ShipCategory"));
     damage_ = 0;
 }
 
