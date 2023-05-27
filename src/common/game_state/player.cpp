@@ -1,14 +1,5 @@
 #include "player.h"
 
-// Player::Player(unsigned short board_size, std::string id) : id(id)
-// own_board(OwnBoard(board_size, 5)), enemy_board(EnemyBoard(board_size, 5)),
-// is_prepared(false), is_ready(false){}
-
-// Player::Player(unsigned short board_size, unsigned short n_ships,
-// std::string id) : id(id), own_board(OwnBoard()),
-// enemy_board(EnemyBoard(board_size, n_ships)), is_prepared(false),
-// is_ready(false) {}
-
 Player::Player(const std::string &id)
     : id_(id),
       is_ready_(false),
@@ -36,19 +27,11 @@ OwnBoard &Player::get_own_board() { return own_board_; }
 
 EnemyBoard &Player::get_enemy_board() { return enemy_board_; }
 
-bool Player::shoot(const short &x, const short &y) {
-    if (this->get_enemy_board().is_valid_shot(x, y)) {
-        // Send shot to server
-        // return true if hit
-        // return false if miss
-    }
-    return false;
+bool Player::is_valid_shot(const unsigned short &x, const unsigned short &y) {
+    return this->get_enemy_board().is_valid_shot(x, y);
 }
 
 bool Player::has_lost() const { return own_board_.all_ships_sunk(); }
 
 Player::~Player() {
-    // std::cout << "Player " << id_ << " destroyed" << std::endl;
-    // own_board_.reset();
-    // enemy_board_.reset();
 }

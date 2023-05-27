@@ -143,9 +143,9 @@ void BattlePanel::set_player_ptr(Player* player) { player_ = player; }
 void BattlePanel::handle_shots() {
     std::pair<uint32_t, uint32_t> xy =
         SDLGui::Grid("enemy_board").getClickIndices();
-    short x = (short)xy.first;
-    short y = (short)xy.second;
-    if (player_->get_enemy_board().is_valid_shot(x, y)) {
+    unsigned short x = (unsigned short)xy.first;
+    unsigned short y = (unsigned short)xy.second;
+    if (player_->is_valid_shot(x, y)) {
         // Send a shoot request to the server
         ShootRequest shoot_request(game_state_->get_id(), player_->get_id(), x,
                                    y);

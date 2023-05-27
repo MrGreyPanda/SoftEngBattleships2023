@@ -1,21 +1,4 @@
 #include "ship.h"
-/*
-The class attributes are:
-length_: short, defines the length_ of the ship, for example 5, 4, 3, 2
-is_sunk_: bool, defines if the ship has sunk (TRUE) or not (FALSE), this is the
-case when ship_coord is empty damage_: short, holds remaining length_ of the
-ship, gets updated by shot_at
-
-The class operations are:
-shot_at, void, updates damage_ and checks is_sunk_, then sets the value
-accordingly.
-*/
-
-// // Constructor
-// Ship::Ship(unsigned int length_, ShipCategory name_) : length_(length_),
-// name_(name_), is_sunk_(false) {
-//     damage_ = length_;
-// }
 
 const unsigned short category_to_size(const ShipCategory &type) {
     switch (type) {
@@ -34,7 +17,7 @@ const unsigned short category_to_size(const ShipCategory &type) {
     }
 }
 
-// Constructor
+// Constructors
 Ship::Ship(const ShipCategory &name_)
     : name_(name_),
       is_sunk_(false),
@@ -62,43 +45,18 @@ Ship::Ship()
       is_placed_(false),
       is_horizontal_(true) {}
 
-// Ship::Ship(const Ship &ship)
-//     : name_(ship.name_),
-//       is_sunk_(ship.is_sunk_),
-//       length_(ship.length_),
-//       damage_(ship.damage_),
-//       is_placed_(ship.is_placed_),
-//       is_horizontal_(ship.is_horizontal_),
-//       x_(ship.x_),
-//       y_(ship.y_) {}
-
-// Ship &Ship::operator=(const Ship &ship) {
-//     if (this != &ship) {
-//         name_ = ship.name_;
-//         is_sunk_ = ship.is_sunk_;
-//         length_ = ship.length_;
-//         damage_ = ship.damage_;
-//         is_placed_ = ship.is_placed_;
-//         is_horizontal_ = ship.is_horizontal_;
-//         x_ = ship.x_;
-//         y_ = ship.y_;
-//     }
-//     return *this;
-// }
-
 Ship::~Ship() {
     // Nothing to do here
 }
 
 void Ship::shot_at() {
+    assert(damage_ <= length_ && !is_sunk_);
     if (damage_ <= 0 || is_sunk_ || damage_ > length_) {
-        // throw std::exception("This ship is already sunk and therefore can't
-        // be shot at. Invalid shot.");
     }
     ++damage_;
     if (damage_ == length_) {
         is_sunk_ = true;
-        // std::cout << "Your " << name_ << " has been sunk!\n";
+        std::cout << "Your " << name_ << " has been sunk!\n";
     }
 }
 
@@ -146,7 +104,7 @@ ShipData Ship::get_data() const {
 }
 
 ShipData::ShipData(const ShipCategory &name, const bool &is_horizontal,
-                   const short &x, const short &y)
+                   const unsigned short &x, const unsigned short &y)
     : name(name), is_horizontal(is_horizontal), x(x), y(y) {}
 
 bool ShipData::operator==(const ShipData &other) const {

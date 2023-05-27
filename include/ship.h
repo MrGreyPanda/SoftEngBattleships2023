@@ -3,30 +3,23 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <utility>
+#include <cassert>
+#include <iostream>
 
 using json = nlohmann::json;
 
-/*
-The class attributes are:
-length_: short, defines the length_ of the ship, for example 5, 4, 3, 2 or 1
-is_sunk_: bool, defines if the ship has sunk (TRUE) or not (FALSE), this is the
-case when ship_coord is empty damage_: short, holds remaining length_ of the
-ship, gets updated by shot_at name_: ShipCategory, holds the unique name_ of a
-ship
-
-The class operations are:
-shot_at, void, updates damage_ and checks is_sunk_, then sets the value
-accordingly.
-*/
 // Enumerators to categorize the different ship types
-
+/**
+ * @brief Enum to categorize the different ship types
+ * ShipPart is used to represent a part of a ship that has been hit
+*/
 enum ShipCategory {
-    Destroyer  = (short)1,  // size = 2
-    Submarine  = (short)2,  // size = 3
-    Cruiser    = (short)3,  // size = 3
-    Battleship = (short)4,  // size = 4
-    Carrier    = (short)5,   // size = 5
-    ShipPart   = (short)6   // size = 1
+    Destroyer  = (unsigned short)1,  // size = 2
+    Submarine  = (unsigned short)2,  // size = 3
+    Cruiser    = (unsigned short)3,  // size = 3
+    Battleship = (unsigned short)4,  // size = 4
+    Carrier    = (unsigned short)5,   // size = 5
+    ShipPart   = (unsigned short)6   // size = 1
 };
 
 /**
@@ -36,12 +29,12 @@ enum ShipCategory {
 struct ShipData {
     ShipData() = default;
     ShipData(const ShipCategory &name, const bool &is_horizontal,
-             const short &x, const short &y);
+             const unsigned short &x, const unsigned short &y);
 
     ShipCategory name;
     bool is_horizontal;
-    short x;
-    short y;
+    unsigned short x;
+    unsigned short y;
 
     bool operator==(const ShipData &other) const;
 };
@@ -211,6 +204,6 @@ class Ship {
     /**
      * Starting coordinates of the ship
      */
-    short x_;
-    short y_;
+    unsigned short x_;
+    unsigned short y_;
 };

@@ -193,6 +193,7 @@ void PreparationPanel::render() {
             own_board.reset();
             for (int i = 0; i < 5; i++) {
                 ships_widget_arr_[i]->reset();
+            SDLGui::TextButton("ready_button").enable();
             }
         }
     }
