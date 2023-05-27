@@ -9,4 +9,4 @@
 	url = https://github.com/nlohmann/json.git
 [submodule "dependencies/sdlgui"]
 	path = dependencies/sdlgui
-	url = https://gitlab.ethz.ch/softeng23/sdlguilibrary.git
+	url = https://a4p4M5GZrZ9PC2k23gom@gitlab.ethz.ch/softeng23/sdlguilibrary.git
