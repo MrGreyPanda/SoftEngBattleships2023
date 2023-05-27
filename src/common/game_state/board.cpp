@@ -209,7 +209,7 @@ bool OwnBoard::set_ship_configuration(
         if (!place_ship(ship.x, ship.y, ship.is_horizontal, ship.name))
             return false;
     }
-    return true;
+    return is_valid_configuration();
 }
 
 bool OwnBoard::is_valid_configuration() const {
