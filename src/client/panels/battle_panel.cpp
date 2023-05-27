@@ -10,6 +10,8 @@ SDLGui::TextWidget* BattlePanel::turn_message_text_ = nullptr;
 std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ = 
     { nullptr, nullptr, nullptr, nullptr, nullptr };
 
+std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::enemy_ship_widget_arr_ = 
+    { nullptr, nullptr, nullptr, nullptr, nullptr };
 void BattlePanel::init() {
 
     SDLGui::SDLGuiContext* battle_panel_context =
@@ -93,6 +95,48 @@ void BattlePanel::init() {
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[0]);
+
+
+    // ---------------ENEMY SHIPS-----------------
+    // enemy_ship_widget_arr_[4] =
+    //     new SDLGui::DraggableImageWidget(
+    //         "enemy_carrier_ship", "../assets/carrier_red.bmp", .6f, .2f, .3f, .12f, 0.,
+    //         5, 1,
+    //         SDLGui::DraggableImageFlagsExt_CenterImage |
+    //             SDLGui::DraggableImageFlagsExt_NoBackground);
+    // battle_panel_context->addWidget(enemy_ship_widget_arr_[4]);
+
+    // enemy_ship_widget_arr_[3] =
+    //     new SDLGui::DraggableImageWidget(
+    //         "enemy_battleship_ship", "../assets/battleship_red.bmp", .6f, .35f, .25f,
+    //         .1f, 0., 4, 1,
+    //         SDLGui::DraggableImageFlagsExt_CenterImage |
+    //             SDLGui::DraggableImageFlagsExt_NoBackground);
+    // battle_panel_context->addWidget(enemy_ship_widget_arr_[3]);
+
+    // enemy_ship_widget_arr_[2] =
+    //     new SDLGui::DraggableImageWidget(
+    //         "enemy_cruiser_ship", "../assets/cruiser_red.bmp", .6f, .5f, .2f, .08f, 0.,
+    //         3, 1,
+    //         SDLGui::DraggableImageFlagsExt_CenterImage |
+    //             SDLGui::DraggableImageFlagsExt_NoBackground);
+    // battle_panel_context->addWidget(enemy_ship_widget_arr_[2]);
+
+    // enemy_ship_widget_arr_[1] =
+    //     new SDLGui::DraggableImageWidget(
+    //         "enemy_submarine_ship", "../assets/submarine_red.bmp", .6f, .65f, .2f, .08f,
+    //         0., 3, 1,
+    //         SDLGui::DraggableImageFlagsExt_CenterImage |
+    //             SDLGui::DraggableImageFlagsExt_NoBackground);
+    // battle_panel_context->addWidget(enemy_ship_widget_arr_[1]);
+
+    // enemy_ship_widget_arr_[0] =
+    //     new SDLGui::DraggableImageWidget(
+    //         "enemy_destroyer_ship", "../assets/destroyer_red.bmp", .6f, .8f, .15f, .06f,
+    //         0., 2, 1,
+    //         SDLGui::DraggableImageFlagsExt_CenterImage |
+    //             SDLGui::DraggableImageFlagsExt_NoBackground);
+    // battle_panel_context->addWidget(enemy_ship_widget_arr_[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }

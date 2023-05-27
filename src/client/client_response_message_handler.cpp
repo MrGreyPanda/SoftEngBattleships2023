@@ -265,7 +265,9 @@ void ClientResponseMessageHandler::handle_shot_message_(
                 ->get_own_board()
                 .get_ship(x, y)
                 ->get_is_sunk() == message.has_destroyed_ship();
-        throw std::runtime_error("Server and client data mismatch!");
+        // if(!correct_info){
+        // throw std::runtime_error("Server and client data mismatch!");
+        //}
     } else {
         // Change turns
         game_controller_game_state_->get_players()[0]->is_own_turn = true;

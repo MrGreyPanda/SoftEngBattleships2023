@@ -209,6 +209,14 @@ bool OwnBoard::is_valid_configuration() const {
     for (unsigned short i = 0; i < num_ships; i++) {
         if (ships[i]->get_is_placed() == false) return false;
     }
+
+    const std::array<const Ship *, 5> &ship_arr = this->get_ship_arr();
+    if(ship_arr[0]->get_name() != Destroyer) return false;
+    if(ship_arr[1]->get_name() != Submarine) return false;
+    if(ship_arr[2]->get_name() != Cruiser) return false;
+    if(ship_arr[3]->get_name() != Battleship) return false;
+    if(ship_arr[4]->get_name() != Carrier) return false;
+
     // Check if all ships are placed correctly
     std::array<int, 6> ship_lengths = {0, 2, 3, 3, 4, 5};
     unsigned short grid_size                 = this->get_grid_size();
