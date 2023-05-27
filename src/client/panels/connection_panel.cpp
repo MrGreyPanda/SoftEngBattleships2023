@@ -11,10 +11,11 @@ void ConnectionPanel::init() {
         new SDLGui::SDLGuiContext("connection_panel_context");
 
     SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f, 1.f,
-        0.,
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
+        1.f, 0.,
         SDLGui::ImageFlagsExt_CenterImageVertical |
-            SDLGui::ImageFlagsExt_CenterImageHorizontal | SDLGui::ImageFlagsExt_NoBackground);
+            SDLGui::ImageFlagsExt_CenterImageHorizontal |
+            SDLGui::ImageFlagsExt_NoBackground);
     connection_panel_context->addWidget(background_image);
 
     SDLGui::TextWidget* connect_to_server_text =
@@ -94,20 +95,26 @@ void ConnectionPanel::render() {
         send_join_request = true;
     }
 
+    if (ClientNetworkManager::get_connection_status() ==
+        ClientNetworkConnectionStatus::NOT_CONNECTED) {
+        SDLGui::Text("server_message_text").updateText(64, 0, "");
+    }
+
     SDLGui::end();
 }
 
 bool ConnectionPanel::is_valid_ip_address(const std::string& ip_address) {
     std::regex ipv4_regex(
-        "(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-"
+        "(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|"
+        "[1-"
         "9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\:[0-9]+");
     std::smatch ipv4_regex_match;
     std::regex localhost_regex("localhost\\:[0-9]+");
     std::smatch localhost_regex_match;
     if (std::regex_match(ip_address, ipv4_regex_match, ipv4_regex)) {
         std::cout << "Ipv4 matched" << std::endl;
-        /* REGEX_MATCH SHOULD BE ABLE TO SPLIT THE STRING INTO COMPONENTS (to
-         * be replaced if someone know how to make it work) */
+        /* REGEX_MATCH SHOULD BE ABLE TO SPLIT THE STRING INTO COMPONENTS
+         * (to be replaced if someone know how to make it work) */
         /*printf("%llu\n", ipv4_regex_match.size());
         for (uint32_t i = 0; i < ipv4_regex_match.size(); ++i) {
             printf("%s\n", ipv4_regex_match[i].str().c_str());

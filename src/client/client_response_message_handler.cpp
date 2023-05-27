@@ -294,12 +294,14 @@ void ClientResponseMessageHandler::handle_game_over_message_(
         << "[ClientResponseMessageHandler] Game over message setting ship data"
         << std::endl;
 
-    game_controller_game_state_->get_players()[0]
+    if(game_controller_game_state_->get_phase() != Preparation){
+        game_controller_game_state_->get_players()[0]
         ->get_enemy_board()
         .set_ship_data(message.get_ship_data());
+        EndPanel::update_board();
+    }
     
     std::cout << "[ClientResponseMessageHandler] Game over message handled"
               << std::endl;
-    EndPanel::update_board();
     game_controller_game_state_->set_phase(End);
 }

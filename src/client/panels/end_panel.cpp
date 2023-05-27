@@ -14,8 +14,16 @@ void EndPanel::init() {
     SDLGui::SDLGuiContext* end_panel_context =
         new SDLGui::SDLGuiContext("end_window");
 
+    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
+        1.f, 0.,
+        SDLGui::ImageFlagsExt_CenterImageVertical |
+            SDLGui::ImageFlagsExt_CenterImageHorizontal |
+            SDLGui::ImageFlagsExt_NoBackground);
+    end_panel_context->addWidget(background_image);
+
     winner_or_loser_text_ = new SDLGui::TextWidget(
-        "winner_or_loser_text", "", 0, .06f, .1f, .4f, .09f, 0.,
+        "winner_or_loser_text", "You Lost!", 0, .06f, .1f, .4f, .09f, 0.,
         SDLGui::TextFlagsExt_CenterTextVertical |
             SDLGui::TextFlagsExt_NoBackground);
     end_panel_context->addWidget(winner_or_loser_text_);
@@ -102,7 +110,7 @@ void EndPanel::update_board()
 void EndPanel::render() {
     SDLGui::begin("end_window");
 
-    if (game_state_->get_players()[0]->has_won) {
+    if (game_state_->get_players().size() > 0 && game_state_->get_players()[0]->has_won){
         winner_or_loser_text_->updateText(64, 0, "You Won!");
     } else {
         winner_or_loser_text_->updateText(64, 0, "You Lost!");

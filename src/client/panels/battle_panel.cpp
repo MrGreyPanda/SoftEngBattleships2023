@@ -14,6 +14,14 @@ void BattlePanel::init() {
 
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
+    
+    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
+        1.f, 0.,
+        SDLGui::ImageFlagsExt_CenterImageVertical |
+            SDLGui::ImageFlagsExt_CenterImageHorizontal |
+            SDLGui::ImageFlagsExt_NoBackground);
+    battle_panel_context->addWidget(background_image);
 
     own_board_ = new SDLGui::GridWidget(
         "own_board", .05f, .05f, .4f, .8f, 0., 10, 10,
