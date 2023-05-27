@@ -32,7 +32,50 @@ TEST(ShootResponse, JSONConstructor) {
     }
 }
 
-TEST(ShootResponse, Constructor) {
+TEST(ShootResponse, InvalidConstructor) {
+    std::string game_id   = "test_shoot_resp_game_id";
+    std::string player_id = "test_shoot_resp_player_id";
+    unsigned short x      = 1;
+    unsigned short y      = 2;
+    bool is_valid         = false;
+    std::string error     = "test_shoot_resp_error";
+
+    ShootResponse shoot_response(game_id, player_id, x, y, is_valid, error);
+
+    EXPECT_EQ(shoot_response.get_type(), MessageType::ShootResponseType);
+    EXPECT_EQ(shoot_response.get_game_id(), game_id);
+    EXPECT_EQ(shoot_response.get_player_id(), player_id);
+    EXPECT_EQ(shoot_response.get_x(), x);
+    EXPECT_EQ(shoot_response.get_y(), y);
+    EXPECT_EQ(shoot_response.has_hit(), false);
+    EXPECT_EQ(shoot_response.is_valid(), is_valid);
+    EXPECT_EQ(shoot_response.has_destroyed_ship(), false);
+    EXPECT_EQ(shoot_response.get_error(), error);
+}
+
+TEST(ShootResponse, HitButNotDestroyedConstructor) {
+    std::string game_id   = "test_shoot_resp_game_id";
+    std::string player_id = "test_shoot_resp_player_id";
+    unsigned short x      = 1;
+    unsigned short y      = 2;
+    bool is_valid         = true;
+    bool has_hit          = true;
+    std::string error     = "";
+
+    ShootResponse shoot_response(game_id, player_id, x, y, has_hit);
+
+    EXPECT_EQ(shoot_response.get_type(), MessageType::ShootResponseType);
+    EXPECT_EQ(shoot_response.get_game_id(), game_id);
+    EXPECT_EQ(shoot_response.get_player_id(), player_id);
+    EXPECT_EQ(shoot_response.get_x(), x);
+    EXPECT_EQ(shoot_response.get_y(), y);
+    EXPECT_EQ(shoot_response.has_hit(), has_hit);
+    EXPECT_EQ(shoot_response.is_valid(), is_valid);
+    EXPECT_EQ(shoot_response.has_destroyed_ship(), false);
+    EXPECT_EQ(shoot_response.get_error(), error);
+}
+
+TEST(ShootResponse, DestroyedConstructor) {
     std::string game_id     = "test_shoot_resp_game_id";
     std::string player_id   = "test_shoot_resp_player_id";
     unsigned short x        = 1;
