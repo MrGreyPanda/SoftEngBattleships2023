@@ -35,23 +35,7 @@ void EndPanel::init() {
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
     end_panel_context->addWidget(enemy_grid_);
 
-    // EnemyBoard enemy_board = game_state_->get_players()[0]->get_enemy_board();
-    // unsigned short grid_size =
-    //     game_state_->get_players()[0]->get_enemy_board().get_grid_size();
-    // for (int i = 0; i < grid_size; i++) {
-    //     for (int j = 0; j < grid_size; j++) {
-    //         unsigned short grid_value = enemy_board.get_grid_value(i, j);
-    //         bool was_shot             = enemy_board.get_is_shot(i, j);
-    //         if (grid_value > 0 && grid_value < 6) {
-    //             if (was_shot) {
-    //                 end_enemy_board->completeCell(i,j);
-    //             } else {
-    //                 end_enemy_board->setCell(i,j, true);
-    //             }
-    //         }
-    //     }
-    // }
-
+    // All enemy ship widgets
     enemy_ship_widget_arr_[4] =
         new SDLGui::DraggableImageWidget(
             "enemy_carrier_ship", "../assets/carrier_red.bmp", .6f, .2f, .3f, .11f, 0.,

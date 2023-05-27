@@ -81,7 +81,6 @@ class Player {
      * @brief Try to shoot at a given coordinate
      * @param x The x coordinate
      * @param y The y coordinate
-     * TODO: Send shooting Request to Server and wait for response
      */
     bool is_valid_shot(const unsigned short &x, const unsigned short &y);
 

@@ -126,7 +126,6 @@ class OwnBoard : public Board {
      * @brief Checks if a given placement is valid
      * @param x, y The coordinates of the ship to be placed
      * @param ship The ship to be checked
-     * TODO: throw an error if coords.grid_size_() != shiptype grid_size_
      */
     bool is_valid_placement(const unsigned short &x, const unsigned short &y,
                             const Ship &ship) const;
@@ -151,7 +150,6 @@ class OwnBoard : public Board {
      * @brief Get the ship at a given coordinate
      * @param x, y The coordinates
      * @return The ship at the given coordinate
-     * TODO: throw an error if no ship at given coordinate
      */
     Ship *get_ship(const unsigned short &x, const unsigned short &y);
 

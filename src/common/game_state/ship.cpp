@@ -45,9 +45,6 @@ Ship::Ship()
       is_placed_(false),
       is_horizontal_(true) {}
 
-Ship::~Ship() {
-    // Nothing to do here
-}
 
 void Ship::shot_at() {
     assert(damage_ <= length_ && !is_sunk_);
@@ -69,8 +66,8 @@ ShipCategory Ship::get_name() const { return name_; }
 bool Ship::get_is_sunk() const { return is_sunk_; }
 
 void Ship::set_is_sunk(bool is_sunk) { 
+    assert(damage_ = length_);
     is_sunk_ = is_sunk;
-    damage_ = length_;
 }
 
 bool Ship::get_is_horizontal() const { return is_horizontal_; }

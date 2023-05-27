@@ -16,7 +16,6 @@ std::array<Ship*, 5> PreparationPanel::ships_ptr_arr_ =
 
 
 void PreparationPanel::init() {
-    // game_state_->reset_state();
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
 

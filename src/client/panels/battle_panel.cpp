@@ -12,8 +12,6 @@ std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ =
 
 void BattlePanel::init() {
 
-    //set_player_ptr(game_state_->get_players()[0]);
-    //OwnBoard* players_board = &player_->get_own_board();
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
 
@@ -44,17 +42,6 @@ void BattlePanel::init() {
         "resign_button", "Surrender", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(resign_button);
-
-    /*SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
-        "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
-        SDLGui::TextButtonFlagsExt_CenterText);
-    battle_panel_context->addWidget(help_button);
-
-    SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
-        "help_message_text", "", 0, .01f, .1f, .8f, .8f, 0.,
-        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
-            SDLGui::TextFlagsExt_CenterHorizontal);
-    battle_panel_context->addWidget(help_message_text);*/
 
     SDLGui::HelpMarkerWidget* battle_help = new SDLGui::HelpMarkerWidget(
         "battle_help", "?", .85f, .05f, .1f, .05f, 0.,
@@ -171,7 +158,7 @@ void BattlePanel::render() {
                 } else if (grid_value == 0) {
                     enemy_board_->setCell(i, j, false);
                 } else {
-                    // Return error
+                    throw std::runtime_error("Invalid grid value");
                 }
             }
             if (player_->get_own_board().get_is_shot(i, j)) {
@@ -181,17 +168,15 @@ void BattlePanel::render() {
                 } else if (grid_value == 0) {
                     own_board_->setCell(i, j, false);
                 } else {
-                    // Return error
+                    throw std::runtime_error("Invalid grid value");
                 }
             }
         }
     }
 
     if (player_->is_own_turn) {
-        /*if(Grid is enabled)*/
         turn_message_text_->updateText(64, 0, "It is your turn.");
         if (!player_->has_shot) {
-            // std::cout << "It is your turn\n";
             if (SDLGui::Grid("enemy_board")) handle_shots();
         }
 

@@ -8,7 +8,6 @@
 
 using json = nlohmann::json;
 
-// Enumerators to categorize the different ship types
 /**
  * @brief Enum to categorize the different ship types
  * ShipPart is used to represent a part of a ship that has been hit
@@ -71,7 +70,6 @@ class Ship {
     /**
      * @brief Construct a new Ship object
      * @param name_ The name_ of the ship
-     * TODO: Add except/assertion to make it safer
      */
     Ship(const ShipCategory &name_);
 
@@ -85,25 +83,8 @@ class Ship {
      */
     Ship(const ShipData &data);
 
-    // /**
-    //  * @brief Copy constructor
-    // */
-    // Ship(const Ship &other);
-
-    // /**
-    //  * @brief Copy assignment operator
-    //  */
-    // Ship &operator=(const Ship &other);
-
-    /**
-     * @brief Destroy the Ship object
-     */
-    ~Ship();
-
     /**
      * @brief update the damage_ and check if the ship is sunk
-     * TODO: Add except/assertion to make it safer
-     * TODO: Add a player message or something like that
      */
     void shot_at();
 
@@ -128,8 +109,6 @@ class Ship {
     /**
      * @brief Get the is_sunk_ of the ship
      * @return The is_sunk_ of the ship
-     * TODO: Add except/assertion to make it safer
-     * TODO: Add a player message or something like that
      */
     bool get_is_sunk() const;
 
@@ -197,7 +176,7 @@ class Ship {
     const unsigned short length_;
     bool is_sunk_;
     unsigned short damage_ = 0;
-    const ShipCategory name_;
+    const ShipCategory name_;       // unique identifier of a ship
     bool is_horizontal_;
     bool is_placed_;
 
