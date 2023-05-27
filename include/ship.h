@@ -3,30 +3,22 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <utility>
+#include <cassert>
+#include <iostream>
 
 using json = nlohmann::json;
 
-/*
-The class attributes are:
-length_: short, defines the length_ of the ship, for example 5, 4, 3, 2 or 1
-is_sunk_: bool, defines if the ship has sunk (TRUE) or not (FALSE), this is the
-case when ship_coord is empty damage_: short, holds remaining length_ of the
-ship, gets updated by shot_at name_: ShipCategory, holds the unique name_ of a
-ship
-
-The class operations are:
-shot_at, void, updates damage_ and checks is_sunk_, then sets the value
-accordingly.
+/**
+ * @brief Enum to categorize the different ship types
+ * ShipPart is used to represent a part of a ship that has been hit
 */
-// Enumerators to categorize the different ship types
-
 enum ShipCategory {
-    Destroyer  = (short)1,  // size = 2
-    Submarine  = (short)2,  // size = 3
-    Cruiser    = (short)3,  // size = 3
-    Battleship = (short)4,  // size = 4
-    Carrier    = (short)5,   // size = 5
-    ShipPart   = (short)6   // size = 1
+    Destroyer  = (unsigned short)1,  // size = 2
+    Submarine  = (unsigned short)2,  // size = 3
+    Cruiser    = (unsigned short)3,  // size = 3
+    Battleship = (unsigned short)4,  // size = 4
+    Carrier    = (unsigned short)5,   // size = 5
+    ShipPart   = (unsigned short)6   // size = 1
 };
 
 /**
@@ -36,12 +28,12 @@ enum ShipCategory {
 struct ShipData {
     ShipData() = default;
     ShipData(const ShipCategory &name, const bool &is_horizontal,
-             const short &x, const short &y);
+             const unsigned short &x, const unsigned short &y);
 
     ShipCategory name;
     bool is_horizontal;
-    short x;
-    short y;
+    unsigned short x;
+    unsigned short y;
 
     bool operator==(const ShipData &other) const;
 };
@@ -78,7 +70,6 @@ class Ship {
     /**
      * @brief Construct a new Ship object
      * @param name_ The name_ of the ship
-     * TODO: Add except/assertion to make it safer
      */
     Ship(const ShipCategory &name_);
 
@@ -92,25 +83,8 @@ class Ship {
      */
     Ship(const ShipData &data);
 
-    // /**
-    //  * @brief Copy constructor
-    // */
-    // Ship(const Ship &other);
-
-    // /**
-    //  * @brief Copy assignment operator
-    //  */
-    // Ship &operator=(const Ship &other);
-
-    /**
-     * @brief Destroy the Ship object
-     */
-    ~Ship();
-
     /**
      * @brief update the damage_ and check if the ship is sunk
-     * TODO: Add except/assertion to make it safer
-     * TODO: Add a player message or something like that
      */
     void shot_at();
 
@@ -122,7 +96,7 @@ class Ship {
 
     /**
      * @brief Get the damage_ of the ship
-     * @return The damage_ of the ship
+     * @return The damage_ of the ship, just for testing purposes
      */
     unsigned short get_damage() const;
 
@@ -135,13 +109,11 @@ class Ship {
     /**
      * @brief Get the is_sunk_ of the ship
      * @return The is_sunk_ of the ship
-     * TODO: Add except/assertion to make it safer
-     * TODO: Add a player message or something like that
      */
     bool get_is_sunk() const;
 
     /**
-     * @brief Set the is_sunk_ of the ship
+     * @brief Set the is_sunk_ of the ship, for the client side
      */
     void set_is_sunk(bool is_sunk);
 
@@ -204,13 +176,13 @@ class Ship {
     const unsigned short length_;
     bool is_sunk_;
     unsigned short damage_ = 0;
-    const ShipCategory name_;
+    const ShipCategory name_;       // unique identifier of a ship
     bool is_horizontal_;
     bool is_placed_;
 
     /**
      * Starting coordinates of the ship
      */
-    short x_;
-    short y_;
+    unsigned short x_;
+    unsigned short y_;
 };

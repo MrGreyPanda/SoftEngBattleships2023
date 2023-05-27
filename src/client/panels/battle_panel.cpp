@@ -3,25 +3,27 @@
 GameState* BattlePanel::game_state_              = nullptr;
 unsigned short BattlePanel::help_button_counter_ = 0;
 Player* BattlePanel::player_                     = nullptr;
-bool BattlePanel::was_reset                      = false;
+
+SDLGui::GridWidget* BattlePanel::own_board_ = nullptr;
+SDLGui::GridWidget* BattlePanel::enemy_board_ = nullptr;
+SDLGui::TextWidget* BattlePanel::turn_message_text_ = nullptr;
+std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ = 
+    { nullptr, nullptr, nullptr, nullptr, nullptr };
 
 void BattlePanel::init() {
-    static SDL_FRect grid_hover_cell_data;
 
-    set_player_ptr(game_state_->get_players()[0]);
-    OwnBoard* players_board = &player_->get_own_board();
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
 
-    SDLGui::GridWidget* own_board = new SDLGui::GridWidget(
+    own_board_ = new SDLGui::GridWidget(
         "own_board", .05f, .05f, .4f, .8f, 0., 10, 10,
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
-    battle_panel_context->addWidget(own_board);
+    battle_panel_context->addWidget(own_board_);
 
-    SDLGui::GridWidget* enemy_board = new SDLGui::GridWidget(
+    enemy_board_ = new SDLGui::GridWidget(
         "enemy_board", .55f, .05f, .4f, .8f, 0., 10, 10,
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
-    battle_panel_context->addWidget(enemy_board);
+    battle_panel_context->addWidget(enemy_board_);
 
     SDLGui::TextWidget* battle_phase_title = new SDLGui::TextWidget(
         "battle_title", "Battle Phase", 0, .0f, .05f, .6f, .1f, 0.,
@@ -29,28 +31,17 @@ void BattlePanel::init() {
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(battle_phase_title);
 
-    SDLGui::TextWidget* turn_message_text =
+    turn_message_text_ =
         new SDLGui::TextWidget("turn_message_text", "", 0, .0f, .9f, .3f, .1f, 0.,
                                SDLGui::TextFlagsExt_CenterTextHorizontal |
                                    SDLGui::TextFlagsExt_NoBackground |
                                    SDLGui::TextFlagsExt_CenterHorizontal);
-    battle_panel_context->addWidget(turn_message_text);
+    battle_panel_context->addWidget(turn_message_text_);
 
     SDLGui::TextButtonWidget* resign_button = new SDLGui::TextButtonWidget(
         "resign_button", "Surrender", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     battle_panel_context->addWidget(resign_button);
-
-    /*SDLGui::TextButtonWidget* help_button = new SDLGui::TextButtonWidget(
-        "help_button", "?", 0.85f, .05f, .1f, .05f, 0.,
-        SDLGui::TextButtonFlagsExt_CenterText);
-    battle_panel_context->addWidget(help_button);
-
-    SDLGui::TextWidget* help_message_text = new SDLGui::TextWidget(
-        "help_message_text", "", 0, .01f, .1f, .8f, .8f, 0.,
-        SDLGui::TextFlagsExt_CenterText | SDLGui::TextFlagsExt_NoBackground |
-            SDLGui::TextFlagsExt_CenterHorizontal);
-    battle_panel_context->addWidget(help_message_text);*/
 
     SDLGui::HelpMarkerWidget* battle_help = new SDLGui::HelpMarkerWidget(
         "battle_help", "?", .85f, .05f, .1f, .05f, 0.,
@@ -63,67 +54,70 @@ void BattlePanel::init() {
      * @brief The following widgets are used to display the ships that the
      * player has placed
      */
-    SDLGui::DraggableImageWidget* carrier_ship =
+    ship_widget_arr_[4] =
         new SDLGui::DraggableImageWidget(
             "carrier_ship", "../assets/carrier.bmp", .6f, .2f, .3f, .12f, 0.,
             5, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
-    battle_panel_context->addWidget(carrier_ship);
-    // Ship* carrier = players_board->get_ship_by_name(Carrier);
-    // grid_hover_cell_data =
-    // own_board->getIndexCellCoordinates(carrier->get_x(), carrier->get_y());
-    // carrier_ship->resizeToFit(grid_hover_cell_data.x,
-    // grid_hover_cell_data.y, grid_hover_cell_data.w, grid_hover_cell_data.h);
+    battle_panel_context->addWidget(ship_widget_arr_[4]);
 
-    SDLGui::DraggableImageWidget* battleship_ship =
+    ship_widget_arr_[3] =
         new SDLGui::DraggableImageWidget(
             "battleship_ship", "../assets/battleship.bmp", .6f, .35f, .25f,
             .1f, 0., 4, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
-    battle_panel_context->addWidget(battleship_ship);
+    battle_panel_context->addWidget(ship_widget_arr_[3]);
 
-    SDLGui::DraggableImageWidget* cruiser_ship =
+    ship_widget_arr_[2] =
         new SDLGui::DraggableImageWidget(
             "cruiser_ship", "../assets/cruiser.bmp", .6f, .5f, .2f, .08f, 0.,
             3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
-    battle_panel_context->addWidget(cruiser_ship);
+    battle_panel_context->addWidget(ship_widget_arr_[2]);
 
-    SDLGui::DraggableImageWidget* submarine_ship =
+    ship_widget_arr_[1] =
         new SDLGui::DraggableImageWidget(
             "submarine_ship", "../assets/submarine.bmp", .6f, .65f, .2f, .08f,
             0., 3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
-    battle_panel_context->addWidget(submarine_ship);
+    battle_panel_context->addWidget(ship_widget_arr_[1]);
 
-    SDLGui::DraggableImageWidget* destroyer_ship =
+    ship_widget_arr_[0] =
         new SDLGui::DraggableImageWidget(
             "destroyer_ship", "../assets/destroyer.bmp", .6f, .8f, .15f, .06f,
             0., 2, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
-    battle_panel_context->addWidget(destroyer_ship);
-
-    std::array<SDLGui::DraggableImageWidget*, 5> ship_widgets = {
-        destroyer_ship, submarine_ship, cruiser_ship, battleship_ship,
-        carrier_ship};
-
-    for (int i = 0; i < 5; i++) {
-        const Ship* ship = players_board->get_ship_by_index(i);
-        ship_widgets[i]->reset();
-        grid_hover_cell_data =
-            own_board->getIndexCellCoordinates(ship->get_x(), ship->get_y());
-        if (!ship->get_is_horizontal()) ship_widgets[i]->rotateNoGrab(270.);
-        ship_widgets[i]->resizeToFit(
-            own_board, ship->get_x(), ship->get_y(), true);
-        ship_widgets[i]->disable();
-    }
+    battle_panel_context->addWidget(ship_widget_arr_[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
+}
+
+void BattlePanel::reset()
+{
+    own_board_->reset();
+    enemy_board_->reset();
+
+}
+
+void BattlePanel::update_board()
+{
+    set_player_ptr(game_state_->get_players()[0]);
+
+    player_->get_enemy_board().reset();
+
+    for (int i = 0; i < 5; i++) {
+        const Ship* ship = player_->get_own_board().get_ship_by_index(i);
+        ship_widget_arr_[i]->reset();
+        if (!ship->get_is_horizontal()) ship_widget_arr_[i]->rotateNoGrab(270.);
+        ship_widget_arr_[i]->resizeToFit(
+            own_board_, ship->get_x(), ship->get_y(), true);
+        ship_widget_arr_[i]->disable();
+    }
 }
 
 void BattlePanel::set_game_state(GameState* game_state) {
@@ -135,9 +129,9 @@ void BattlePanel::set_player_ptr(Player* player) { player_ = player; }
 void BattlePanel::handle_shots() {
     std::pair<uint32_t, uint32_t> xy =
         SDLGui::Grid("enemy_board").getClickIndices();
-    short x = (short)xy.first;
-    short y = (short)xy.second;
-    if (player_->get_enemy_board().is_valid_shot(x, y)) {
+    unsigned short x = (unsigned short)xy.first;
+    unsigned short y = (unsigned short)xy.second;
+    if (player_->is_valid_shot(x, y)) {
         // Send a shoot request to the server
         ShootRequest shoot_request(game_state_->get_id(), player_->get_id(), x,
                                    y);
@@ -150,16 +144,6 @@ void BattlePanel::handle_shots() {
 void BattlePanel::render() {
     SDLGui::begin("battle_panel_context");
 
-    // if(!was_reset){
-    //     game_state_->get_players()[0]->get_enemy_board().reset();
-    //     game_state_->get_players()[0]->get_own_board().reset();
-    //     was_reset = true;
-    // }
-
-
-    static SDLGui::GridWidget& own_grid   = SDLGui::Grid("own_board");
-    static SDLGui::GridWidget& enemy_grid = SDLGui::Grid("enemy_board");
-
     static unsigned short grid_size =
         player_->get_enemy_board().get_grid_size();
     static unsigned short grid_value;
@@ -168,56 +152,38 @@ void BattlePanel::render() {
             if (player_->get_enemy_board().get_is_shot(i, j)) {
                 grid_value = player_->get_enemy_board().get_grid_value(i, j);
                 if (grid_value == 6) {
-                    enemy_grid.setCell(i, j, true);
+                    enemy_board_->setCell(i, j, true);
                 } else if (grid_value > 0 && grid_value < 6) {
-                    enemy_grid.completeCell(i, j);
+                    enemy_board_->completeCell(i, j);
                 } else if (grid_value == 0) {
-                    enemy_grid.setCell(i, j, false);
+                    enemy_board_->setCell(i, j, false);
                 } else {
-                    // Return error
+                    throw std::runtime_error("Invalid grid value");
                 }
             }
             if (player_->get_own_board().get_is_shot(i, j)) {
                 grid_value = player_->get_own_board().get_grid_value(i, j);
                 if (grid_value > 0 && grid_value < 7) {
-                    own_grid.setCell(i, j, true);
+                    own_board_->setCell(i, j, true);
                 } else if (grid_value == 0) {
-                    own_grid.setCell(i, j, false);
+                    own_board_->setCell(i, j, false);
                 } else {
-                    // Return error
+                    throw std::runtime_error("Invalid grid value");
                 }
             }
         }
     }
 
     if (player_->is_own_turn) {
-        /*if(Grid is enabled)*/
-        SDLGui::Text("turn_message_text").updateText(64, 0, "It is your turn.");
+        turn_message_text_->updateText(64, 0, "It is your turn.");
         if (!player_->has_shot) {
-            // std::cout << "It is your turn\n";
             if (SDLGui::Grid("enemy_board")) handle_shots();
         }
 
     } else {
-        SDLGui::Text("turn_message_text")
-            .updateText(64, 0, "It is the enemy' turn.");
+        turn_message_text_
+            ->updateText(64, 0, "It is the enemy' turn.");
     }
-
-    /*if (SDLGui::TextButton("help_button")) {
-        if (help_button_counter_ == 0) {
-            ++help_button_counter_;
-            // Set the background
-            SDLGui::Text("help_message_text")
-                .updateText(512,
-                            "Click on the enemy board to shoot. Click on the "
-                            "resign button to resign. Click on the help "
-                            "button to close this message.");
-        } else {
-            --help_button_counter_;
-            // Set the background to nothing
-            SDLGui::Text("help_message_text").updateText(512, "");
-        }
-    }*/
 
     if (SDLGui::TextButton("resign_button")) {
         // Send a resign request to the server -> Pop up a message box to

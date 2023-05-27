@@ -11,21 +11,6 @@
  */
 class Player {
    public:
-    // /**
-    //  * @brief Creates a player with a given board size and defautl ships
-    //  * @param board_size The size of the board
-    //  * @param id The id of the player
-    // */
-    // Player(unsigned short board_size, std::string id);
-
-    // /**
-    //  * @brief Creates a player with a given board size and number of ships
-    //  * @param board_size The size of the board
-    //  * @param n_ships The number of ships
-    //  * @param id The id of the player
-    // */
-    // Player(unsigned short board_size, unsigned short n_ships, std::string
-    // id);
 
     /**
      * @brief Creates a player with a default board size and number of ships
@@ -96,19 +81,27 @@ class Player {
      * @brief Try to shoot at a given coordinate
      * @param x The x coordinate
      * @param y The y coordinate
-     * TODO: Send shooting Request to Server and wait for response
      */
-    bool shoot(const short &x, const short &y);
+    bool is_valid_shot(const unsigned short &x, const unsigned short &y);
 
     /**
      * @brief Check if this player has lost
      */
     bool has_lost() const;
 
+    /**
+     * @brief Check if this player has won
+     */
     bool is_own_turn = false;
 
+    /**
+     * @brief Check if this player has shot
+    */
     bool has_shot = false;
 
+    /**
+     * @brief Check if this player has won
+    */
     bool has_won = true;
     
    private:

@@ -13,6 +13,10 @@ public:
     /// @brief Initializes all the widgets in the window
     static void init();
 
+    static void reset();
+
+    static void update_board();
+
     /// @brief Renders the end window and processes user interaction
     static void render();
 
@@ -21,8 +25,10 @@ public:
 
     static void set_game_state(GameState* game_state) { game_state_ = game_state; };
 
-    static bool was_reset;
-
 private:
     static GameState* game_state_;
+
+    static SDLGui::TextWidget* winner_or_loser_text_;
+    static SDLGui::GridWidget* enemy_grid_;
+    static std::array<SDLGui::DraggableImageWidget*, 5> enemy_ship_widget_arr_;
 };

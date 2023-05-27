@@ -5,15 +5,6 @@
 #include <vector>
 
 #include "player.h"
-/*
-The class attributes are
-id_: string, unique game ID
-players: vector<player*>, representing the players playing the current game
-phase: int, number representing which phase the game is in (0) lobby (not
-started yet), (1) preparation phase, (2) battle phase, (3) game ended. ships_:
-vector, the ships_ agreed upon for this game turn_player_index: unsigned short,
-the index of the player in the players array whose turn it is.
-*/
 
 // Enum describing the different phases of the game
 enum Phase { Connection = 0, Lobby = 1, Preparation = 2, Battle = 3, End = 4 };
@@ -113,6 +104,9 @@ class GameState {
      */
     unsigned short get_turn_player_index() const;
 
+    /**
+     * @brief get turn player id
+     */
     std::string get_turn_player_id() const;
 
     /**
@@ -120,12 +114,26 @@ class GameState {
      */
     void change_turn_player_index();
 
+    /**
+     * @brief Set the player to prepared to go from the lobby to the preparation
+    */
     bool start_preparation();
 
+    /**
+     * @brief Set the player to prepared to go from the preparation to the battle
+    */
     bool start_battle();
 
+    /**
+     * @brief Get the other player id
+     * @param id The id of the player
+     */
     std::string get_other_player_id(std::string id) const;
 
+    /**
+     * @brief Set the game id
+     * @param game_id The id of the game
+     */
     void set_game_id(const std::string& game_id);
     /**
      * @brief Returns whether all players are ready to go from the lobby phase
@@ -148,7 +156,6 @@ class GameState {
     /**
      * @brief Reset all players' states to 'not ready' and set the game phase to 'lobby'.
      */
-
     void reset_state();
 
    private:

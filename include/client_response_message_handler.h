@@ -29,6 +29,7 @@
 #include "preparation_panel.h"
 #include "battle_panel.h"
 #include "end_panel.h"
+#include "exception"
 
 // other messages
 

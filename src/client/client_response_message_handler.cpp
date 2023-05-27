@@ -109,11 +109,10 @@ void ClientResponseMessageHandler::handle_join_response_(
     game_controller_game_state_->add_player(
         new Player(response.get_player_id()));
     game_controller_game_state_->set_game_id(response.get_game_id());
-    game_controller_game_state_->set_phase(Lobby);
     // LobbyPanel::set_game_state(game_controller_game_state_);
-    PreparationPanel::was_reset = false;
-    BattlePanel::was_reset      = false;
-    EndPanel::was_reset         = false;
+    PreparationPanel::reset();
+    BattlePanel::reset();
+    EndPanel::reset();
 
     if (response.get_player_amount() > 1) {
         game_controller_game_state_->add_player(new Player(""));
@@ -123,6 +122,11 @@ void ClientResponseMessageHandler::handle_join_response_(
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
         game_controller_game_state_->get_players()[0]->has_shot    = false;
     }
+
+    PreparationPanel::update_board();
+    BattlePanel::update_board();
+
+    game_controller_game_state_->set_phase(Lobby);
 }
 
 void ClientResponseMessageHandler::handle_joined_message_(
@@ -166,9 +170,10 @@ void ClientResponseMessageHandler::handle_prepared_response_(
     const PreparedResponse &response) {
     if (response.is_valid()) {
         game_controller_game_state_->get_players()[0]->set_prepared();
-        if (game_controller_game_state_->get_players()[1]->get_is_prepared())
+        if (game_controller_game_state_->get_players()[1]->get_is_prepared()) {
+            BattlePanel::update_board();
             game_controller_game_state_->set_phase(Battle);
-            // BattlePanel::set_game_state(game_controller_game_state_);
+        }
 
     } else {
         game_controller_game_state_->get_players()[0]->unset_prepared();
@@ -183,16 +188,19 @@ void ClientResponseMessageHandler::handle_prepared_message_(
     const PreparedMessage &message) {
     game_controller_game_state_->get_players()[1]->set_prepared();
     if (game_controller_game_state_->get_players()[0]->get_is_prepared() &&
-        game_controller_game_state_->get_phase() != Battle)
-        game_controller_game_state_->set_phase(Battle);
-        // BattlePanel::set_game_state(game_controller_game_state_);
+        game_controller_game_state_->get_phase() != Battle) {
+            BattlePanel::update_board();
+            game_controller_game_state_->set_phase(Battle);
+    }
 }
 
 // Handles shoot response and updates game state
 void ClientResponseMessageHandler::handle_shoot_response_(
     const ShootResponse &response) {
-    Player *player = game_controller_game_state_->get_player_by_id(
-        response.get_player_id());
+    //Player *player = game_controller_game_state_->get_player_by_id(
+    //    response.get_player_id());
+    Player* player = game_controller_game_state_->get_players()[0];
+    if (player == nullptr) std::cout << "Player is nullptr" << std::endl;
     if (response.is_valid()) {
         player->get_enemy_board().set_is_shot(response.get_x(),
                                               response.get_y(), true);
@@ -257,7 +265,7 @@ void ClientResponseMessageHandler::handle_shot_message_(
                 ->get_own_board()
                 .get_ship(x, y)
                 ->get_is_sunk() == message.has_destroyed_ship();
-        // TODO: Throw error if not correct
+        throw std::runtime_error("Server and client data mismatch!");
     } else {
         // Change turns
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
@@ -275,8 +283,7 @@ void ClientResponseMessageHandler::handle_game_over_message_(
     assert(game_controller_game_state_->get_players()[0] != nullptr);
     assert(game_controller_game_state_->get_players()[1] != nullptr);
 
-    game_controller_game_state_->set_phase(End);
-    // EndPanel::set_game_state(game_controller_game_state_);
+    // Set the winner
     game_controller_game_state_->get_players()[0]->has_won = message.has_won();
     game_controller_game_state_->get_players()[1]->has_won =
         !message.has_won();
@@ -288,7 +295,9 @@ void ClientResponseMessageHandler::handle_game_over_message_(
     game_controller_game_state_->get_players()[0]
         ->get_enemy_board()
         .set_ship_data(message.get_ship_data());
-
+    
     std::cout << "[ClientResponseMessageHandler] Game over message handled"
               << std::endl;
+    EndPanel::update_board();
+    game_controller_game_state_->set_phase(End);
 }
