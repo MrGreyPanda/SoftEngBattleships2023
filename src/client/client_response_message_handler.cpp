@@ -225,9 +225,10 @@ void ClientResponseMessageHandler::handle_shoot_response_(
                             destroyed_ship.name);
                     }
                 }
-                player->get_enemy_board()
-                    .get_ship_by_name(destroyed_ship.name)
-                    ->set_is_sunk(true);
+                Ship* dest_ship = player->get_enemy_board().get_ship_by_name(destroyed_ship.name);
+                dest_ship->set_is_sunk(true);
+                dest_ship->set_xy(destroyed_ship.x, destroyed_ship.y);
+                dest_ship->set_is_horizontal(destroyed_ship.is_horizontal);
             } else
                 player->get_enemy_board().set_grid_value(response.get_x(),
                                                          response.get_y(), 6);
