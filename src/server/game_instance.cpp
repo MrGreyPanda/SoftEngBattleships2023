@@ -81,12 +81,19 @@ void GameInstance::handle_shot(const std::string &player_id,
 
     // 0. check if the game has started and it's this players turn!
     if (game_state_->get_phase() != Phase::Battle) {
-        std::cout
-            << "[GameInstance] Error: Battle phase has not started yet\n";
+        std::cout << "[GameInstance] Invalid shot: Battle phase has not "
+                     "started yet\n";
         return;
     }
     if (game_state_->get_turn_player_id() != player_id) {
-        std::cout << "[GameInstance] Error: It's not this players turn\n";
+        std::cout
+            << "[GameInstance] Invalid shot: It's not this players turn\n";
+        return;
+    }
+
+    // 0.b check the shot is on the grid
+    if (x < 0 || y < 0 || x > 9 || y > 9) {
+        std::cout << "[GameInstance] Invalid shot: Shot is not on the grid\n";
         return;
     }
 

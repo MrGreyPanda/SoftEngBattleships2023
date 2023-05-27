@@ -12,7 +12,7 @@ class ShootResponse : public ShotMessage, public Response {
      */
     ShootResponse(const std::string& game_id, const std::string& player_id,
                   const unsigned short& x, const unsigned short& y,
-                  const std::string& error);
+                  const bool& is_valid, const std::string& error);
 
     /**
      * @brief Constructor for valid shot response, with no destroyed ship

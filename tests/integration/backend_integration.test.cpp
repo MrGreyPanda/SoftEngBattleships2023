@@ -60,6 +60,30 @@ const std::array<ShipData, 5> ships_data_2 = {
     ShipData(ShipCategory::Carrier, false, 0, 0),
 };
 
+const std::array<ShipData, 5> invalid_ship_data_1 = {
+    ShipData(ShipCategory::Destroyer, true, 0, 5),
+    ShipData(ShipCategory::Submarine, true, 6, 7),
+    ShipData(ShipCategory::Cruiser, true, 7, 6),
+    ShipData(ShipCategory::Battleship, true, 6, 0),
+    ShipData(ShipCategory::Carrier, false, 7, 0),
+};
+
+const std::array<ShipData, 5> invalid_ship_data_2 = {
+    ShipData(ShipCategory::Destroyer, true, 0, 5),
+    ShipData(ShipCategory::Submarine, true, -1, 8),
+    ShipData(ShipCategory::Cruiser, true, 7, 6),
+    ShipData(ShipCategory::Battleship, true, 6, 10),
+    ShipData(ShipCategory::Carrier, false, 4, 2),
+};
+
+const std::array<ShipData, 5> invalid_ship_data_3 = {
+    ShipData(ShipCategory::Destroyer, true, 0, 5),
+    ShipData(ShipCategory::Submarine, true, 6, 8),
+    ShipData(ShipCategory::Cruiser, true, 7, 6),
+    ShipData(ShipCategory::Battleship, true, 6, 0),
+    ShipData(ShipCategory::Battleship, false, 4, 2),
+};
+
 void send_request_to_server(sockpp::tcp_connector& connector,
                             const std::string& request_string) {
     const std::string message = request_string + '\0';
@@ -242,7 +266,7 @@ TEST(Z_BackendIntegrationTest, Ready) {
  * @brief Simulate two players having prepared their board and being ready to
  * start the game.
  */
-TEST(Z_BackendIntegrationTest, Preparation) {
+TEST(Z_BackendIntegrationTest, PreparationPlayer1) {
     try {
         // Place ships for player 1
 
@@ -272,9 +296,83 @@ TEST(Z_BackendIntegrationTest, Preparation) {
                   MessageType::PreparedMessageType);
         EXPECT_EQ(prepared_message_2.get_game_id(), game_id);
         EXPECT_EQ(prepared_message_2.get_player_id(), player_id_2);
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
 
+TEST(Z_BackendIntegrationTest, ForbiddenConfiguration1) {
+    try {
         // Place ships for player 2
+        const PreparedRequest prepared_request_2(game_id, player_id_2,
+                                                 invalid_ship_data_1);
 
+        send_request_to_server(connector_2, prepared_request_2.to_string());
+
+        const PreparedResponse prepared_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_FALSE(prepared_response_2.is_valid());
+        EXPECT_FALSE(prepared_response_2.get_error().empty());
+        EXPECT_EQ(prepared_response_2.get_type(),
+                  MessageType::PreparedResponseType);
+        EXPECT_EQ(prepared_response_2.get_game_id(), game_id);
+        EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, ForbiddenConfiguration2) {
+    try {
+        // Place ships for player 2
+        const PreparedRequest prepared_request_2(game_id, player_id_2,
+                                                 invalid_ship_data_2);
+
+        send_request_to_server(connector_2, prepared_request_2.to_string());
+
+        const PreparedResponse prepared_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_FALSE(prepared_response_2.is_valid());
+        EXPECT_FALSE(prepared_response_2.get_error().empty());
+        EXPECT_EQ(prepared_response_2.get_type(),
+                  MessageType::PreparedResponseType);
+        EXPECT_EQ(prepared_response_2.get_game_id(), game_id);
+        EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, ForbiddenConfiguration3) {
+    try {
+        // Place ships for player 2
+        const PreparedRequest prepared_request_2(game_id, player_id_2,
+                                                 invalid_ship_data_3);
+
+        send_request_to_server(connector_2, prepared_request_2.to_string());
+
+        const PreparedResponse prepared_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_FALSE(prepared_response_2.is_valid());
+        EXPECT_FALSE(prepared_response_2.get_error().empty());
+        EXPECT_EQ(prepared_response_2.get_type(),
+                  MessageType::PreparedResponseType);
+        EXPECT_EQ(prepared_response_2.get_game_id(), game_id);
+        EXPECT_EQ(prepared_response_2.get_player_id(), player_id_2);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, PreparationPlayer2) {
+    try {
+        // Place ships for player 2
         const PreparedRequest prepared_request_2(game_id, player_id_2,
                                                  ships_data_2);
 
@@ -298,6 +396,50 @@ TEST(Z_BackendIntegrationTest, Preparation) {
                   MessageType::PreparedMessageType);
         EXPECT_EQ(prepared_message_1.get_game_id(), game_id);
         EXPECT_EQ(prepared_message_1.get_player_id(), player_id_1);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, ForbiddenShotFrom2at1NotTheirTurn) {
+    try {
+        const ShootRequest shoot_request_2(game_id, player_id_2, 0, 0);
+
+        send_request_to_server(connector_2, shoot_request_2.to_string());
+
+        const ShootResponse shoot_response_2(
+            recieve_response_json_from_server(connector_2));
+
+        EXPECT_FALSE(shoot_response_2.is_valid());
+        EXPECT_FALSE(shoot_response_2.get_error().empty());
+        EXPECT_EQ(shoot_response_2.get_type(), MessageType::ShootResponseType);
+        EXPECT_EQ(shoot_response_2.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_2.get_player_id(), player_id_2);
+        EXPECT_EQ(shoot_response_2.get_x(), 0);
+        EXPECT_EQ(shoot_response_2.get_y(), 0);
+
+    } catch (const std::exception& e) {
+        FAIL() << "Caught exception: " << e.what();
+    }
+}
+
+TEST(Z_BackendIntegrationTest, ForbiddenShotFrom1at2Invalid) {
+    try {
+        const ShootRequest shoot_request_1(game_id, player_id_1, 2, 10);
+
+        send_request_to_server(connector_1, shoot_request_1.to_string());
+
+        const ShootResponse shoot_response_1(
+            recieve_response_json_from_server(connector_1));
+
+        EXPECT_FALSE(shoot_response_1.is_valid());
+        EXPECT_FALSE(shoot_response_1.get_error().empty());
+        EXPECT_EQ(shoot_response_1.get_type(), MessageType::ShootResponseType);
+        EXPECT_EQ(shoot_response_1.get_game_id(), game_id);
+        EXPECT_EQ(shoot_response_1.get_player_id(), player_id_1);
+        EXPECT_EQ(shoot_response_1.get_x(), 2);
+        EXPECT_EQ(shoot_response_1.get_y(), 10);
 
     } catch (const std::exception& e) {
         FAIL() << "Caught exception: " << e.what();

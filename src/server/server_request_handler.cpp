@@ -439,10 +439,11 @@ void ServerRequestHandler::handle_shoot_request_(
                           has_destroyed_ship, destroyed_ship, has_won_game);
 
     if (!is_valid) {
-        ShootResponse response(game_id, player_id, x, y,
+        ShootResponse response(game_id, player_id, x, y, false,
                                "This shot is not valid!");
 
         ServerNetworkManager::send_message(response.to_string(), player_id);
+        return;
     }
 
     if (other_player_id.empty()) {

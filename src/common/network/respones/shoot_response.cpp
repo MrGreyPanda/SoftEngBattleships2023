@@ -8,10 +8,10 @@ ShootResponse::ShootResponse(const json& data)
 ShootResponse::ShootResponse(const std::string& game_id,
                              const std::string& player_id,
                              const unsigned short& x, const unsigned short& y,
-                             const std::string& error)
+                             const bool& is_valid, const std::string& error)
     : Response(MessageType::ShootResponseType, game_id, player_id, error),
       ShotMessage(game_id, player_id, x, y, false),
-      is_valid_(false) {}
+      is_valid_(is_valid) {}
 
 ShootResponse::ShootResponse(const std::string& game_id,
                              const std::string& player_id,

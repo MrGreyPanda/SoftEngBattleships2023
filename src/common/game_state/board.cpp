@@ -32,16 +32,19 @@ const std::array<const Ship *, 5> Board::get_ship_arr() const {
 
 void Board::set_grid_value(const unsigned short &x, const unsigned short &y,
                            unsigned short value) {
+    assert(x >= 0 && y >= 0 && x < grid_size_ && y < grid_size_);
     grid_[y][x] = value;
 }
 
 bool Board::get_is_shot(const unsigned short &x,
                         const unsigned short &y) const {
+    assert(x >= 0 && y >= 0 && x < grid_size_ && y < grid_size_);
     return is_shot_[y][x];
 }
 
 void Board::set_is_shot(const unsigned short &x, const unsigned short &y,
                         bool value) {
+    assert(x >= 0 && y >= 0 && x < grid_size_ && y < grid_size_);
     is_shot_[y][x] = value;
 }
 
@@ -185,6 +188,8 @@ Ship *OwnBoard::get_ship(const unsigned short &x, const unsigned short &y) {
         std::cout << "Failed to find ship: " << e.what() << "\n";
         throw std::runtime_error("Ship not found in get_ship");
     }
+    std::cout << "Failed to find ship!\n";
+    return nullptr;
 }
 
 void OwnBoard::update_ship(const unsigned short &x, const unsigned short &y) {
