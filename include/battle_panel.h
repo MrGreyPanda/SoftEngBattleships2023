@@ -9,22 +9,37 @@
 #include "give_up_request.h"
 class BattlePanel {
 public:
+
+    /**
+     * @brief Initializes all the widgets in the window
+    */
     static void init();
 
+    /**
+     * @brief Resets the widgets in the window
+    */
     static void reset();
 
+    /**
+     * @brief updates the board according to the game state
+    */
     static void update_board();
 
+    /**
+     * @brief Main rendering loop for the battle panel
+    */
     static void render();
 
+    /**
+     * @brief Handles the shots
+     * Just here to make the code more readable
+    */
     static void handle_shots();
-
 
     static void set_player_ptr(Player* player);
 
     static void set_game_state(GameState* game_state);
 
-    static bool was_reset;
 
 private:
     static GameState* game_state_;

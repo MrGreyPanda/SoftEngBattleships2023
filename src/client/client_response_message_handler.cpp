@@ -174,7 +174,6 @@ void ClientResponseMessageHandler::handle_prepared_response_(
             BattlePanel::update_board();
             game_controller_game_state_->set_phase(Battle);
         }
-            // BattlePanel::set_game_state(game_controller_game_state_);
 
     } else {
         game_controller_game_state_->get_players()[0]->unset_prepared();
@@ -193,7 +192,6 @@ void ClientResponseMessageHandler::handle_prepared_message_(
             BattlePanel::update_board();
             game_controller_game_state_->set_phase(Battle);
     }
-        // BattlePanel::set_game_state(game_controller_game_state_);
 }
 
 // Handles shoot response and updates game state
@@ -267,7 +265,7 @@ void ClientResponseMessageHandler::handle_shot_message_(
                 ->get_own_board()
                 .get_ship(x, y)
                 ->get_is_sunk() == message.has_destroyed_ship();
-        // TODO: Throw error if not correct
+        throw std::runtime_error("Server and client data mismatch!");
     } else {
         // Change turns
         game_controller_game_state_->get_players()[0]->is_own_turn = true;
@@ -285,7 +283,7 @@ void ClientResponseMessageHandler::handle_game_over_message_(
     assert(game_controller_game_state_->get_players()[0] != nullptr);
     assert(game_controller_game_state_->get_players()[1] != nullptr);
 
-    // EndPanel::set_game_state(game_controller_game_state_);
+    // Set the winner
     game_controller_game_state_->get_players()[0]->has_won = message.has_won();
     game_controller_game_state_->get_players()[1]->has_won =
         !message.has_won();
@@ -297,7 +295,7 @@ void ClientResponseMessageHandler::handle_game_over_message_(
     game_controller_game_state_->get_players()[0]
         ->get_enemy_board()
         .set_ship_data(message.get_ship_data());
-
+    
     std::cout << "[ClientResponseMessageHandler] Game over message handled"
               << std::endl;
     EndPanel::update_board();

@@ -3,7 +3,6 @@
 #include "game_controller.h"
 
 GameState* EndPanel::game_state_ = nullptr;
-bool EndPanel::was_reset = false;
 
 SDLGui::TextWidget* EndPanel::winner_or_loser_text_ = nullptr;
 SDLGui::GridWidget* EndPanel::enemy_grid_ = nullptr;
@@ -118,10 +117,6 @@ void EndPanel::update_board()
 
 void EndPanel::render() {
     SDLGui::begin("end_window");
-
-    if(!was_reset){
-        was_reset = true;
-    }
 
     if (game_state_->get_players()[0]->has_won) {
         winner_or_loser_text_->updateText(64, 0, "You Won!");

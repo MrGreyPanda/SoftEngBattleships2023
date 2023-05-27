@@ -3,7 +3,6 @@
 GameState* BattlePanel::game_state_              = nullptr;
 unsigned short BattlePanel::help_button_counter_ = 0;
 Player* BattlePanel::player_                     = nullptr;
-bool BattlePanel::was_reset                      = false;
 
 SDLGui::GridWidget* BattlePanel::own_board_ = nullptr;
 SDLGui::GridWidget* BattlePanel::enemy_board_ = nullptr;

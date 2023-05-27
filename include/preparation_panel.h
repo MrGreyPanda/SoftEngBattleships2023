@@ -11,19 +11,30 @@
 
 class PreparationPanel {
    public:
+
+   /**
+    * @brief Initializes all the widgets in the window
+   */
     static void init();
 
+    /**
+     * @resets the widgets in the window
+    */
     static void reset();
 
+    /**
+     * @brief updates the board according to the game state
+    */
     static void update_board();
 
+    /**
+     * @brief Main rendering loop for the preparation panel
+    */
     static void render();
 
     static void set_game_state(GameState* game_state) {
         game_state_ = game_state;
     };
-
-    static bool was_reset;
 
    private:
     static GameState* game_state_;

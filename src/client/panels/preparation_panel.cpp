@@ -14,7 +14,6 @@ std::array<SDLGui::DraggableImageWidget*, 5> PreparationPanel::ships_widget_arr_
 std::array<Ship*, 5> PreparationPanel::ships_ptr_arr_ = 
     { nullptr, nullptr, nullptr, nullptr, nullptr };
 
-bool PreparationPanel::was_reset = false;
 
 void PreparationPanel::init() {
     // game_state_->reset_state();
