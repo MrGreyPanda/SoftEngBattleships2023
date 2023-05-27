@@ -283,8 +283,8 @@ std::array<ShipData, 5> OwnBoard::get_ship_configuration() const {
 bool EnemyBoard::is_valid_shot(const unsigned short &x,
                                const unsigned short &y) const {
     unsigned short grid_size_ = this->get_grid_size();
-    if (x < 0 || x > grid_size_) return false;
-    if (y < 0 || y > grid_size_) return false;
+    if (x < 0 || x >= grid_size_) return false;
+    if (y < 0 || y >= grid_size_) return false;
     if (this->get_is_shot(x, y)) return false;
     return true;
 }

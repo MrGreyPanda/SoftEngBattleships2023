@@ -123,7 +123,7 @@ void GameInstance::handle_shot(const std::string &player_id,
     }
 
     // 2. check if this players enemy board was already shot at this position
-    if (player_ptr->get_enemy_board().get_is_shot(x, y)) {
+    if (!player_ptr->get_enemy_board().is_valid_shot(x, y)) {
         return;
     }
 
