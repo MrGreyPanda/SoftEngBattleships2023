@@ -7,7 +7,7 @@ build:
     - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.ethz.ch/".insteadOf "https://gitlab.ethz.ch/"
     - git submodule update --init --recursive
   script:
-    - cmake cmake -B build -S .
+    - cmake cmake -B build -S . -D CMAKE_CXX_STANDARD=17
     - cmake --build build
   artifacts:
     untracked: true
