@@ -104,11 +104,27 @@ class GameInstance {
      */
     bool start_preparation();
 
+    /**
+     * @brief Attempts to transition from preparation to battle phase
+     *
+     * @return true
+     * @return false
+     */
     bool start_battle();
 
     /**
      * @brief Places shot on the corresponding boards and updates the
      * game_state according to the rules
+     *
+     * @param player_id
+     * @param other_player_id
+     * @param x
+     * @param y
+     * @param is_valid
+     * @param has_hit
+     * @param has_destroyed_ship
+     * @param destroyed_ship
+     * @param has_won_game
      */
     void handle_shot(const std::string& player_id,
                      std::string& other_player_id, const unsigned short x,
@@ -142,11 +158,23 @@ class GameInstance {
      */
     bool has_player(std::string player_id) const;
 
+    /**
+     * @brief Gets id of player that wasn't passed as parameter
+     *
+     * @param player_id
+     * @return std::string
+     */
     std::string try_get_other_player_id(std::string player_id) const;
 
+    /**
+     * @brief Checks if game is full
+     *
+     * @return true
+     * @return false
+     */
     bool is_full() const;
 
    private:
     GameState* game_state_;
-    inline static std::mutex lock_;  // TODO why static? Why inline?
+    inline static std::mutex lock_;
 };

@@ -50,11 +50,6 @@ After cloning this repo, load the submodules with
 git submodule update --init --recursive
 ```
 
-Updating dependencies:
-
-```
-git submodule update --remote --recursive
-```
 
 ### Resources
 
@@ -75,15 +70,8 @@ To build the project (separate Debug and Release versions):
 ```bash
 mkdir build
 cd build
-mkdir debug
-mkdir release
-cd debug
-cmake -DCMAKE_BUILD_TYPE=Debug ../..
-make
-cd ..
-cd release
-cmake -DCMAKE_BUILD_TYPE=Release ../..
-make
+cmake ..
+make -j
 ```
 
 The executable file are built in the _build/debug_ and _build/release_ folder respectively

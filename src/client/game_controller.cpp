@@ -29,7 +29,6 @@ void GameController::init() {
     ClientResponseMessageHandler::set_game_controller_game_state(&game_state_);
 }
 
-
 void GameController::run() {
     GameController::render();
     SDLGui::quit();

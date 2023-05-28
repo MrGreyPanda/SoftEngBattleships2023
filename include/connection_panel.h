@@ -10,12 +10,23 @@
 
 class ConnectionPanel {
    public:
-    /// @brief Initializes all the widgets in the window
+    /**
+     * @brief Initializes all the widgets in the window
+     *
+     */
     static void init();
 
-    /// @brief Renders the connection window and processes user interaction
+    /**
+     * @brief Renders the panel
+     *
+     */
     static void render();
 
+    /**
+     * @brief Set the game state object
+     *
+     * @param game_state
+     */
     static void set_game_state(GameState* game_state) {
         game_state_ = game_state;
     };

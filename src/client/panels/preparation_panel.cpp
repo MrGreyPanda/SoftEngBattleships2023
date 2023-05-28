@@ -5,19 +5,27 @@
 GameState* PreparationPanel::game_state_              = nullptr;
 unsigned short PreparationPanel::help_button_counter_ = 0;
 
-SDLGui::GridWidget* PreparationPanel::preparation_grid_ = nullptr;
-SDLGui::TextButtonWidget* PreparationPanel::ready_button_ = nullptr;
+SDLGui::GridWidget* PreparationPanel::preparation_grid_    = nullptr;
+SDLGui::TextButtonWidget* PreparationPanel::ready_button_  = nullptr;
 SDLGui::TextWidget* PreparationPanel::enemy_prepared_text_ = nullptr;
 
-std::array<SDLGui::DraggableImageWidget*, 5> PreparationPanel::ships_widget_arr_ = 
-    { nullptr, nullptr, nullptr, nullptr, nullptr };
-std::array<Ship*, 5> PreparationPanel::ships_ptr_arr_ = 
-    { nullptr, nullptr, nullptr, nullptr, nullptr };
-
+std::array<SDLGui::DraggableImageWidget*, 5>
+    PreparationPanel::ships_widget_arr_ = {nullptr, nullptr, nullptr, nullptr,
+                                           nullptr};
+std::array<Ship*, 5> PreparationPanel::ships_ptr_arr_ = {
+    nullptr, nullptr, nullptr, nullptr, nullptr};
 
 void PreparationPanel::init() {
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
+
+    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
+        1.f, 0.,
+        SDLGui::ImageFlagsExt_CenterImageVertical |
+            SDLGui::ImageFlagsExt_CenterImageHorizontal |
+            SDLGui::ImageFlagsExt_NoBackground);
+    preparation_panel_context->addWidget(background_image);
 
     preparation_grid_ = new SDLGui::GridWidget(
         "preparation_grid", .07f, .05f, .4f, .8f, 0., 10, 10,
@@ -36,44 +44,38 @@ void PreparationPanel::init() {
             SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(ready_button_);
 
-    ships_widget_arr_[0] =
-        new SDLGui::DraggableImageWidget(
-            "carrier_ship", "../assets/carrier.bmp", .6f, .2f, .3f, .11f, 0.,
-            5, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ships_widget_arr_[0] = new SDLGui::DraggableImageWidget(
+        "carrier_ship", "../assets/carrier.bmp", .6f, .2f, .3f, .11f, 0., 5, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[0]);
 
-    ships_widget_arr_[1] =
-        new SDLGui::DraggableImageWidget(
-            "battleship_ship", "../assets/battleship.bmp", .6f, .33f, .24f,
-            .105f, 0., 4, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ships_widget_arr_[1] = new SDLGui::DraggableImageWidget(
+        "battleship_ship", "../assets/battleship.bmp", .6f, .33f, .24f, .105f,
+        0., 4, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[1]);
 
-    ships_widget_arr_[2] =
-        new SDLGui::DraggableImageWidget(
-            "cruiser_ship", "../assets/cruiser.bmp", .6f, .455f, .18f, .1f, 0.,
-            3, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ships_widget_arr_[2] = new SDLGui::DraggableImageWidget(
+        "cruiser_ship", "../assets/cruiser.bmp", .6f, .455f, .18f, .1f, 0., 3,
+        1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[2]);
 
-    ships_widget_arr_[3] =
-        new SDLGui::DraggableImageWidget(
-            "submarine_ship", "../assets/submarine.bmp", .6f, .575f, .18f, .1f,
-            0., 3, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ships_widget_arr_[3] = new SDLGui::DraggableImageWidget(
+        "submarine_ship", "../assets/submarine.bmp", .6f, .575f, .18f, .1f, 0.,
+        3, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[3]);
 
-    ships_widget_arr_[4] =
-        new SDLGui::DraggableImageWidget(
-            "destroyer_ship", "../assets/destroyer.bmp", .6f, .695f, .14f, .1f,
-            0., 2, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ships_widget_arr_[4] = new SDLGui::DraggableImageWidget(
+        "destroyer_ship", "../assets/destroyer.bmp", .6f, .695f, .14f, .1f, 0.,
+        2, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[4]);
 
     SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
@@ -101,9 +103,8 @@ void PreparationPanel::init() {
     SDLGui::pushContext(preparation_panel_context);
 }
 
-void PreparationPanel::reset()
-{
-    //Update the widgets
+void PreparationPanel::reset() {
+    // Update the widgets
     preparation_grid_->reset();
     ready_button_->enable();
     ships_widget_arr_[0]->reset();
@@ -112,13 +113,10 @@ void PreparationPanel::reset()
     ships_widget_arr_[3]->reset();
     ships_widget_arr_[4]->reset();
     enemy_prepared_text_->updateText(32, 0, "Second player is preparing...");
-
 }
 
-void PreparationPanel::update_board()
-{
-    OwnBoard& own_board = 
-        game_state_->get_players()[0]->get_own_board();
+void PreparationPanel::update_board() {
+    OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
     own_board.reset();
     ships_ptr_arr_[0] = own_board.get_ship_by_name(Carrier);
     ships_ptr_arr_[1] = own_board.get_ship_by_name(Battleship);
@@ -134,8 +132,7 @@ void PreparationPanel::render() {
     static std::pair<uint32_t, uint32_t> grid_cell_coords;
     static std::pair<float, float> image_position;
 
-    OwnBoard& own_board =
-        game_state_->get_players()[0]->get_own_board();
+    OwnBoard& own_board = game_state_->get_players()[0]->get_own_board();
 
     // Because we should code DRY
     for (int i = 0; i < 5; i++) {
@@ -143,20 +140,19 @@ void PreparationPanel::render() {
         if (ships_widget_arr_[i]->isGrabbed()) {
             if (preparation_grid_->isHovered()) {
                 grid_cell_coords = preparation_grid_->getHoverIndices();
-                ships_widget_arr_[i]->resizeToFit(preparation_grid_, grid_cell_coords.first,
-                                                 grid_cell_coords.second,
-                                                 false);
+                ships_widget_arr_[i]->resizeToFit(
+                    preparation_grid_, grid_cell_coords.first,
+                    grid_cell_coords.second, false);
             }
         }
 
-        if(ships_widget_arr_[i]->onDrop()){
-            if(!preparation_grid_->isHovered()){
+        if (ships_widget_arr_[i]->onDrop()) {
+            if (!preparation_grid_->isHovered()) {
                 ships_widget_arr_[i]->reset();
                 own_board.riddle_the_shiple(ship_name);
                 ships_ptr_arr_[i]->reset_ship();
-            }
-            else{
-                image_position = ships_widget_arr_[i]->getPosition();
+            } else {
+                image_position   = ships_widget_arr_[i]->getPosition();
                 grid_cell_coords = preparation_grid_->getHoverIndices();
                 ships_ptr_arr_[i]->set_is_horizontal(
                     !ships_widget_arr_[i]->isRotated());
@@ -165,11 +161,12 @@ void PreparationPanel::render() {
                     *ships_ptr_arr_[i]);
                 if (can_be_placed) {
                     ships_widget_arr_[i]->resizeToFit(
-                        preparation_grid_, grid_cell_coords.first, grid_cell_coords.second,
-                        true);
-                    own_board.place_ship(grid_cell_coords.first,
-                                         grid_cell_coords.second,ships_ptr_arr_[i]->get_is_horizontal(),
-                                         ships_ptr_arr_[i]->get_name());
+                        preparation_grid_, grid_cell_coords.first,
+                        grid_cell_coords.second, true);
+                    own_board.place_ship(
+                        grid_cell_coords.first, grid_cell_coords.second,
+                        ships_ptr_arr_[i]->get_is_horizontal(),
+                        ships_ptr_arr_[i]->get_name());
                 } else {
                     ships_widget_arr_[i]->reset();
                     ships_ptr_arr_[i]->reset_ship();
@@ -191,7 +188,7 @@ void PreparationPanel::render() {
             own_board.reset();
             for (int i = 0; i < 5; i++) {
                 ships_widget_arr_[i]->reset();
-            SDLGui::TextButton("ready_button").enable();
+                SDLGui::TextButton("ready_button").enable();
             }
         }
     }
