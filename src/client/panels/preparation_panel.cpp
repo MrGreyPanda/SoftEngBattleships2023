@@ -19,67 +19,67 @@ void PreparationPanel::init() {
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
 
-    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+    /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
         "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
         1.f, 0.,
         SDLGui::ImageFlagsExt_CenterImageVertical |
             SDLGui::ImageFlagsExt_CenterImageHorizontal |
             SDLGui::ImageFlagsExt_NoBackground);
-    preparation_panel_context->addWidget(background_image);
+    preparation_panel_context->addWidget(background_image);*/
 
     preparation_grid_ = new SDLGui::GridWidget(
-        "preparation_grid", .07f, .05f, .4f, .8f, 0., 10, 10,
+        "preparation_grid", 0, .07f, .05f, .4f, .8f, 0., 10, 10,
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
     preparation_panel_context->addWidget(preparation_grid_);
 
     SDLGui::TextWidget* preparation_phase_title = new SDLGui::TextWidget(
-        "preparation_title", "Preparation Phase", 0, .0f, .05f, .6f, .1f, 0.,
+        "preparation_title", 0, "Preparation Phase", 0, .0f, .05f, .6f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterText |
             SDLGui::TextFlagsExt_CenterHorizontal);
     preparation_panel_context->addWidget(preparation_phase_title);
 
     ready_button_ = new SDLGui::TextButtonWidget(
-        "ready_button", "Ready", 0.f, .88f, .4f, .08f, 0.f,
+        "ready_button", 0, "Ready", 0.f, .88f, .4f, .08f, 0.f,
         SDLGui::TextButtonFlagsExt_CenterHorizontal |
             SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(ready_button_);
 
     ships_widget_arr_[0] = new SDLGui::DraggableImageWidget(
-        "carrier_ship", "../assets/carrier.bmp", .6f, .2f, .3f, .11f, 0., 5, 1,
+        "carrier_ship", 2, "../assets/carrier.bmp", .6f, .2f, .3f, .11f, 0., 5, 1,
         SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[0]);
 
     ships_widget_arr_[1] = new SDLGui::DraggableImageWidget(
-        "battleship_ship", "../assets/battleship.bmp", .6f, .33f, .24f, .105f,
+        "battleship_ship", 2, "../assets/battleship.bmp", .6f, .33f, .24f, .105f,
         0., 4, 1,
         SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[1]);
 
     ships_widget_arr_[2] = new SDLGui::DraggableImageWidget(
-        "cruiser_ship", "../assets/cruiser.bmp", .6f, .455f, .18f, .1f, 0., 3,
+        "cruiser_ship", 2, "../assets/cruiser.bmp", .6f, .455f, .18f, .1f, 0., 3,
         1,
         SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[2]);
 
     ships_widget_arr_[3] = new SDLGui::DraggableImageWidget(
-        "submarine_ship", "../assets/submarine.bmp", .6f, .575f, .18f, .1f, 0.,
+        "submarine_ship", 2, "../assets/submarine.bmp", .6f, .575f, .18f, .1f, 0.,
         3, 1,
         SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[3]);
 
     ships_widget_arr_[4] = new SDLGui::DraggableImageWidget(
-        "destroyer_ship", "../assets/destroyer.bmp", .6f, .695f, .14f, .1f, 0.,
+        "destroyer_ship", 2, "../assets/destroyer.bmp", .6f, .695f, .14f, .1f, 0.,
         2, 1,
         SDLGui::DraggableImageFlagsExt_CenterImage |
             SDLGui::DraggableImageFlagsExt_NoBackground);
     preparation_panel_context->addWidget(ships_widget_arr_[4]);
 
     SDLGui::HelpMarkerWidget* preparation_help = new SDLGui::HelpMarkerWidget(
-        "preparation_help", "?", .85f, .05f, .1f, .05f, 0.,
+        "preparation_help", 1, "?", .85f, .05f, .1f, .05f, 0.,
         SDLGui::HelpMarkerFlagsExt_CenterText);
     preparation_help->addHelperText(
         "Press and hold on a ship to move it to the grid, and release to "
@@ -88,12 +88,12 @@ void PreparationPanel::init() {
     preparation_panel_context->addWidget(preparation_help);
 
     SDLGui::TextButtonWidget* disconnect_button = new SDLGui::TextButtonWidget(
-        "resign_button", "Surrender", 0.05f, .05f, .1f, .05f, 0.,
+        "resign_button", 0, "Surrender", 0.05f, .05f, .1f, .05f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     preparation_panel_context->addWidget(disconnect_button);
 
     enemy_prepared_text_ = new SDLGui::TextWidget(
-        "enemy_prepared_text", "Second player is preparing...", 0, .06f, .82f,
+        "enemy_prepared_text", 0, "Second player is preparing...", 0, .06f, .82f,
         .33f, .06f, 0.,
         SDLGui::TextFlagsExt_CenterHorizontal |
             SDLGui::TextFlagsExt_NoBackground |
