@@ -22,8 +22,7 @@ GameInstance *GameInstanceManager::create_new_game_() {
     games_lock_.lock();  // exclusive
     GameInstanceManager::games_.insert({new_game->get_id(), new_game});
     games_lock_.unlock();
-    std::cout << "[GameInstanceManager] (Debug) Created new game with ID: "
-              << new_game->get_id() << std::endl;
+
     return new_game;
 }
 

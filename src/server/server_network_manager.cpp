@@ -32,8 +32,6 @@ void ServerNetworkManager::start(unsigned port) {
     sockpp::initialize();
 
     if (acceptor_ && acceptor_.is_open()) {
-        std::cerr << "[ServerNetworkManager] (Debug) acceptor already open"
-                  << std::endl;
         return;
     } else {
         // Create the acceptor
@@ -131,10 +129,6 @@ void ServerNetworkManager::send_response_to_peer_(
                      "request to server"
                   << std::endl;
         std::cerr << socket.last_error_str() << std::endl;
-    } else {
-        std::cout
-            << "[ServerNetworkManager] (Debug) Sent response to client: '"
-            << message << "'" << std::endl;
     }
 }
 
@@ -177,10 +171,6 @@ void ServerNetworkManager::handle_socket_(sockpp::tcp_socket socket) {
     sockets_mutex_.lock();
     sockets_.erase(peer_address.to_string());
     sockets_mutex_.unlock();
-
-    std::cout
-        << "[ServerNetworkManager] (Debug) Removed the socket for peer at "
-        << socket.peer_address() << std::endl;
 
     // first get the player id from the peer_address in player_addresses_
     std::string player_id = "";

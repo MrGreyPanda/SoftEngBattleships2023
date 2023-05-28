@@ -132,7 +132,6 @@ void GameInstance::handle_shot(const std::string &player_id,
     // 3. Place a shot on both boards
     // this is a valid shot, set the is_shot value to true
     is_valid = true;
-    std::cout << "[GameInstance] (Debug) Shot is valid\n";
 
     player_ptr->get_enemy_board().set_is_shot(x, y, true);
     other_player_ptr->get_own_board().set_is_shot(x, y, true);
@@ -156,11 +155,9 @@ void GameInstance::handle_shot(const std::string &player_id,
             // Send ship destroyed message to client that shot
             has_destroyed_ship = true;
             destroyed_ship     = ship_ptr->get_data();
-            std::cout << "[GameInstance] (Debug) Ship destroyed\n";
 
             // 6. If a ship was destroyed, check if the shot decided a game
             if (other_player_ptr->has_lost()) {
-                std::cout << "[GameInstance] (Debug) Game over\n";
                 game_state_->set_phase(End);
                 has_won_game = true;
             }

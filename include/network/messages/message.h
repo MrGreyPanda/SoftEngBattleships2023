@@ -4,6 +4,10 @@
 
 #include "base_message.h"
 
+/**
+ * @brief message class for all messages that are sent from the server
+ * to the client without a request from the client
+ */
 class Message : public BaseMessage {
    public:
     Message(const json& data);

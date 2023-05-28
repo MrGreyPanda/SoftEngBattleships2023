@@ -96,7 +96,7 @@ bool OwnBoard::is_valid_placement(const unsigned short &x,
                                   const Ship &ship) const {
     unsigned short grid_size_ = this->get_grid_size();
     if (x >= grid_size_ || y >= grid_size_ || x < 0 || y < 0) {
-        std::cout << "Invalid coordinates\n";
+        // coordinates are out of bounds
         return false;
     }
 
@@ -105,25 +105,22 @@ bool OwnBoard::is_valid_placement(const unsigned short &x,
     if (is_horizontal) {
         if (x + ship_length > grid_size_) {
             // the ship doesn't fit in the grid
-            std::cout << "Ship doesn't fit in the grid\n";
             return false;
         }
         ShipCategory shiptype = ship.get_name();
         for (unsigned short i = 0; i < ship_length; i++) {
             if (get_grid_value(x + i, y) != 0 &&
                 get_grid_value(x + i, y) != shiptype) {
-                std::cout << shiptype << "\n"
-                          << "grid value = " << get_grid_value(x, y) << "\n";
+                // there is already a ship in the way
                 return false;
             }
         }
-        std::cout << "Ship fits\n";
         return true;
     }
 
     else if (!is_horizontal) {
         if (y + ship_length > grid_size_) {
-            std::cout << "Ship to long: " << ship_length + y << "\n";
+            // the ship doesn't fit in the grid
             return false;
         }
         ShipCategory shiptype = ship.get_name();
@@ -131,18 +128,16 @@ bool OwnBoard::is_valid_placement(const unsigned short &x,
         for (unsigned short i = 0; i < ship_length; i++) {
             if (get_grid_value(x, y + i) != 0 &&
                 get_grid_value(x, y + i) != shiptype) {
-                std::cout << shiptype << "\n"
-                          << "grid value = " << get_grid_value(x, y) << "\n";
+                // there is already a ship in the way
                 return false;
             }
         }
-        std::cout << "Ship fits\n";
         return true;
     } else {
-        std::cout << "Something wrong is going on\n";
+        std::cout << "[Board] Error! Something wrong is going on\n";
         return false;  // Throw exception here
     }
-    std::cout << "Something wrong is going on\n";
+    std::cout << "[Board] Error! Something wrong is going on\n";
     return true;
 }
 
@@ -154,9 +149,7 @@ bool OwnBoard::place_ship(const unsigned short &x, const unsigned short &y,
     unsigned short grid_size = this->get_grid_size();
     riddle_the_shiple(shipname);
     if (!this->is_valid_placement(x, y, *ship)) {
-        std::cout << "Invalid placement\n"
-                  << "Shiptype = " << shipname << "\nx = " << x
-                  << "\ny = " << y << "\n";
+        // invalid ship placement
         return false;
     }
     unsigned short ship_length = ship->get_length();

@@ -3,6 +3,10 @@
 #include "response.h"
 #include "shot_message.h"
 
+/**
+ * @brief A message sent from the server to the client as a response to a
+ * shoot request.
+ */
 class ShootResponse : public ShotMessage, public Response {
    public:
     ShootResponse(const json& data);

@@ -2,6 +2,9 @@
 
 #include "message.h"
 
+/**
+ * @brief Message sent to the player when the other player is ready
+ */
 class ReadyMessage : public Message {
    public:
     ReadyMessage(const json& data);

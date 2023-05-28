@@ -2,6 +2,9 @@
 
 #include "prepared_request.h"
 
+/**
+ * @brief Message sent by a player when the game is over
+ */
 class GameOverMessage : public PreparedRequest {
    public:
     GameOverMessage(const json& data);

@@ -106,9 +106,6 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
         return std::make_tuple(nullptr, join_response);
     }
 
-    std::cout << "[ServerRequestHandler] (Debug) Added new player with ID '"
-              << new_player_id << "'" << std::endl;
-
     // add the player to a game
     GameInstance* game_ptr =
         GameInstanceManager::add_player_to_any_game(new_player_ptr);
@@ -142,9 +139,6 @@ std::tuple<Player*, JoinResponse> ServerRequestHandler::handle_join_request(
                        "player for game with ID '"
                     << game_id << "'" << std::endl;
             }
-        } else {
-            std::cout << "[ServerRequestHandler] (Debug) Game with ID '"
-                      << game_id << "' is not full yet" << std::endl;
         }
 
         return std::make_tuple(new_player_ptr, join_response);
@@ -170,10 +164,6 @@ void ServerRequestHandler::handle_player_disconnect(
                  "player with ID '"
               << player_id << "'" << std::endl;
 
-    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
-                 "Getting player pointer"
-              << std::endl;
-
     // get player instance
     Player* player_ptr = PlayerManager::try_get_player(player_id);
 
@@ -184,10 +174,6 @@ void ServerRequestHandler::handle_player_disconnect(
                   << player_id << "'" << std::endl;
         return;
     }
-
-    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
-                 "Getting game pointer"
-              << std::endl;
 
     // get game the player is in
     GameInstance* game_ptr =
@@ -202,10 +188,6 @@ void ServerRequestHandler::handle_player_disconnect(
     }
 
     const Phase current_game_phase = game_ptr->get_game_state()->get_phase();
-
-    std::cout << "[ServerRequestHandler] (Debug) Handling player disconnect: "
-                 "Getting other player id"
-              << std::endl;
 
     const std::string other_player_id =
         game_ptr->try_get_other_player_id(player_id);
@@ -275,10 +257,7 @@ void ServerRequestHandler::handle_player_disconnect(
 
 void ServerRequestHandler::handle_ready_request_(
     const ReadyRequest& ready_request) {
-    std::cout << "[ServerRequestHandler] (Debug) Handling a ready request!"
-              << std::endl;
     // Store that this client is ready to play the game
-    // TODO check
     const std::string& game_id   = ready_request.get_game_id();
     const std::string& player_id = ready_request.get_player_id();
 
@@ -331,14 +310,8 @@ void ServerRequestHandler::handle_ready_request_(
 
     // Check if both players are ready to advance the game
     if (game_ptr->all_players_ready()) {
-        std::cout << "[ServerRequestHandler] (Debug) Both players are ready, "
-                     "starting game!"
-                  << std::endl;
-
         // Start the game
         game_ptr->start_preparation();
-
-        // TODO ? send preparation started message to both players?
     }
 }
 
@@ -365,10 +338,6 @@ void ServerRequestHandler::handle_prepared_request_(
 
         return;
     }
-
-    std::cout
-        << "[ServerRequestHandler] (Debug) Handling a prepared request!\n"
-        << prepared_request.to_string() << std::endl;
 
     // Validate ship configuration
     const bool is_config_valid =
@@ -405,15 +374,8 @@ void ServerRequestHandler::handle_prepared_request_(
 
     // Check if both players are ready to advance the game
     if (game_ptr->all_players_prepared()) {
-        std::cout
-            << "[ServerRequestHandler] (Debug) Both players are prepared, "
-               "starting battle!"
-            << std::endl;
-
         // Start the game
         game_ptr->start_battle();
-
-        // TODO ? send battle started message to both players?
     }
 }
 

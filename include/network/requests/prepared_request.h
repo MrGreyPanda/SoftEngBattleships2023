@@ -3,6 +3,10 @@
 #include "message.h"
 #include "ship.h"
 
+/**
+ * @brief A message that is sent to the server to indicate that the player is
+ * prepared and ready to battle.
+ */
 class PreparedRequest : public Message {
    public:
     PreparedRequest(const json& data);

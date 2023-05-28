@@ -6,9 +6,23 @@
 
 using json = nlohmann::json;
 
+/**
+ * @brief Base class for all network messages
+ */
 class BaseMessage {
    public:
-    BaseMessage(const json& type);
+    /**
+     * @brief JSON constructor
+     *
+     * @param data JSON data
+     */
+    BaseMessage(const json& json);
+
+    /**
+     * @brief Construct a new base message object using the given type
+     *
+     * @param type Message type
+     */
     BaseMessage(const MessageType& type);
 
     /**

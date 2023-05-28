@@ -281,9 +281,6 @@ void ClientResponseMessageHandler::handle_shot_message_(
 
 void ClientResponseMessageHandler::handle_game_over_message_(
     const GameOverMessage &message) {
-    std::cout
-        << "[ClientResponseMessageHandler] (Debug) Game over message received"
-        << std::endl;
     assert(game_controller_game_state_ != nullptr);
     assert(game_controller_game_state_->get_players().size() == 2);
     assert(game_controller_game_state_->get_players()[0] != nullptr);

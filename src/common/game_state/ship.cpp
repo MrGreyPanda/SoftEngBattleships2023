@@ -50,8 +50,8 @@ void Ship::shot_at() {
     }
     ++damage_;
     if (damage_ == length_) {
+        // the ship has sunk
         is_sunk_ = true;
-        std::cout << "Your " << name_ << " has been sunk!\n";
     }
 }
 
