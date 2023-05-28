@@ -106,9 +106,9 @@ void BattlePanel::init() {
     battle_panel_context->addWidget(ship_widget_arr_[0]);
 
 // ----------------------------- Enemy Ship Widgets -----------------------------
-    enemy_ship_widget_arr_[4] =
+     enemy_ship_widget_arr_[4] =
         new SDLGui::DraggableImageWidget(
-            "enemy_carrier_ship", "../assets/carrier_red.bmp", .0f, .0f, .0f, .0f, 0.,
+            "enemy_carrier_ship", 2, "../assets/carrier_red.bmp", .0f, .0f, .0f, .0f, 0.,
             5, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -116,7 +116,7 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[3] =
         new SDLGui::DraggableImageWidget(
-            "enemy_battleship_ship", "../assets/battleship_red.bmp", .0f, .0f, .0f,
+            "enemy_battleship_ship", 2, "../assets/battleship_red.bmp", .0f, .0f, .0f,
             .0f, 0., 4, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -124,7 +124,7 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[2] =
         new SDLGui::DraggableImageWidget(
-            "enemy_cruiser_ship", "../assets/cruiser_red.bmp", .0f, .0f, .0f, .0f, 0.,
+            "enemy_cruiser_ship", 2, "../assets/cruiser_red.bmp", .0f, .0f, .0f, .00f, 0.,
             3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -132,7 +132,7 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[1] =
         new SDLGui::DraggableImageWidget(
-            "enemy_submarine_ship", "../assets/submarine_red.bmp", .0f, .0f, .0f, .0f,
+            "enemy_submarine_ship", 2, "../assets/submarine_red.bmp", .0f, .0f, .0f, .00f,
             0., 3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -140,12 +140,11 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[0] =
         new SDLGui::DraggableImageWidget(
-            "enemy_destroyer_ship", "../assets/destroyer_red.bmp", .0f, .0f, .0f, .0f,
+            "enemy_destroyer_ship", 2, "../assets/destroyer_red.bmp", .0f, .0f, .0f, .00f,
             0., 2, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(enemy_ship_widget_arr_[0]);
-
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
 }
