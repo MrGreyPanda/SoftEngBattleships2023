@@ -54,7 +54,7 @@ void BattlePanel::init() {
     SDLGui::HelpMarkerWidget* battle_help = new SDLGui::HelpMarkerWidget(
         "battle_help", "?", .85f, .05f, .1f, .05f, 0.,
         SDLGui::HelpMarkerFlagsExt_CenterText);
-    battle_help->addHelperText("Click on the enemy board to shoot. Click on the resign button to resign",
+    battle_help->addHelperText("Click on the enemy board to shoot. Click on the surrender button to give up.",
         32, .3f, .3f, SDLGui::TextFlagsExt_CenterText);
     battle_panel_context->addWidget(battle_help);
 
