@@ -1,23 +1,23 @@
 #pragma once
 
+#include <cassert>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <utility>
-#include <cassert>
-#include <iostream>
 
 using json = nlohmann::json;
 
 /**
  * @brief Enum to categorize the different ship types
  * ShipPart is used to represent a part of a ship that has been hit
-*/
+ */
 enum ShipCategory {
     Destroyer  = (unsigned short)1,  // size = 2
     Submarine  = (unsigned short)2,  // size = 3
     Cruiser    = (unsigned short)3,  // size = 3
     Battleship = (unsigned short)4,  // size = 4
-    Carrier    = (unsigned short)5,   // size = 5
+    Carrier    = (unsigned short)5,  // size = 5
     ShipPart   = (unsigned short)6   // size = 1
 };
 
@@ -166,17 +166,16 @@ class Ship {
      */
     ShipData get_data() const;
 
-
     /**
      * @brief Resets the ship to its default values
-    */
+     */
     void reset_ship();
 
    private:
     const unsigned short length_;
     bool is_sunk_;
     unsigned short damage_ = 0;
-    const ShipCategory name_;       // unique identifier of a ship
+    const ShipCategory name_;  // unique identifier of a ship
     bool is_horizontal_;
     bool is_placed_;
 

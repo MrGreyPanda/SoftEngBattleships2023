@@ -129,6 +129,4 @@ bool GameState::all_players_prepared() const {
 }
 
 // I think here is the culprit
-void GameState::reset_state() {
-    players_.clear();
-}
+void GameState::reset_state() { players_.clear(); }

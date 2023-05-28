@@ -27,6 +27,12 @@ class ClientNetworkManager {
     static bool connect(const std::string& address_string,
                         const uint16_t& port);
 
+    /**
+     * @brief Tries to disconnect from the host.
+     *
+     * @return true
+     * @return false
+     */
     static bool disconnect();
 
     /**
@@ -43,9 +49,21 @@ class ClientNetworkManager {
     static ClientNetworkConnectionStatus get_connection_status();
 
    private:
+    /**
+     * @brief Connects to host with the given parameters
+     *
+     * @param address_string
+     * @param port
+     * @return true
+     * @return false
+     */
     static bool connect_to_host_(const std::string& address_string,
                                  const uint16_t& port);
 
+    /**
+     * @brief Handles incoming messages from the server
+     *
+     */
     static void handle_incoming_messages_();
 
     static sockpp::tcp_connector* connection_;
