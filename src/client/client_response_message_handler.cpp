@@ -177,9 +177,7 @@ void ClientResponseMessageHandler::handle_prepared_response_(
 
     } else {
         game_controller_game_state_->get_players()[0]->unset_prepared();
-        game_controller_game_state_->get_players()[0]
-            ->get_own_board()
-            .reset();
+        game_controller_game_state_->get_players()[0]->get_own_board().reset();
     }
 }
 
@@ -189,17 +187,17 @@ void ClientResponseMessageHandler::handle_prepared_message_(
     game_controller_game_state_->get_players()[1]->set_prepared();
     if (game_controller_game_state_->get_players()[0]->get_is_prepared() &&
         game_controller_game_state_->get_phase() != Battle) {
-            BattlePanel::update_board();
-            game_controller_game_state_->set_phase(Battle);
+        BattlePanel::update_board();
+        game_controller_game_state_->set_phase(Battle);
     }
 }
 
 // Handles shoot response and updates game state
 void ClientResponseMessageHandler::handle_shoot_response_(
     const ShootResponse &response) {
-    //Player *player = game_controller_game_state_->get_player_by_id(
-    //    response.get_player_id());
-    Player* player = game_controller_game_state_->get_players()[0];
+    // Player *player = game_controller_game_state_->get_player_by_id(
+    //     response.get_player_id());
+    Player *player = game_controller_game_state_->get_players()[0];
     if (player == nullptr) std::cout << "Player is nullptr" << std::endl;
     if (response.is_valid()) {
         player->get_enemy_board().set_is_shot(response.get_x(),
@@ -294,13 +292,13 @@ void ClientResponseMessageHandler::handle_game_over_message_(
         << "[ClientResponseMessageHandler] Game over message setting ship data"
         << std::endl;
 
-    if(game_controller_game_state_->get_phase() != Preparation){
+    if (game_controller_game_state_->get_phase() != Preparation) {
         game_controller_game_state_->get_players()[0]
-        ->get_enemy_board()
-        .set_ship_data(message.get_ship_data());
+            ->get_enemy_board()
+            .set_ship_data(message.get_ship_data());
         EndPanel::update_board();
     }
-    
+
     std::cout << "[ClientResponseMessageHandler] Game over message handled"
               << std::endl;
     game_controller_game_state_->set_phase(End);
