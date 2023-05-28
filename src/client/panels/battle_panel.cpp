@@ -200,7 +200,6 @@ void BattlePanel::render() {
                 if (grid_value == 6){
                     enemy_board_->setCell(i, j, true);
                 } else if (grid_value > 0 && grid_value < 6) {
-                    std::cout << "Cell " << i << ", " << j << " has value " << grid_value << "\n";
                     enemy_board_->unsetCell(i, j);
                 } else if (grid_value == 0) {
                     enemy_board_->setCell(i, j, false);
