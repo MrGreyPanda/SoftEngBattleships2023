@@ -13,69 +13,74 @@ void EndPanel::init() {
     SDLGui::SDLGuiContext* end_panel_context =
         new SDLGui::SDLGuiContext("end_window");
 
-    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
+    /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
         "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
         1.f, 0.,
         SDLGui::ImageFlagsExt_CenterImageVertical |
             SDLGui::ImageFlagsExt_CenterImageHorizontal |
             SDLGui::ImageFlagsExt_NoBackground);
-    end_panel_context->addWidget(background_image);
+    end_panel_context->addWidget(background_image);*/
 
     winner_or_loser_text_ = new SDLGui::TextWidget(
-        "winner_or_loser_text", "You Lost!", 0, .06f, .1f, .4f, .09f, 0.,
+        "winner_or_loser_text", 0, "You Lost!", 0, .06f, .1f, .4f, .09f, 0.,
         SDLGui::TextFlagsExt_CenterTextVertical |
             SDLGui::TextFlagsExt_NoBackground);
     end_panel_context->addWidget(winner_or_loser_text_);
 
     SDLGui::TextButtonWidget* diconnect_button = new SDLGui::TextButtonWidget(
-        "end_disconnect_button", "Disconnect", 0.15f, .3f, .3f, .15f, 0.,
+        "end_disconnect_button", 0, "Disconnect", 0.15f, .3f, .3f, .15f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     end_panel_context->addWidget(diconnect_button);
 
     SDLGui::TextButtonWidget* play_again_button = new SDLGui::TextButtonWidget(
-        "end_play_again_button", "Play Again", 0.15f, .6f, .3f, .15f, 0.,
+        "end_play_again_button", 0, "Play Again", 0.15f, .6f, .3f, .15f, 0.,
         SDLGui::TextButtonFlagsExt_CenterText);
     end_panel_context->addWidget(play_again_button);
 
     enemy_grid_ = new SDLGui::GridWidget(
-        "end_enemy_board", .55f, .05f, .4f, .8f, 0., 10, 10,
+        "end_enemy_board", 0, .55f, .05f, .4f, .8f, 0., 10, 10,
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);
     end_panel_context->addWidget(enemy_grid_);
 
     // All enemy ship widgets
-    enemy_ship_widget_arr_[4] = new SDLGui::DraggableImageWidget(
-        "enemy_carrier_ship", "../assets/carrier_red.bmp", .6f, .2f, .3f, .11f,
-        0., 5, 1,
-        SDLGui::DraggableImageFlagsExt_CenterImage |
-            SDLGui::DraggableImageFlagsExt_NoBackground);
+    enemy_ship_widget_arr_[4] =
+        new SDLGui::DraggableImageWidget(
+            "enemy_carrier_ship", 2, "../assets/carrier_red.bmp", .6f, .2f, .3f, .11f, 0.,
+            5, 1,
+            SDLGui::DraggableImageFlagsExt_CenterImage |
+                SDLGui::DraggableImageFlagsExt_NoBackground);
     end_panel_context->addWidget(enemy_ship_widget_arr_[4]);
 
-    enemy_ship_widget_arr_[3] = new SDLGui::DraggableImageWidget(
-        "enemy_battleship_ship", "../assets/battleship_red.bmp", .6f, .33f,
-        .24f, .105f, 0., 4, 1,
-        SDLGui::DraggableImageFlagsExt_CenterImage |
-            SDLGui::DraggableImageFlagsExt_NoBackground);
+    enemy_ship_widget_arr_[3] =
+        new SDLGui::DraggableImageWidget(
+            "enemy_battleship_ship", 2, "../assets/battleship_red.bmp", .6f, .33f, .24f,
+            .105f, 0., 4, 1,
+            SDLGui::DraggableImageFlagsExt_CenterImage |
+                SDLGui::DraggableImageFlagsExt_NoBackground);
     end_panel_context->addWidget(enemy_ship_widget_arr_[3]);
 
-    enemy_ship_widget_arr_[2] = new SDLGui::DraggableImageWidget(
-        "enemy_cruiser_ship", "../assets/cruiser_red.bmp", .6f, .455f, .18f,
-        .1f, 0., 3, 1,
-        SDLGui::DraggableImageFlagsExt_CenterImage |
-            SDLGui::DraggableImageFlagsExt_NoBackground);
+    enemy_ship_widget_arr_[2] =
+        new SDLGui::DraggableImageWidget(
+            "enemy_cruiser_ship", 2, "../assets/cruiser_red.bmp", .6f, .455f, .18f, .1f, 0.,
+            3, 1,
+            SDLGui::DraggableImageFlagsExt_CenterImage |
+                SDLGui::DraggableImageFlagsExt_NoBackground);
     end_panel_context->addWidget(enemy_ship_widget_arr_[2]);
 
-    enemy_ship_widget_arr_[1] = new SDLGui::DraggableImageWidget(
-        "enemy_submarine_ship", "../assets/submarine_red.bmp", .6f, .575f,
-        .18f, .1f, 0., 3, 1,
-        SDLGui::DraggableImageFlagsExt_CenterImage |
-            SDLGui::DraggableImageFlagsExt_NoBackground);
+    enemy_ship_widget_arr_[1] =
+        new SDLGui::DraggableImageWidget(
+            "enemy_submarine_ship", 2, "../assets/submarine_red.bmp", .6f, .575f, .18f, .1f,
+            0., 3, 1,
+            SDLGui::DraggableImageFlagsExt_CenterImage |
+                SDLGui::DraggableImageFlagsExt_NoBackground);
     end_panel_context->addWidget(enemy_ship_widget_arr_[1]);
 
-    enemy_ship_widget_arr_[0] = new SDLGui::DraggableImageWidget(
-        "enemy_destroyer_ship", "../assets/destroyer_red.bmp", .6f, .695f,
-        .14f, .1f, 0., 2, 1,
-        SDLGui::DraggableImageFlagsExt_CenterImage |
-            SDLGui::DraggableImageFlagsExt_NoBackground);
+    enemy_ship_widget_arr_[0] =
+        new SDLGui::DraggableImageWidget(
+            "enemy_destroyer_ship", 2, "../assets/destroyer_red.bmp", .6f, .695f, .14f, .1f,
+            0., 2, 1,
+            SDLGui::DraggableImageFlagsExt_CenterImage |
+                SDLGui::DraggableImageFlagsExt_NoBackground);
     end_panel_context->addWidget(enemy_ship_widget_arr_[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(end_panel_context);
