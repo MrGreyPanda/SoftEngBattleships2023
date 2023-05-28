@@ -4,6 +4,7 @@ build:
   stage: build
   before_script:
     - apt update && apt -y install make cmake autoconf git
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.ethz.ch/".insteadOf "https://gitlab.ethz.ch/"
     - git submodule update --init --recursive
   script:
     - cmake cmake -B build -S .
