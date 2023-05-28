@@ -2,6 +2,9 @@
 
 #include "give_up_request.h"
 
+/**
+ * @brief Message sent by a player when the other player gave up
+ */
 class GaveUpMessage : public GiveUpRequest {
    public:
     GaveUpMessage(const json& data);

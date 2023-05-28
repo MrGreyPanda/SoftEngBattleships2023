@@ -2,6 +2,10 @@
 
 #include "message.h"
 
+/**
+ * @brief A message sent from the server to the client as a response to a
+ * request. This class is used as a base to inhert from for other responses.
+ */
 class Response : public Message {
    public:
     Response(const json& data);

@@ -2,6 +2,10 @@
 
 #include "message.h"
 
+/**
+ * @brief Message sent by a player when another player joined, or left the
+ * lobby.
+ */
 class JoinedMessage : public Message {
    public:
     JoinedMessage(const json& data);

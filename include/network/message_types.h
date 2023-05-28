@@ -35,7 +35,7 @@ enum MessageType {
 
 class MessageTypeHelpers {
    public:
-    /*
+    /**
      * @brief Converts a string to a message type
      *
      * @param type
@@ -44,7 +44,7 @@ class MessageTypeHelpers {
     static MessageType make_message_type_from_string(
         const std::string& string);
 
-    /*
+    /**
      * @brief Converts a message type to a string
      *
      * @param type

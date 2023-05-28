@@ -3,6 +3,9 @@
 #include "ship.h"
 #include "shoot_request.h"
 
+/**
+ * @brief Message sent to a player when the other player shot
+ */
 class ShotMessage : public ShootRequest {
    public:
     ShotMessage(const json& data);

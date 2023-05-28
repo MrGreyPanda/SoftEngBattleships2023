@@ -2,6 +2,10 @@
 
 #include "message.h"
 
+/**
+ * @brief A message sent from the client to the server when the player wants to
+ * shoot at their opponent.
+ */
 class ShootRequest : public Message {
    public:
     ShootRequest(const json& data);

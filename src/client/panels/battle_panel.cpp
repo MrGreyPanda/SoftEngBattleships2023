@@ -13,7 +13,7 @@ std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ = {
 void BattlePanel::init() {
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
-    
+
     /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
         "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
         1.f, 0.,
@@ -38,11 +38,11 @@ void BattlePanel::init() {
             SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(battle_phase_title);
 
-    turn_message_text_ =
-        new SDLGui::TextWidget("turn_message_text", 0, "", 0, .0f, .9f, .3f, .1f, 0.,
-                               SDLGui::TextFlagsExt_CenterTextHorizontal |
-                                   SDLGui::TextFlagsExt_NoBackground |
-                                   SDLGui::TextFlagsExt_CenterHorizontal);
+    turn_message_text_ = new SDLGui::TextWidget(
+        "turn_message_text", 0, "", 0, .0f, .9f, .3f, .1f, 0.,
+        SDLGui::TextFlagsExt_CenterTextHorizontal |
+            SDLGui::TextFlagsExt_NoBackground |
+            SDLGui::TextFlagsExt_CenterHorizontal);
     battle_panel_context->addWidget(turn_message_text_);
 
     SDLGui::TextButtonWidget* resign_button = new SDLGui::TextButtonWidget(
@@ -63,44 +63,39 @@ void BattlePanel::init() {
      * @brief The following widgets are used to display the ships that the
      * player has placed
      */
-    ship_widget_arr_[4] =
-        new SDLGui::DraggableImageWidget(
-            "carrier_ship", 2, "../assets/carrier.bmp", .6f, .2f, .3f, .12f, 0.,
-            5, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ship_widget_arr_[4] = new SDLGui::DraggableImageWidget(
+        "carrier_ship", 2, "../assets/carrier.bmp", .6f, .2f, .3f, .12f, 0., 5,
+        1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[4]);
 
-    ship_widget_arr_[3] =
-        new SDLGui::DraggableImageWidget(
-            "battleship_ship", 2, "../assets/battleship.bmp", .6f, .35f, .25f,
-            .1f, 0., 4, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ship_widget_arr_[3] = new SDLGui::DraggableImageWidget(
+        "battleship_ship", 2, "../assets/battleship.bmp", .6f, .35f, .25f, .1f,
+        0., 4, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[3]);
 
-    ship_widget_arr_[2] =
-        new SDLGui::DraggableImageWidget(
-            "cruiser_ship", 2, "../assets/cruiser.bmp", .6f, .5f, .2f, .08f, 0.,
-            3, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ship_widget_arr_[2] = new SDLGui::DraggableImageWidget(
+        "cruiser_ship", 2, "../assets/cruiser.bmp", .6f, .5f, .2f, .08f, 0., 3,
+        1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[2]);
 
-    ship_widget_arr_[1] =
-        new SDLGui::DraggableImageWidget(
-            "submarine_ship", 2, "../assets/submarine.bmp", .6f, .65f, .2f, .08f,
-            0., 3, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ship_widget_arr_[1] = new SDLGui::DraggableImageWidget(
+        "submarine_ship", 2, "../assets/submarine.bmp", .6f, .65f, .2f, .08f,
+        0., 3, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[1]);
 
-    ship_widget_arr_[0] =
-        new SDLGui::DraggableImageWidget(
-            "destroyer_ship", 2, "../assets/destroyer.bmp", .6f, .8f, .15f, .06f,
-            0., 2, 1,
-            SDLGui::DraggableImageFlagsExt_CenterImage |
-                SDLGui::DraggableImageFlagsExt_NoBackground);
+    ship_widget_arr_[0] = new SDLGui::DraggableImageWidget(
+        "destroyer_ship", 2, "../assets/destroyer.bmp", .6f, .8f, .15f, .06f,
+        0., 2, 1,
+        SDLGui::DraggableImageFlagsExt_CenterImage |
+            SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(ship_widget_arr_[0]);
 
     SDLGui::SDLGuiEnvironment::pushContext(battle_panel_context);
@@ -182,13 +177,13 @@ void BattlePanel::render() {
     }
 
     if (player_->is_own_turn) {
-        turn_message_text_->updateText(64, 0, "It is your turn.");
+        turn_message_text_->updateText(64, 0, "It's your turn.");
         if (!player_->has_shot) {
             if (SDLGui::Grid("enemy_board")) handle_shots();
         }
 
     } else {
-        turn_message_text_->updateText(64, 0, "It is the enemy' turn.");
+        turn_message_text_->updateText(64, 0, "It's the enemy's turn.");
     }
 
     if (SDLGui::TextButton("resign_button")) {

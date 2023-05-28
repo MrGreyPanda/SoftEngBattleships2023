@@ -3,6 +3,10 @@
 #include "join_request.h"
 #include "response.h"
 
+/**
+ * @brief A message sent from the server to the client as a response to a join
+ * request.
+ */
 class JoinResponse : public Response {
    public:
     JoinResponse(const json& data);
@@ -17,5 +21,5 @@ class JoinResponse : public Response {
     void set_player_amount(unsigned player_amount);
 
    private:
-      unsigned player_amount_ = 0;
+    unsigned player_amount_ = 0;
 };
