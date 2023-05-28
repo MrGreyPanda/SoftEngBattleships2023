@@ -1,17 +1,15 @@
 #pragma once
 #include <array>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <utility>
-#include <exception>
 
 #include "ship.h"
-
 
 // ---------------------------------Board---------------------------- //
 class Board {
    public:
-
     /**
      * @brief Construct a new Board object
      */
@@ -33,14 +31,16 @@ class Board {
      * @param x, y The coordinates
      * @return The grid value at the given coordinate
      */
-    unsigned short get_grid_value(const unsigned short &x, const unsigned short &y) const;
+    unsigned short get_grid_value(const unsigned short &x,
+                                  const unsigned short &y) const;
 
     /**
      * @brief Set the grid value at a given coordinate
      * @param x, y The coordinates
      * @param value The value to set the grid value to
      */
-    void set_grid_value(const unsigned short &x, const unsigned short &y, unsigned short value);
+    void set_grid_value(const unsigned short &x, const unsigned short &y,
+                        unsigned short value);
 
     /**
      * @brief Get number of ships_ on the board
@@ -71,7 +71,8 @@ class Board {
      * @param x, y The coordinates
      * @param value The value to set the is_shot_ value to
      */
-    void set_is_shot(const unsigned short &x, const unsigned short &y, bool value);
+    void set_is_shot(const unsigned short &x, const unsigned short &y,
+                     bool value);
 
     /**
      * @brief get ship of vector of that type
@@ -85,21 +86,24 @@ class Board {
      */
     bool all_ships_sunk() const;
 
-    const Ship* get_ship_by_index(const unsigned short &index) const;
-
+    /**
+     * @brief Get the ship by index object
+     *
+     * @param index
+     * @return const Ship*
+     */
+    const Ship *get_ship_by_index(const unsigned short &index) const;
 
     /**
      * @brief Reset the board to its initial state
      */
     void reset();
 
-
-   /**
-    * @brief riddle the shiple a.k.a. delete the ship from the board
-    * @param shipname name of the ship to get rid of
-   */
-   void riddle_the_shiple(const ShipCategory &shipname);
-
+    /**
+     * @brief riddle the shiple a.k.a. delete the ship from the board
+     * @param shipname name of the ship to get rid of
+     */
+    void riddle_the_shiple(const ShipCategory &shipname);
 
    private:
     /**
@@ -115,12 +119,10 @@ class Board {
 // ---------------------------------OwnBoard---------------------------- //
 class OwnBoard : public Board {
    public:
-
-   /**
-    * @brief Inherit constructor and destructor from Board
-   */
+    /**
+     * @brief Inherit constructor and destructor from Board
+     */
     using Board::Board;
-
 
     /**
      * @brief Checks if a given placement is valid
@@ -135,8 +137,8 @@ class OwnBoard : public Board {
      * @param x, y  The coordinates of the ship to be placed
      * @param ship The ship to be placed
      */
-    bool place_ship(const unsigned short &x, const unsigned short &y, const bool &is_horizontal,
-                    const ShipCategory &shipname);
+    bool place_ship(const unsigned short &x, const unsigned short &y,
+                    const bool &is_horizontal, const ShipCategory &shipname);
 
     /**
      * @brief Set the ships on the board from the ShipData objects
@@ -144,7 +146,6 @@ class OwnBoard : public Board {
      * @return true if the configuration is valid
      */
     bool set_ship_configuration(const std::array<ShipData, 5> &ships);
-
 
     /**
      * @brief Get the ship at a given coordinate
@@ -159,21 +160,21 @@ class OwnBoard : public Board {
      */
     void update_ship(const unsigned short &x, const unsigned short &y);
 
-   /**
-    * @brief Checks if the ship configuration is valid
-   */
+    /**
+     * @brief Checks if the ship configuration is valid
+     */
     bool is_valid_configuration() const;
 
-
-   /**
-    * @brief Checks if the ship configuration is ultimate
-   */
+    /**
+     * @brief Checks if the ship configuration is ultimate
+     */
     bool is_ultimate_configuration() const;
 
-   /**
-    * @brief Get the ship configuration
-    * @return The ship configuration in the form of an array of ShipData objects
-   */
+    /**
+     * @brief Get the ship configuration
+     * @return The ship configuration in the form of an array of ShipData
+     * objects
+     */
     std::array<ShipData, 5> get_ship_configuration() const;
 
    private:
@@ -183,10 +184,9 @@ class OwnBoard : public Board {
 
 class EnemyBoard : public Board {
    public:
-
-   /**
-    * @brief Inherit constructor and destructor from Board
-   */
+    /**
+     * @brief Inherit constructor and destructor from Board
+     */
     using Board::Board;
 
     /**
@@ -195,8 +195,18 @@ class EnemyBoard : public Board {
      */
     bool is_valid_shot(const unsigned short &x, const unsigned short &y) const;
 
+    /**
+     * @brief Updates ship vector
+     *
+     * @param ship
+     */
     void update_ship_vec(ShipCategory ship);
 
+    /**
+     * @brief Set the ship data object
+     *
+     * @param ships
+     */
     void set_ship_data(const std::array<ShipData, 5> &ships);
 
    private:

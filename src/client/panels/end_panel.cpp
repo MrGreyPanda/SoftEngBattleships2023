@@ -5,12 +5,11 @@
 GameState* EndPanel::game_state_ = nullptr;
 
 SDLGui::TextWidget* EndPanel::winner_or_loser_text_ = nullptr;
-SDLGui::GridWidget* EndPanel::enemy_grid_ = nullptr;
-std::array<SDLGui::DraggableImageWidget*, 5> EndPanel::enemy_ship_widget_arr_ = 
-    { nullptr, nullptr, nullptr, nullptr, nullptr };
+SDLGui::GridWidget* EndPanel::enemy_grid_           = nullptr;
+std::array<SDLGui::DraggableImageWidget*, 5> EndPanel::enemy_ship_widget_arr_ =
+    {nullptr, nullptr, nullptr, nullptr, nullptr};
 
 void EndPanel::init() {
-
     SDLGui::SDLGuiContext* end_panel_context =
         new SDLGui::SDLGuiContext("end_window");
 
@@ -87,22 +86,19 @@ void EndPanel::init() {
     SDLGui::SDLGuiEnvironment::pushContext(end_panel_context);
 }
 
-void EndPanel::reset()
-{
+void EndPanel::reset() {
     enemy_grid_->reset();
-    for (unsigned i = 0; i < 5; ++i)
-        enemy_ship_widget_arr_[i]->reset();
+    for (unsigned i = 0; i < 5; ++i) enemy_ship_widget_arr_[i]->reset();
 }
 
-void EndPanel::update_board()
-{
+void EndPanel::update_board() {
     EnemyBoard& enemy_board = game_state_->get_players()[0]->get_enemy_board();
     for (int i = 0; i < 5; i++) {
         const Ship* ship = enemy_board.get_ship_by_index(i);
-        if (!ship->get_is_horizontal()) enemy_ship_widget_arr_[i]->rotateNoGrab(270.);
-        enemy_ship_widget_arr_[i]->resizeToFit(
-            enemy_grid_, ship->get_x(),
-            ship->get_y(), true);
+        if (!ship->get_is_horizontal())
+            enemy_ship_widget_arr_[i]->rotateNoGrab(270.);
+        enemy_ship_widget_arr_[i]->resizeToFit(enemy_grid_, ship->get_x(),
+                                               ship->get_y(), true);
         enemy_ship_widget_arr_[i]->disable();
     }
 }
@@ -110,7 +106,8 @@ void EndPanel::update_board()
 void EndPanel::render() {
     SDLGui::begin("end_window");
 
-    if (game_state_->get_players().size() > 0 && game_state_->get_players()[0]->has_won){
+    if (game_state_->get_players().size() > 0 &&
+        game_state_->get_players()[0]->has_won) {
         winner_or_loser_text_->updateText(64, 0, "You Won!");
     } else {
         winner_or_loser_text_->updateText(64, 0, "You Lost!");

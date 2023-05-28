@@ -33,5 +33,4 @@ bool Player::is_valid_shot(const unsigned short &x, const unsigned short &y) {
 
 bool Player::has_lost() const { return own_board_.all_ships_sunk(); }
 
-Player::~Player() {
-}
+Player::~Player() {}

@@ -13,15 +13,42 @@
 
 class GameController {
    public:
+    /**
+     * @brief Initializes the client
+     *
+     */
     static void init();
+    /**
+     * @brief Handles the running client
+     *
+     */
     static void run();
 
+    /**
+     * @brief Get the player id object
+     *
+     * @return std::string
+     */
     static std::string get_player_id();
+
+    /**
+     * @brief Set the player id object
+     *
+     * @param player_id
+     */
     static void set_player_id(std::string player_id);
 
+    /**
+     * @brief Disconnects from server
+     *
+     */
     static void disconnect_from_server();
 
    private:
+    /**
+     * @brief Renders the GUI
+     *
+     */
     static void render();
 
     static GameState game_state_;

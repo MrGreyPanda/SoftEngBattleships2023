@@ -23,8 +23,7 @@ Ship::Ship(const ShipCategory &name_)
       is_sunk_(false),
       is_placed_(false),
       is_horizontal_(true),
-      length_(category_to_size(name_)) {
-}
+      length_(category_to_size(name_)) {}
 
 Ship::Ship(const ShipData &data)
     : name_(data.name),
@@ -45,7 +44,6 @@ Ship::Ship()
       is_placed_(false),
       is_horizontal_(true) {}
 
-
 void Ship::shot_at() {
     assert(damage_ <= length_ && !is_sunk_);
     if (damage_ <= 0 || is_sunk_ || damage_ > length_) {
@@ -65,7 +63,7 @@ ShipCategory Ship::get_name() const { return name_; }
 
 bool Ship::get_is_sunk() const { return is_sunk_; }
 
-void Ship::set_is_sunk(bool is_sunk) { 
+void Ship::set_is_sunk(bool is_sunk) {
     assert(damage_ = length_);
     is_sunk_ = is_sunk;
 }
@@ -123,11 +121,11 @@ void to_json(json &j, const ShipData &data) {
              {"y", data.y}};
 }
 
-void Ship::reset_ship(){
-    is_sunk_ = false;
-    is_placed_ = false;
+void Ship::reset_ship() {
+    is_sunk_       = false;
+    is_placed_     = false;
     is_horizontal_ = true;
-    damage_ = 0;
-    x_ = 0;
-    y_ = 0;
+    damage_        = 0;
+    x_             = 0;
+    y_             = 0;
 }
