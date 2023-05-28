@@ -11,6 +11,8 @@ std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ =
     { nullptr, nullptr, nullptr, nullptr, nullptr };
 std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::enemy_ship_widget_arr_ = 
     { nullptr, nullptr, nullptr, nullptr, nullptr };
+std::array<bool, 5> BattlePanel::enemy_ships_sunk_bool_ =
+    { false, false, false, false, false };
 
 void BattlePanel::init() {
     SDLGui::SDLGuiContext* battle_panel_context =
@@ -108,7 +110,7 @@ void BattlePanel::init() {
 // ----------------------------- Enemy Ship Widgets -----------------------------
      enemy_ship_widget_arr_[4] =
         new SDLGui::DraggableImageWidget(
-            "enemy_carrier_ship", 2, "../assets/carrier_red.bmp", .0f, .0f, .0f, .0f, 0.,
+            "enemy_carrier_ship", 2, "../assets/carrier_red.bmp", 1.f, 1.f, .3f, .12f, 0.,
             5, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -116,15 +118,15 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[3] =
         new SDLGui::DraggableImageWidget(
-            "enemy_battleship_ship", 2, "../assets/battleship_red.bmp", .0f, .0f, .0f,
-            .0f, 0., 4, 1,
+            "enemy_battleship_ship", 2, "../assets/battleship_red.bmp", 1.f, 1.f, .25f,
+            .1f, 0., 4, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
     battle_panel_context->addWidget(enemy_ship_widget_arr_[3]);
 
     enemy_ship_widget_arr_[2] =
         new SDLGui::DraggableImageWidget(
-            "enemy_cruiser_ship", 2, "../assets/cruiser_red.bmp", .0f, .0f, .0f, .00f, 0.,
+            "enemy_cruiser_ship", 2, "../assets/cruiser_red.bmp", 1.f, 1.f, .2f, .08f, 0.,
             3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -132,7 +134,7 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[1] =
         new SDLGui::DraggableImageWidget(
-            "enemy_submarine_ship", 2, "../assets/submarine_red.bmp", .0f, .0f, .0f, .00f,
+            "enemy_submarine_ship", 2, "../assets/submarine_red.bmp", 1.f, 1.f, .2f, .08f,
             0., 3, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -140,7 +142,7 @@ void BattlePanel::init() {
 
     enemy_ship_widget_arr_[0] =
         new SDLGui::DraggableImageWidget(
-            "enemy_destroyer_ship", 2, "../assets/destroyer_red.bmp", .0f, .0f, .0f, .00f,
+            "enemy_destroyer_ship", 2, "../assets/destroyer_red.bmp", 1.f, 1.f, .15f, .06f,
             0., 2, 1,
             SDLGui::DraggableImageFlagsExt_CenterImage |
                 SDLGui::DraggableImageFlagsExt_NoBackground);
@@ -169,6 +171,7 @@ void BattlePanel::update_board() {
         ship_widget_arr_[i]->disable();
         enemy_ship_widget_arr_[i]->reset();
         enemy_ship_widget_arr_[i]->disable();
+        enemy_ships_sunk_bool_[i] = false;
     }
 }
 
@@ -228,12 +231,13 @@ void BattlePanel::render() {
 
     for(int i = 0; i < 5; i++){
         const Ship* ship = player_->get_enemy_board().get_ship_by_index(i);
-        if(ship->get_is_sunk()){
+        if(ship->get_is_sunk() && enemy_ships_sunk_bool_[i] == false){
             enemy_ship_widget_arr_[i]->reset();
             if(!ship->get_is_horizontal()) enemy_ship_widget_arr_[i]->rotateNoGrab(270.);
             enemy_ship_widget_arr_[i]->resizeToFit(
                 enemy_board_, ship->get_x(), ship->get_y(), true);
             enemy_ship_widget_arr_[i]->disable();
+            enemy_ships_sunk_bool_[i] = true;
         }
     }
 

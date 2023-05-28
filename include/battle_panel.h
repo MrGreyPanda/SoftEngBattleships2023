@@ -56,4 +56,5 @@ class BattlePanel {
     static SDLGui::TextWidget* turn_message_text_;
     static std::array<SDLGui::DraggableImageWidget*, 5> ship_widget_arr_;
     static std::array<SDLGui::DraggableImageWidget*, 5> enemy_ship_widget_arr_;
+    static std::array<bool, 5> enemy_ships_sunk_bool_;
 };
