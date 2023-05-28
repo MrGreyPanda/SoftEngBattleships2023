@@ -13,13 +13,8 @@ std::array<SDLGui::DraggableImageWidget*, 5> BattlePanel::ship_widget_arr_ = {
 void BattlePanel::init() {
     SDLGui::SDLGuiContext* battle_panel_context =
         new SDLGui::SDLGuiContext("battle_panel_context");
-<<<<<<< HEAD
     
     /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-=======
-
-    SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
->>>>>>> 405a5b662f0021465b424725390f8185777093b7
         "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
         1.f, 0.,
         SDLGui::ImageFlagsExt_CenterImageVertical |
