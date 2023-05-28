@@ -18,8 +18,6 @@ ClientNetworkConnectionStatus ClientNetworkManager::connection_status_ =
 
 bool ClientNetworkManager::connect(const std::string& address_string,
                                    const uint16_t& port) {
-    std::cout << "[ClientNetworkManager] (Debug) Connecting to server at "
-              << address_string << ":" << port << std::endl;
     // initialise sockpp framework
     // sockpp::socket_initializer sock_init;
     sockpp::initialize();
@@ -93,9 +91,6 @@ bool ClientNetworkManager::connect_to_host_(const std::string& address_string,
         return false;
     }
 
-    std::cout << "[ClientNetworkManager] (Debug) Connected to server at "
-              << address.to_string() << std::endl;
-
     return true;  // connect worked
 }
 
@@ -127,9 +122,6 @@ ClientNetworkConnectionStatus ClientNetworkManager::get_connection_status() {
 }
 
 void ClientNetworkManager::handle_incoming_messages_() {
-    std::cout << "[ClientNetworkManager] (Debug) Listening to server at "
-              << connection_->peer_address() << std::endl;
-
     unsigned msg_length;
     char msg_buffer[512];
 
