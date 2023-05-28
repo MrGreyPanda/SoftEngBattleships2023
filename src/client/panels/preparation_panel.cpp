@@ -19,14 +19,6 @@ void PreparationPanel::init() {
     SDLGui::SDLGuiContext* preparation_panel_context =
         new SDLGui::SDLGuiContext("preparation_panel_context");
 
-    /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
-        1.f, 0.,
-        SDLGui::ImageFlagsExt_CenterImageVertical |
-            SDLGui::ImageFlagsExt_CenterImageHorizontal |
-            SDLGui::ImageFlagsExt_NoBackground);
-    preparation_panel_context->addWidget(background_image);*/
-
     preparation_grid_ = new SDLGui::GridWidget(
         "preparation_grid", 0, .07f, .05f, .4f, .8f, 0., 10, 10,
         SDLGui::GridFlagsExt_CenterVertical | SDLGui::GridFlagsExt_Square);

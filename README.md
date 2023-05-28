@@ -2,6 +2,10 @@
 
 The implementation and unit tests of the game Battleships for the course Software Engineering during FS2023.
 
+## External work
+
+The graphics library used, [SDLGui](https://gitlab.ethz.ch/softeng23/sdlguilibrary), has been custom written by the frontend-members for this project, and is included as git submodule to be built as static library (to be taken into account for grading).
+
 ## Documents & Links
 
 - [Software Requirements Specification (Google docs)](https://docs.google.com/document/d/1ZKqCuUC45hqn9-1J77-43FbJHm3ckngDs78T6qiKq5g/edit)

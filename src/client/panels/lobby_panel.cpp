@@ -8,14 +8,6 @@ void LobbyPanel::init() {
     SDLGui::SDLGuiContext* lobby_panel_context =
         new SDLGui::SDLGuiContext("lobby_window");
 
-    /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
-        1.f, 0.,
-        SDLGui::ImageFlagsExt_CenterImageVertical |
-            SDLGui::ImageFlagsExt_CenterImageHorizontal |
-            SDLGui::ImageFlagsExt_NoBackground);
-    lobby_panel_context->addWidget(background_image);*/
-
     SDLGui::TextWidget* lobby_phase_title = new SDLGui::TextWidget(
         "lobby_title", 0, "Lobby", 0, .0f, .05f, .6f, .1f, 0.,
         SDLGui::TextFlagsExt_CenterText |

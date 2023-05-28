@@ -13,14 +13,6 @@ void EndPanel::init() {
     SDLGui::SDLGuiContext* end_panel_context =
         new SDLGui::SDLGuiContext("end_window");
 
-    /*SDLGui::ImageWidget* background_image = new SDLGui::ImageWidget(
-        "background_image", "../assets/background_img.bmp", -.1f, .0f, 1.3f,
-        1.f, 0.,
-        SDLGui::ImageFlagsExt_CenterImageVertical |
-            SDLGui::ImageFlagsExt_CenterImageHorizontal |
-            SDLGui::ImageFlagsExt_NoBackground);
-    end_panel_context->addWidget(background_image);*/
-
     winner_or_loser_text_ = new SDLGui::TextWidget(
         "winner_or_loser_text", 0, "You Lost!", 0, .06f, .1f, .4f, .09f, 0.,
         SDLGui::TextFlagsExt_CenterTextVertical |
