@@ -63,7 +63,7 @@ git submodule update --init --recursive
 
 ## Testing
 
-// TODO
+Tests have been created using gtest. Build and run BattleshipsTests.
 
 ## Building executables
 
